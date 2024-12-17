@@ -1,6 +1,7 @@
-import Hero from "./Hero";
-import CustomButton from "./CustomButton";
-import Navbar from "./Navbar";
-import Footer from "./Footer";
+import Hero from "./layout/Hero";
+import CustomButton from "./common/CustomButton";
+import Navbar from "./layout/Navbar";
+import Footer from "./layout/Footer";
+import PersonalInfoForm from "./forms/PersonalInfoForm";
 
-export { Hero, CustomButton, Navbar, Footer };
+export { Hero, CustomButton, Navbar, Footer, PersonalInfoForm };

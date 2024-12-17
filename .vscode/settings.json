@@ -1,5 +1,6 @@
 {
   "conventionalCommits.scopes": [
-    "Landing_Page"
+    "Landing_Page",
+    "Application_Page"
   ]
 }

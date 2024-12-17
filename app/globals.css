@@ -243,4 +243,7 @@
 .application__form-label-container {
   @apply block text-gray-700 text-sm font-bold mb-2;
 }
+.application__form-input {
+  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight;
+}
 /* END: application sections */
