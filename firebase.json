@@ -1,0 +1,21 @@
+{
+  "hosting": {
+    "site": "compare-loan-will",
+    "public": "out",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "cleanUrls": true,
+    "headers": [
+      { "source":"/app", "headers": [{"key": "Cache-Control", "value": "no-cache"}] }
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
