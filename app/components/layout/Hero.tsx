@@ -1,10 +1,9 @@
 "use client";
 import Image from "next/image";
-import CustomButton from "./CustomButton";
+import CustomButton from "../common/CustomButton";
 
 const Hero = () => {
   const handleRedirect = () => {
-    console.log("test");
     window.location.href = "/application";
   };
   return (
@@ -17,7 +16,7 @@ const Hero = () => {
           <p className="hero__subtitle">
             Secure your lowest possible interest rate in a timely manner.
           </p>
-          <div className="flex flex-row items-center flex-wrap gap-10 mb-10 mt-20">
+          <div className="flex flex-row items-center flex-wrap gap-10 mb-5 mt-20">
             <CustomButton
               title="Apply Manually"
               containerStyles="bg-black text-white rounded-lg"

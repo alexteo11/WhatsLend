@@ -55,20 +55,15 @@
 }
 
 .hero__image-container {
-  @apply xl:flex-[1.5] flex justify-end items-end w-full xl:h-screen;
+  @apply xl:flex-[1.5] flex justify-end items-end w-full;
 }
 
 .hero__image {
   @apply relative xl:w-full w-[90%] xl:h-full h-[590px] z-0;
 }
-
-/* .hero__image-overlay {
-  @apply absolute xl:-top-24 xl:-right-1/2 -right-1/4 bg-hero-bg bg-repeat-round -z-10 w-full xl:h-screen h-[590px] overflow-hidden;
-} */
 /* END: Hero styles */
 
 /* START: Home styles */
-
 .home__text-container {
   @apply flex flex-col items-start justify-start gap-y-2.5 text-black-100 font-sans;
 }
@@ -237,10 +232,19 @@
 /* END: why us? sections */
 
 /* START: application sections */
-.application__form-section {
-  @apply flex flex-col max-w-[1440px] mx-auto padding-y;
+.application__form-section-container {
+  @apply pb-10;
+}
+.application__form-section-title-container {
+  @apply flex flex-col mx-auto padding-y;
+}
+.application__form-input-row-container {
+  @apply mb-4;
 }
 .application__form-label-container {
   @apply block text-gray-700 text-sm font-bold mb-2;
+}
+.application__form-input {
+  @apply shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight;
 }
 /* END: application sections */

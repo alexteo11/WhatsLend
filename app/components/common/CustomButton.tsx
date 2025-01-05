@@ -1,6 +1,6 @@
 "use client";
 
-import { CustomButtonProps } from "@/types";
+import { CustomButtonProps } from "@/interfaces/components";
 
 const CustomButton = ({
   title,
