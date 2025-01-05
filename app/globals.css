@@ -55,7 +55,7 @@
 }
 
 .hero__image-container {
-  @apply xl:flex-[1.5] flex justify-end items-end w-full xl:h-screen;
+  @apply xl:flex-[1.5] flex justify-end items-end w-full;
 }
 
 .hero__image {
@@ -237,8 +237,14 @@
 /* END: why us? sections */
 
 /* START: application sections */
-.application__form-section {
-  @apply flex flex-col max-w-[1440px] mx-auto padding-y;
+.application__form-section-container {
+  @apply pb-10;
+}
+.application__form-section-title-container {
+  @apply flex flex-col mx-auto padding-y;
+}
+.application__form-input-row-container {
+  @apply mb-4;
 }
 .application__form-label-container {
   @apply block text-gray-700 text-sm font-bold mb-2;
