@@ -1,4 +1,8 @@
 {
-  "conventionalCommits.scopes": ["Landing_Page", "Application_Page"],
+  "conventionalCommits.scopes": [
+    "Landing_Page",
+    "Application_Page",
+    "Code_Cleaning"
+  ],
   "css.customData": [".vscode/tailwind.json"]
 }
