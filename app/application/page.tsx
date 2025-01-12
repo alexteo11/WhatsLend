@@ -21,7 +21,6 @@ import { Skeleton } from "../components/lib/skeleton";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "../components/lib/card";
 import FAQ from "../components/home/FAQ";
-import { Separator } from "@radix-ui/react-select";
 import ApplyButton from "../components/common/ApplyButton";
 
 export default function Application() {

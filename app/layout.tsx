@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { Footer, Navbar } from "@/app/components";
 import Head from "next/head";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "Compare Loan",
@@ -24,9 +25,11 @@ export default function RootLayout({
         />
       </Head>
       <body className="h-screen min-h-screen">
-        <Navbar />
-        <main>{children}</main>
-        <Footer />
+        <Suspense fallback="Loading...">
+          <Navbar />
+          <main>{children}</main>
+          <Footer />
+        </Suspense>
       </body>
     </html>
   );
