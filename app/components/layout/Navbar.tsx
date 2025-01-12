@@ -5,8 +5,8 @@ import { CustomButton } from "@/app/components";
 
 const Navbar = () => {
   return (
-    <header className="w-full absolute z-10 hero__bg">
-      <nav className="mx-auto flex justify-between items-center sm:px-16 px-6 py-1 shadow-xl">
+    <header className="hero__bg relative top-0 z-10 w-full shadow-xl">
+      <nav className="middle-container-width flex items-center justify-between py-2">
         <Link href="/">
           <Image
             src="/logo.png"

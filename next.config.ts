@@ -6,6 +6,10 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  reactStrictMode: true,
+  experimental: {
+    scrollRestoration: false,
+  },
 };
 
 export default nextConfig;
