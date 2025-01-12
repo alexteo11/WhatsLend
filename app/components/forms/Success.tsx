@@ -1,7 +1,6 @@
 "use client";
-import React, { RefCallback, useEffect } from "react";
+import React, { useEffect } from "react";
 import { DotLottie, DotLottieReact } from "@lottiefiles/dotlottie-react";
-import { useKycApplicationStore } from "@/stores/kycApplicationStore";
 import { useFormStore } from "@/stores/useFormStore";
 
 const Success = () => {
