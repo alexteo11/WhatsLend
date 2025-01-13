@@ -22,6 +22,9 @@ import { cn } from "@/lib/utils";
 import { Card, CardContent } from "../components/lib/card";
 import FAQ from "../components/home/FAQ";
 import ApplyButton from "../components/common/ApplyButton";
+import BaseDialog from "../components/common/BaseDialog";
+import Login from "../components/auth/Login";
+import { useAuth } from "@/context/auth.context";
 
 export default function Application() {
   const searchParams = useSearchParams();
@@ -29,10 +32,12 @@ export default function Application() {
   const [api, setApi] = useState<CarouselApi>();
   const [isFormReady, setIsFormReady] = useState(false);
 
+  const { user } = useAuth();
+  const [showLogin, setShowLogin] = useState(false);
+
   useEffect(() => {
-    // disable scroll restoration
-    window.history.scrollRestoration = "manual";
-  });
+    setShowLogin(!user);
+  }, [user]);
 
   useEffect(() => {
     const query = searchParams.get("source");
@@ -183,6 +188,9 @@ export default function Application() {
           </CardContent>
         </Card>
         <ApplicationInformation className="hidden md:flex" />
+        <BaseDialog isOpen={showLogin} onOpenChange={setShowLogin}>
+          <Login />
+        </BaseDialog>
       </div>
     </div>
   );

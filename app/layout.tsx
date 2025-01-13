@@ -1,8 +1,6 @@
-import type { Metadata } from "next";
 import "./globals.css";
-import { Footer, Navbar } from "@/app/components";
-import Head from "next/head";
-import { Suspense } from "react";
+import type { Metadata } from "next";
+import RootProviders from "./providers";
 
 export const metadata: Metadata = {
   title: "Compare Loan",
@@ -16,20 +14,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <Head>
-        {/* Tell the browser to never restore the scroll position on load */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `history.scrollRestoration = "manual"`,
-          }}
-        />
-      </Head>
       <body className="h-screen min-h-screen">
-        <Suspense fallback="Loading...">
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-        </Suspense>
+        <RootProviders>{children}</RootProviders>
       </body>
     </html>
   );

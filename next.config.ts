@@ -7,9 +7,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
-  experimental: {
-    scrollRestoration: false,
-  },
 };
 
 export default nextConfig;

@@ -9,20 +9,20 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="">
+    <>
       <Hero />
       <Waves />
       <Goals />
       <FlexibleLoanPricing />
       <Steps />
       <FAQSection />
-    </div>
+    </>
   );
 }
 
 const FAQSection = () => {
   return (
-    <div className="middle-container-width py-8 md:py-14">
+    <div id="faqs" className="middle-container-width py-8 md:py-14">
       <div className="flex w-full flex-col items-center justify-center gap-5 text-center">
         <p className="font-bold text-app">FAQ</p>
         <h1 className="text-4xl font-extrabold">Frequently Asked Questions</h1>

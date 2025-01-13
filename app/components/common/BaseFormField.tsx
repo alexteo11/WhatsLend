@@ -20,6 +20,7 @@ import RadioField from "./fields/RadioField";
 import SelectField from "./fields/SelectField";
 import TextField from "./fields/TextField";
 import { SOURCES_ENUM } from "@/schemas/common.schema";
+import PasswordField from "./fields/PasswordField";
 
 type FieldType =
   | "text"
@@ -80,8 +81,12 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
   const getFormType = (
     field: ControllerRenderProps<T, Path<T> & (string | undefined)>,
   ): React.ReactNode => {
-    if (type === "text" || type === "email" || type === "password") {
+    if (type === "text" || type === "email") {
       return <TextField field={field} {...props} disabled={isDisabled} />;
+    }
+
+    if (type === "password") {
+      return <PasswordField field={field} {...props} disabled={isDisabled} />;
     }
 
     if (type === "date") {

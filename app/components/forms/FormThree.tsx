@@ -5,8 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "../lib/form";
 import { Button } from "../lib/button";
-import BaseFormField from "../common/BaseFormField";
-import { SOURCES_ENUM } from "@/schemas/common.schema";
 import { useRouter } from "next/navigation";
 
 const FormThree = () => {
@@ -16,6 +14,7 @@ const FormThree = () => {
 
   const form = useForm<FormOneData>({
     resolver: zodResolver(formOneDataSchema),
+    reValidateMode: "onChange",
     defaultValues: formOneDefaultValues || undefined,
   });
 
