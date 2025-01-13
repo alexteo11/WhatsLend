@@ -9,7 +9,7 @@ on:
       - synchronize
 
 jobs:
-  lintAndBuild:
+  lintBuild:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -27,4 +27,4 @@ jobs:
       - name: Lint
         run: yarn run lint
       - name: Build
-        run: yarn run build
+        run: yarn run build:dev
