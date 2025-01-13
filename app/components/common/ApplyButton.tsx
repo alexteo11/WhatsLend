@@ -34,7 +34,7 @@ const ApplyButton = ({
         className="w-auto border border-input bg-background text-foreground shadow-sm transition-transform duration-200 ease-in-out hover:scale-[102.5%] hover:bg-background"
       >
         <Link href="/application?source=mib" className="relative">
-          <div className="flex flex-wrap items-end gap-2">
+          <div className="flex items-end gap-2">
             <span className="font-semibold">Apply via</span>
             <Image
               src="/singpass_logo_fullcolours.png"

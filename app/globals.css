@@ -254,7 +254,7 @@
   @apply mb-2 block text-sm font-bold text-gray-700;
 }
 .application__form-input {
-  @apply h-[50px] w-full appearance-none rounded border-black/30 px-3 py-2 aria-[invalid=true]:border-destructive aria-[invalid=true]:focus:ring-destructive;
+  @apply h-[48px] w-full appearance-none rounded border-black/30 px-3 py-2 aria-[invalid=true]:border-destructive aria-[invalid=true]:focus:ring-destructive;
 }
 
 /* .application__form-input:focus,
@@ -316,6 +316,7 @@
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
+    --nav-height: 67px;
   }
   .dark {
     --background: 222.2 84% 4.9%;
@@ -431,4 +432,42 @@ input[type="number"] {
 .embla__container {
   display: flex !important;
   align-items: flex-start !important; /* Add this */
+}
+
+.scrollable-dialog-content::-webkit-scrollbar,
+.scrollable-sheet-content::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox **/
+.scrollable-dialog-content,
+.scrollable-sheet-content {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollable-dialog-content,
+.scrollable-sheet-content {
+  background:
+    linear-gradient(#fff 33%, rgba(65, 211, 155, 0)),
+    linear-gradient(rgba(65, 211, 155, 0), #fff 66%) 0 100%,
+    radial-gradient(
+      farthest-side at 50% 0,
+      rgba(34, 34, 34, 0.5),
+      rgba(0, 0, 0, 0)
+    ),
+    radial-gradient(
+        farthest-side at 50% 100%,
+        rgba(34, 34, 34, 0.5),
+        rgba(0, 0, 0, 0)
+      )
+      0 100%;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-attachment: local, local, scroll, scroll;
+  background-size:
+    100% 45px,
+    100% 45px,
+    100% 20px,
+    100% 20px;
 }

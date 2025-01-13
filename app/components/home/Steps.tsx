@@ -3,9 +3,9 @@ import React from "react";
 import { CardContent } from "../lib/card";
 import { cn } from "@/lib/utils";
 
-const Goals = () => {
+const Steps = () => {
   return (
-    <div className="middle-container-width py-8 md:py-14">
+    <div id="how-it-works" className="middle-container-width py-8 md:py-14">
       <div className="flex w-full flex-col items-center justify-center gap-5 text-center">
         <p className="font-bold text-app">HOW IT WORKS</p>
         <h1 className="text-4xl font-extrabold">
@@ -85,4 +85,4 @@ const StepView = ({
   );
 };
 
-export default Goals;
+export default Steps;

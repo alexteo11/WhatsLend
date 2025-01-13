@@ -13,6 +13,7 @@ const FormTwo = () => {
 
   const form = useForm<FormTwoData>({
     resolver: zodResolver(formTwoDataSchema),
+    reValidateMode: "onChange",
     defaultValues: formTwoDefaultValues,
   });
 
