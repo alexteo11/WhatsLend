@@ -73,6 +73,7 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
   },
   housingDetails: {
     address: {
+      value: "GG",
       source,
     },
     unitNo: {
@@ -101,6 +102,9 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
 };
 
 export const formThreeDefaultValues: DefaultValues<FormThreeData> = {
+  isContactingWithAgency: {
+    source,
+  },
   hasExistingLoans: {
     source,
   },
@@ -114,9 +118,6 @@ export const formThreeDefaultValues: DefaultValues<FormThreeData> = {
     source,
   },
   monthlyRepaymentToNonBank: {
-    source,
-  },
-  isContactingWithAgency: {
     source,
   },
 };

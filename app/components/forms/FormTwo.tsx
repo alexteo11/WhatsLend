@@ -7,6 +7,18 @@ import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import { formTwoDefaultValues } from "@/constants/formDefaultValues";
+import {
+  CURRENT_EMPLOYMENT_DURATION,
+  HOUSING_STATUS_OPTIONS,
+  HOUSING_STAY_DURATION,
+  HOUSING_TYPE_OPTIONS,
+  JOB_INDUSTRY_OPTIONS,
+  JOB_TITLE_OPTIONS,
+  MARITAL_STATUS_OPTIONS,
+  NATIONALITY_OPTIONS,
+  PREVIOUS_EMPLOYMENT_DURATION,
+  YES_NO_OPTIONS,
+} from "@/constants/formEnums";
 
 const FormTwo = () => {
   const { formOneDefaultValues, setFormData, setStep } = useFormStore();
@@ -28,13 +40,7 @@ const FormTwo = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-10"
-        onSubmit={form.handleSubmit((value) => {
-          console.log(`hereee`);
-          handleSubmit(value);
-        })}
-      >
+      <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="application__form-section">
           <h1 className="application__form-subtitle">Personal Details</h1>
           <BaseFormField
@@ -49,9 +55,9 @@ const FormTwo = () => {
             form={form}
             fieldRef="personalDetails.civilStatus.value"
             optionLabelRef="personalDetails.civilStatus.label"
-            label="Civil Status"
+            label="Marital Status"
             type="select"
-            options={[{ value: "1", label: "1 year" }]}
+            options={MARITAL_STATUS_OPTIONS}
           />
         </div>
 
@@ -63,7 +69,7 @@ const FormTwo = () => {
             optionLabelRef="employmentDetails.jobTitle.label"
             label="Job Title"
             type="select"
-            options={[{ value: "1", label: "1 year" }]}
+            options={JOB_TITLE_OPTIONS}
           />
           <BaseFormField
             form={form}
@@ -71,7 +77,7 @@ const FormTwo = () => {
             optionLabelRef="employmentDetails.jobIndustry.label"
             label="Job Industry"
             type="select"
-            options={[{ value: "1", label: "1 year" }]}
+            options={JOB_INDUSTRY_OPTIONS}
           />
           <BaseFormField
             form={form}
@@ -79,7 +85,7 @@ const FormTwo = () => {
             optionLabelRef="employmentDetails.timeAtCurrentEmployer.label"
             label="Time with Current Employer"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={CURRENT_EMPLOYMENT_DURATION}
           />
           <BaseFormField
             form={form}
@@ -87,7 +93,7 @@ const FormTwo = () => {
             optionLabelRef="employmentDetails.timeAtPreviousEmployer.label"
             label="Time with Previous Employer"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={PREVIOUS_EMPLOYMENT_DURATION}
           />
         </div>
 
@@ -117,7 +123,7 @@ const FormTwo = () => {
             optionLabelRef="housingDetails.country.label"
             label="Country"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={NATIONALITY_OPTIONS}
           />
 
           <BaseFormField
@@ -126,7 +132,7 @@ const FormTwo = () => {
             optionLabelRef="housingDetails.typeOfHousing.label"
             label="House Type"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={HOUSING_TYPE_OPTIONS}
           />
 
           <BaseFormField
@@ -135,7 +141,7 @@ const FormTwo = () => {
             optionLabelRef="housingDetails.housingStatus.label"
             label="House Status"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={HOUSING_STATUS_OPTIONS}
           />
 
           <BaseFormField
@@ -144,27 +150,41 @@ const FormTwo = () => {
             optionLabelRef="housingDetails.housingPeriod.label"
             label="House Period"
             type="select"
-            options={[{ value: "1", label: "Singapore" }]}
+            options={HOUSING_STAY_DURATION}
           />
 
           <BaseFormField
             form={form}
             fieldRef="housingDetails.hasProperty.value"
             optionLabelRef="housingDetails.hasProperty.label"
-            label="Does the applicant have a property?"
+            label="Do you own this propery?"
             type="radio"
-            options={[
-              { value: true, label: "Yes" },
-              { value: false, label: "No" },
-            ]}
+            options={YES_NO_OPTIONS}
           />
         </div>
 
         <div className="flex justify-end gap-4">
-          <Button variant={"outline"} type="button" onClick={() => setStep(1)}>
+          <Button
+            size="lg"
+            variant={"outline"}
+            type="button"
+            onClick={() => setStep(1)}
+          >
             Back
           </Button>
-          <Button type="submit">Submit</Button>
+          <Button size="lg" type="button" onClick={() => setStep(3)}>
+            Next Step
+          </Button>
+          <Button
+            size="lg"
+            type="button"
+            onClick={() => console.log(form.getValues())}
+          >
+            Tesst
+          </Button>
+          <Button size="lg" type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>

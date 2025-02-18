@@ -15,7 +15,7 @@ const TextField = <T extends FieldValues>({
   return (
     <FormControl>
       <Input
-        className="application__form-input"
+        className="application__form-input !text-[1rem]"
         id={name}
         placeholder={placeholder}
         type="text"

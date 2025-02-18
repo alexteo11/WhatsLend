@@ -79,20 +79,63 @@ export const formTwoDataSchema = z.object({
 /**
  * FORM 3
  */
-export const formThreeDataSchema = z.object({
-  hasExistingLoans: labeledDataSourceValuePairSchema<z.ZodBoolean>(z.boolean()),
-  existingLoanFromBank:
-    dataSourceValuePairSchema(requiredNumberSchema).optional(),
-  existingLoanFromNonBank:
-    dataSourceValuePairSchema(requiredNumberSchema).optional(),
-  monthlyRepaymentToBank:
-    dataSourceValuePairSchema(requiredNumberSchema).optional(),
-  monthlyRepaymentToNonBank:
-    dataSourceValuePairSchema(requiredNumberSchema).optional(),
-  isContactingWithAgency: labeledDataSourceValuePairSchema<z.ZodBoolean>(
-    z.boolean(),
-  ),
-});
+export const formThreeDataSchema = z
+  .object({
+    isContactingWithAgency:
+      labeledDataSourceValuePairSchema<typeof booleanSchema>(booleanSchema),
+    hasExistingLoans:
+      labeledDataSourceValuePairSchema<typeof booleanSchema>(booleanSchema),
+    existingLoanFromBank: dataSourceValuePairSchema(requiredNumberSchema, true),
+    existingLoanFromNonBank: dataSourceValuePairSchema(
+      requiredNumberSchema,
+      true,
+    ),
+    monthlyRepaymentToBank: dataSourceValuePairSchema(
+      requiredNumberSchema,
+      true,
+    ),
+    monthlyRepaymentToNonBank: dataSourceValuePairSchema(
+      requiredNumberSchema,
+      true,
+    ),
+  })
+  .superRefine((data, ctx) => {
+    if (data.hasExistingLoans.value) {
+      if (!data.existingLoanFromBank.value) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Field is required1",
+          path: ["existingLoanFromBank.value"],
+        });
+      }
+
+      if (!data.existingLoanFromNonBank.value) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Field is required2",
+          path: ["existingLoanFromNonBank.value"],
+        });
+      }
+
+      if (!data.monthlyRepaymentToBank.value) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Field is required3",
+          path: ["monthlyRepaymentToBank.value"],
+        });
+      }
+
+      if (!data.monthlyRepaymentToNonBank.value) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Field is required4",
+          path: ["monthlyRepaymentToNonBank.value"],
+        });
+      }
+    }
+
+    return z.NEVER;
+  });
 
 export type FormOneData = z.infer<typeof formOneDataSchema>;
 export type FormTwoData = z.infer<typeof formTwoDataSchema>;

@@ -27,12 +27,14 @@ const RadioField = <T extends FieldValues>({
         onValueChange={(value) => {
           field.onChange(value);
 
-          const label = options.find((option) => option.value === value)?.label;
+          const label = options.find(
+            (option) => String(option.value) === value,
+          )?.label;
           if (label) {
             form.setValue(optionLabelRef, label as PathValue<T, Path<T>>);
           }
         }}
-        value={field.value}
+        value={String(field.value)}
         className="flex flex-wrap gap-6 p-4"
         disabled={disabled}
       >

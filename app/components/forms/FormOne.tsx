@@ -7,6 +7,11 @@ import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import SliderField from "../common/SliderField";
+import {
+  EMPLOYMENT_STATUS_OPTIONS,
+  NATIONALITY_OPTIONS,
+  PASS_TYPE_OPTIONS,
+} from "@/constants/formEnums";
 
 const FormOne = () => {
   const { formOneDefaultValues, setFormData, setStep } = useFormStore();
@@ -24,13 +29,7 @@ const FormOne = () => {
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-10"
-        onSubmit={form.handleSubmit((value) => {
-          console.log(`hereee`);
-          handleSubmit(value);
-        })}
-      >
+      <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="application__form-section">
           <h1 className="application__form-subtitle">General Information</h1>
           <BaseFormField
@@ -52,7 +51,7 @@ const FormOne = () => {
               optionLabelRef="generalInformation.residencyStatus.label"
               label="Residency Status"
               type="select"
-              options={[{ value: "1", label: "Singapore" }]}
+              options={PASS_TYPE_OPTIONS}
             />
             <BaseFormField
               form={form}
@@ -60,7 +59,7 @@ const FormOne = () => {
               optionLabelRef="generalInformation.nationality.label"
               label="Nationality"
               type="select"
-              options={[{ value: "1", label: "Singaporean" }]}
+              options={NATIONALITY_OPTIONS}
             />
           </div>
         </div>
@@ -90,7 +89,7 @@ const FormOne = () => {
             optionLabelRef="incomeDetails.employmentStatus.label"
             label="Employment Status"
             type="select"
-            options={[{ value: "1", label: "Employed" }]}
+            options={EMPLOYMENT_STATUS_OPTIONS}
           />
           <BaseFormField
             form={form}
@@ -136,6 +135,9 @@ const FormOne = () => {
         <div className="flex justify-end">
           <Button size="lg" onClick={() => setStep(2)}>
             Next
+          </Button>
+          <Button size="lg" type="submit">
+            Submit
           </Button>
         </div>
       </form>

@@ -36,9 +36,10 @@ export const requiredDateSchema = z.coerce.date({
 
 export const dataSourceValuePairSchema = <T extends z.ZodType = z.ZodString>(
   zodType: z.ZodType = requiredStringSchema,
+  optional: boolean = false,
 ) => {
   return z.object({
-    value: zodType as T,
+    value: optional ? z.optional(zodType as T) : (zodType as T),
     source: z.nativeEnum(SOURCES_ENUM),
   });
 };
@@ -47,9 +48,10 @@ export const labeledDataSourceValuePairSchema = <
   T extends z.ZodType = z.ZodString,
 >(
   zodType: z.ZodSchema = requiredStringSchema,
+  optional: boolean = false,
 ) => {
   return z.object({
-    value: zodType as T,
+    value: optional ? z.optional(zodType as T) : (zodType as T),
     label: requiredStringSchema,
     source: z.nativeEnum(SOURCES_ENUM),
   });
