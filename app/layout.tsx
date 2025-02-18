@@ -14,7 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="h-screen min-h-screen">
+      <body className="max-h-[calc(100vh-var(--nav-height))]">
         <RootProviders>{children}</RootProviders>
       </body>
     </html>

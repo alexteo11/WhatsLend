@@ -80,7 +80,12 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
     if (!pattern) {
       return value;
     }
-    const patternValue = pattern.replaceAll("{value}", String(value));
+    const patternValue = pattern.replaceAll(
+      "{value}",
+      pattern.includes("$")
+        ? new Intl.NumberFormat().format(value)
+        : String(value),
+    );
     return patternValue;
   };
 
@@ -95,8 +100,10 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
     field?: ControllerRenderProps<T, Path<T> & (string | undefined)>,
   ) => {
     return (
-      <div className={cn("flex translate-y-[-10px] gap-4")}>
-        <div className="relative flex w-[60%] flex-col justify-center md:w-[70%]">
+      <div
+        className={cn("flex w-full translate-y-[-10px] justify-between gap-5")}
+      >
+        <div className="relative flex w-full flex-col justify-center">
           <Slider
             value={[_value || min]}
             min={min}
@@ -112,57 +119,60 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
             <span>{formatPattern(max)}</span>
           </div>
         </div>
-        <Input
-          className={cn(
-            "application__form-input !md:w-[30%] !w-[40%] max-w-[180px] text-right",
-          )}
-          type="text"
-          placeholder={placeholder}
-          {...(field || {})}
-          value={displayValue ?? ""}
-          onFocus={() => setIsFocus(true)}
-          onBlur={() => {
-            const checkMinMax = (value: number | undefined) => {
-              if (value == null) {
+        <InputWrapper
+          className="!md:w-[30%] !w-[40%] max-w-[200px]"
+          field={field}
+        >
+          <Input
+            className={cn("application__form-input w-full text-right")}
+            type="text"
+            placeholder={placeholder}
+            {...(field || {})}
+            value={displayValue ?? ""}
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => {
+              const checkMinMax = (value: number | undefined) => {
+                if (value == null) {
+                  return;
+                }
+                if (min != null && value < min) {
+                  return min;
+                }
+                if (max != null && value > max) {
+                  return max;
+                }
+                return value;
+              };
+
+              setIsFocus(false);
+              setValue(checkMinMax(_value));
+            }}
+            onKeyDown={(e) => {
+              const isValid =
+                (e.keyCode > 95 && e.keyCode < 106) ||
+                (e.keyCode > 47 && e.keyCode < 58) ||
+                [8, 9, 37, 39, 190].includes(e.keyCode);
+              if (!isValid) {
+                e.preventDefault();
+              }
+            }}
+            onChange={(e) => {
+              if (!pattern) {
+                const value = Number(e.currentTarget.value);
+                setValue(value);
+                field?.onChange(value);
                 return;
               }
-              if (min != null && value < min) {
-                return min;
-              }
-              if (max != null && value > max) {
-                return max;
-              }
-              return value;
-            };
 
-            setIsFocus(false);
-            setValue(checkMinMax(_value));
-          }}
-          onKeyDown={(e) => {
-            const isValid =
-              (e.keyCode > 95 && e.keyCode < 106) ||
-              (e.keyCode > 47 && e.keyCode < 58) ||
-              [8, 9, 37, 39, 190].includes(e.keyCode);
-            if (!isValid) {
-              e.preventDefault();
-            }
-          }}
-          onChange={(e) => {
-            if (!pattern) {
-              const value = Number(e.currentTarget.value);
-              setValue(value);
-              field?.onChange(value);
-              return;
-            }
-
-            const patternStr = pattern.replaceAll("{value}", "");
-            const valueWithoutPattern = Number(
-              e.currentTarget.value.replaceAll(patternStr, ""),
-            );
-            setValue(valueWithoutPattern);
-            field?.onChange(valueWithoutPattern);
-          }}
-        />
+              const patternStr = pattern.replaceAll("{value}", "");
+              const valueWithoutPattern = Number(
+                e.currentTarget.value.replaceAll(patternStr, ""),
+              );
+              setValue(valueWithoutPattern);
+              field?.onChange(valueWithoutPattern);
+            }}
+          />
+        </InputWrapper>
       </div>
     );
   };
@@ -175,19 +185,17 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
         control={form.control}
         name={fieldRef}
         render={({ field }) => (
-          <FormControl>
-            <FormItem className="flex flex-col space-y-4 py-2">
-              <FormLabel
-                htmlFor={fieldRef}
-                className="text-sm font-semibold text-gray-700"
-              >
-                {label}
-              </FormLabel>
-              {component(field)}
-              {description && <FormDescription>{description}</FormDescription>}
-              <FormMessage />
-            </FormItem>
-          </FormControl>
+          <FormItem className="flex flex-col space-y-4 py-2">
+            <FormLabel
+              htmlFor={fieldRef}
+              className="text-sm font-semibold text-gray-700"
+            >
+              {label}
+            </FormLabel>
+            {component(field)}
+            {description && <FormDescription>{description}</FormDescription>}
+            <FormMessage />
+          </FormItem>
         )}
       />
     );
@@ -204,6 +212,20 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
       )}
     </div>
   );
+};
+
+const InputWrapper = <T extends FieldValues>({
+  field,
+  children,
+  className,
+}: {
+  field?: ControllerRenderProps<T, Path<T> & (string | undefined)>;
+} & React.HtmlHTMLAttributes<HTMLDivElement>) => {
+  if (field) {
+    return <FormControl className={className}>{children}</FormControl>;
+  }
+
+  return <div className={className}>{children}</div>;
 };
 
 export default SliderField;

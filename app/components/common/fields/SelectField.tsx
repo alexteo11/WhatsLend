@@ -18,8 +18,110 @@ import {
 } from "react-hook-form";
 import { FormControl } from "../../lib/form";
 import { OptionsFieldProps } from "../BaseFormField";
+import { Popover, PopoverContent, PopoverTrigger } from "../../lib/popover";
+import { cn } from "@/lib/utils";
+import {
+  Command,
+  CommandInput,
+  CommandList,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+} from "../../lib/command";
+import { ChevronsUpDown, Check } from "lucide-react";
+import { Button } from "../../lib/button";
+import { ScrollArea } from "../../lib/scroll-area";
 
-const SelectField = <T extends FieldValues>({
+const SelectField = <T extends FieldValues>(
+  props: OptionsFieldProps<T> & {
+    form: UseFormReturn<T>;
+    field: ControllerRenderProps<T, FieldPath<T>>;
+  },
+) => {
+  if (props.options.length > 10) {
+    return <SelectWithSearchBox {...props} />;
+  }
+
+  return <SelectWithoutSearchBox {...props} />;
+};
+
+const SelectWithSearchBox = <T extends FieldValues>({
+  form,
+  field,
+  disabled,
+  options,
+  optionLabelRef,
+  placeholder,
+}: OptionsFieldProps<T> & {
+  form: UseFormReturn<T>;
+  field: ControllerRenderProps<T, FieldPath<T>>;
+}) => {
+  const [open, setOpen] = React.useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild className="application__form-input" {...field}>
+        <FormControl>
+          <Button
+            variant="outline"
+            role="combobox"
+            className={cn(
+              "justify-between",
+              !field.value && "text-muted-foreground",
+            )}
+            disabled={disabled}
+          >
+            <div className="flex-1 text-start">
+              {field.value
+                ? options.find((option) => option.value === field.value)?.label
+                : placeholder}
+            </div>
+            <ChevronsUpDown className="opacity-50" />
+          </Button>
+        </FormControl>
+      </PopoverTrigger>
+      <PopoverContent className="max-h-[--radix-popover-content-available-height] w-[--radix-popover-trigger-width] min-w-[300px] p-0">
+        <Command>
+          <CommandInput placeholder="Search keyword..." className="h-[42px]" />
+          <CommandList>
+            <ScrollArea className="h-72">
+              <CommandEmpty>No data found.</CommandEmpty>
+              <CommandGroup>
+                {options.map((option, index) => (
+                  <CommandItem
+                    className="h-[42px]"
+                    value={option.label}
+                    key={index}
+                    onSelect={() => {
+                      field.onChange(String(option.value));
+                      form.setValue(
+                        optionLabelRef,
+                        option.label as PathValue<T, Path<T>>,
+                      );
+                      setOpen(false);
+                    }}
+                  >
+                    {option.label}
+                    <Check
+                      className={cn(
+                        "ml-auto",
+                        option.value === field.value
+                          ? "opacity-100"
+                          : "opacity-0",
+                      )}
+                    />
+                  </CommandItem>
+                ))}
+              </CommandGroup>
+            </ScrollArea>
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+const SelectWithoutSearchBox = <T extends FieldValues>({
   form,
   field,
   disabled,
@@ -43,7 +145,7 @@ const SelectField = <T extends FieldValues>({
       disabled={disabled}
     >
       <FormControl>
-        <SelectTrigger className="application__form-input">
+        <SelectTrigger className="application__form-input" {...field}>
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
       </FormControl>

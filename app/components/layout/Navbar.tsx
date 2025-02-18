@@ -143,10 +143,14 @@ const NavigationButtons = ({
         <Link href="/#faqs">FAQs</Link>
       </Button>
       <Button asChild variant="link" className="text-shadow">
-        <Link href="/about-us">About Us</Link>
+        <Link href="/about-us" scroll={false}>
+          About Us
+        </Link>
       </Button>
       <Button asChild variant="link" className="text-shadow">
-        <Link href="/contact-us">Contact Us</Link>
+        <Link href="/contact-us" scroll={false}>
+          Contact Us
+        </Link>
       </Button>
       <SignInOrSignOutButton
         size="default"

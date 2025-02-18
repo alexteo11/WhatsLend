@@ -1,157 +1,118 @@
 import React, { useEffect } from "react";
-import { FormOneData, formOneDataSchema } from "@/schemas/form.schema";
+import { FormThreeData, formThreeDataSchema } from "@/schemas/form.schema";
 import { useFormStore } from "@/stores/useFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Form } from "../lib/form";
 import { Button } from "../lib/button";
-import { useRouter } from "next/navigation";
+import BaseFormField from "../common/BaseFormField";
+import { YES_NO_OPTIONS } from "@/constants/formEnums";
 
 const FormThree = () => {
-  const router = useRouter();
+  const { formThreeDefaultValues, setFormData, setStep } = useFormStore();
 
-  const { formOneDefaultValues, setFormData, setStep } = useFormStore();
-
-  const form = useForm<FormOneData>({
-    resolver: zodResolver(formOneDataSchema),
+  const form = useForm<FormThreeData>({
+    resolver: zodResolver(formThreeDataSchema),
     reValidateMode: "onChange",
-    defaultValues: formOneDefaultValues || undefined,
+    defaultValues: formThreeDefaultValues || undefined,
   });
 
+  const haveExistingLoan = form.watch("hasExistingLoans.value");
+
   useEffect(() => {
-    form.reset(formOneDefaultValues || undefined);
-  }, [formOneDefaultValues]);
+    form.reset(formThreeDefaultValues || undefined);
+  }, [formThreeDefaultValues]);
 
-  const handleSubmit = (data: FormOneData) => {
+  const handleSubmit = (data: FormThreeData) => {
     console.log(`here`);
-    // setFormData(data);
+    setFormData(data);
     setStep(4);
-  };
-
-  const switchMode = () => {
-    router.push("./application?source=mib");
-  };
-
-  const test = () => {
-    console.log(form.getValues());
-    console.log(form.formState);
-    setStep(2);
-    window.scrollTo(0, 0);
   };
 
   return (
     <Form {...form}>
-      <form
-        className="space-y-10"
-        onSubmit={form.handleSubmit((value) => {
-          console.log(`hereee`);
-          handleSubmit(value);
-        })}
-      >
-        {/* <div className="application__form-section">
-          <h1 className="application__form-subtitle">Loan Details</h1>
-          <div className="flex flex-row gap-4 [&>*]:flex-1">
-            <BaseFormField
-              form={form}
-              fieldRef="loanDetails.loanAmount.value"
-              label="Loan Amount"
-              type="number"
-              placeholder="20000"
-            />
-
-            <BaseFormField
-              form={form}
-              fieldRef="loanDetails.loanTenure.value"
-              optionLabelRef="loanDetails.loanTenure.label"
-              label="Loan Tenure"
-              type="select"
-              options={[{ value: "1", label: "1 year" }]}
-            />
-          </div>
-
-          <BaseFormField
-            form={form}
-            fieldRef="loanDetails.loanPurpose.value"
-            label="Loan Purpose"
-            type="text"
-          />
-        </div>
-
+      <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="application__form-section">
-          <h1 className="application__form-subtitle">General Information</h1>
+          <h1 className="application__form-subtitle">Financial Information</h1>
           <BaseFormField
             form={form}
-            fieldRef="generalInformation.fullName.value"
-            label="Full Name"
-            type="text"
+            fieldRef="isContactingWithAgency.value"
+            optionLabelRef="isContactingWithAgency.label"
+            label="Are you currently contacting with other agency / money lender?"
+            type="radio"
+            options={YES_NO_OPTIONS}
           />
+
           <BaseFormField
             form={form}
-            fieldRef="generalInformation.dob.value"
-            label="Date of Birth"
-            type="date"
+            fieldRef="hasExistingLoans.value"
+            optionLabelRef="hasExistingLoans.label"
+            label="Do you have any existing loans?"
+            type="radio"
+            options={YES_NO_OPTIONS}
           />
-          <BaseFormField
-            form={form}
-            fieldRef="generalInformation.residencyStatus.value"
-            optionLabelRef="generalInformation.residencyStatus.label"
-            label="Residency Status"
-            type="select"
-            options={[{ value: "1", label: "Singapore" }]}
-          />
-          <BaseFormField
-            form={form}
-            fieldRef="generalInformation.nationality.value"
-            optionLabelRef="generalInformation.nationality.label"
-            label="Nationality"
-            type="select"
-            options={[{ value: "1", label: "Singaporean" }]}
-          />
+
+          {String(haveExistingLoan) === "true" && (
+            <>
+              <BaseFormField
+                form={form}
+                fieldRef="existingLoanFromBank.value"
+                label="Existing loan amount from bank"
+                type="number"
+                pattern="$ {value}"
+              />
+
+              <BaseFormField
+                form={form}
+                fieldRef="existingLoanFromNonBank.value"
+                label="Existing loan amount from non-bank (e.g. personal loan, moneylender)"
+                type="number"
+                pattern="$ {value}"
+              />
+
+              <BaseFormField
+                form={form}
+                fieldRef="monthlyRepaymentToBank.value"
+                label="Current monthly repayment to bank"
+                type="number"
+                pattern="$ {value}"
+              />
+
+              <BaseFormField
+                form={form}
+                fieldRef="monthlyRepaymentToNonBank.value"
+                label="Current monthly repayment to non-bank"
+                type="number"
+                pattern="$ {value}"
+              />
+            </>
+          )}
         </div>
-
-        <div className="application__form-section">
-          <h1 className="application__form-subtitle">Contact Details</h1>
-          <BaseFormField
-            form={form}
-            fieldRef="contactDetails.email.value"
-            label="Email"
-            type="email"
-          />
-          <BaseFormField
-            form={form}
-            fieldRef="contactDetails.mobileNo.value"
-            label="Mobile Number"
-            type="text"
-          />
+        <div className="flex justify-end gap-4">
+          <Button
+            size="lg"
+            variant={"outline"}
+            type="button"
+            onClick={() => setStep(2)}
+          >
+            Back
+          </Button>
+          <Button size="lg" type="submit">
+            Submit
+          </Button>
+          <Button
+            size="lg"
+            type="button"
+            onClick={() =>
+              console.log({
+                errors: form.formState.errors,
+                value: form.getValues(),
+              })
+            }
+          >
+            Test
+          </Button>
         </div>
-
-        <div className="application__form-section">
-          <h1 className="application__form-subtitle">Income Details</h1>
-          <BaseFormField
-            form={form}
-            fieldRef="incomeDetails.employmentStatus.value"
-            optionLabelRef="incomeDetails.employmentStatus.label"
-            label="Employment Status"
-            type="select"
-            options={[{ value: "1", label: "Employed" }]}
-          />
-          <BaseFormField
-            form={form}
-            fieldRef="incomeDetails.monthlyIncome.value"
-            label="Monthly Income"
-            type="number"
-          />
-        </div> */}
-
-        {/* <Button type="submit">Submit</Button> */}
-        <Button onClick={() => handleSubmit({} as FormOneData)}>Submit</Button>
-
-        {/* <Button type="button" onClick={switchMode}>
-          Switch
-        </Button>
-        <Button type="button" onClick={test}>
-          Test
-        </Button> */}
       </form>
     </Form>
   );

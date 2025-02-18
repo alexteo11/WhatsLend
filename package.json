@@ -8,7 +8,9 @@
     "build:dev": "dotenv -e .env.development next build",
     "build:prod": "dotenv -e .env.production next build",
     "lint": "next lint",
-    "prepare": "husky"
+    "prepare": "husky",
+    "deploy:dev": "dotenv -e .env.development next build && firebase deploy --only hosting",
+    "deploy:prod": "dotenv -e .env.production next build && firebase deploy --only hosting"
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": "eslint --fix",

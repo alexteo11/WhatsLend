@@ -25,10 +25,14 @@ import ApplyButton from "../components/common/ApplyButton";
 import BaseDialog from "../components/common/BaseDialog";
 import Login from "../components/auth/Login";
 import { useAuth } from "@/context/auth.context";
+import {
+  EMPLOYMENT_STATUS_OPTIONS,
+  NATIONALITY_OPTIONS,
+} from "@/constants/formEnums";
 
 export default function Application() {
   const searchParams = useSearchParams();
-  const { step, setSource, setFormOneDefaultValues } = useFormStore();
+  const { step, setSource, setFormDefaultValues } = useFormStore();
   const [api, setApi] = useState<CarouselApi>();
   const [isFormReady, setIsFormReady] = useState(false);
 
@@ -36,7 +40,7 @@ export default function Application() {
   const [showLogin, setShowLogin] = useState(false);
 
   useEffect(() => {
-    setShowLogin(!user);
+    setTimeout(() => setShowLogin(!user), 500);
   }, [user]);
 
   useEffect(() => {
@@ -47,15 +51,13 @@ export default function Application() {
 
       // call api
       // set singpass data
-      setFormOneDefaultValues({
+      setFormDefaultValues({
         loanDetails: {
           loanAmount: {
             source: SOURCES_ENUM.MANUAL,
-            // value: 15000,
           },
           loanTenure: {
             source: SOURCES_ENUM.MANUAL,
-            // value: 12,
           },
           loanPurpose: {
             source: SOURCES_ENUM.SINGPASS,
@@ -73,13 +75,13 @@ export default function Application() {
           },
           residencyStatus: {
             source: SOURCES_ENUM.MANUAL,
-            value: "1",
-            label: "Singapore",
+            // value: PASS_TYPE_OPTIONS[0].value,
+            // label: PASS_TYPE_OPTIONS[0].label,
           },
           nationality: {
-            value: "1",
             source: SOURCES_ENUM.MANUAL,
-            label: "Singaporean",
+            value: NATIONALITY_OPTIONS[0].value,
+            label: NATIONALITY_OPTIONS[0].label,
           },
         },
         contactDetails: {
@@ -94,9 +96,9 @@ export default function Application() {
         },
         incomeDetails: {
           employmentStatus: {
-            value: "1",
             source: SOURCES_ENUM.MANUAL,
-            label: "Employed",
+            value: EMPLOYMENT_STATUS_OPTIONS[0].value,
+            label: EMPLOYMENT_STATUS_OPTIONS[0].label,
           },
           monthlyIncome: {
             source: SOURCES_ENUM.MANUAL,
@@ -109,7 +111,7 @@ export default function Application() {
     }
 
     setSource(SOURCES_ENUM.MANUAL);
-    setFormOneDefaultValues();
+    setFormDefaultValues();
     setIsFormReady(true);
   }, [searchParams]);
 
