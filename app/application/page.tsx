@@ -29,6 +29,7 @@ import {
   EMPLOYMENT_STATUS_OPTIONS,
   NATIONALITY_OPTIONS,
 } from "@/constants/formEnums";
+import axios from "axios";
 
 export default function Application() {
   const searchParams = useSearchParams();
@@ -43,70 +44,104 @@ export default function Application() {
     setTimeout(() => setShowLogin(!user), 500);
   }, [user]);
 
+  const getSingpassUserInfo = async (
+    code: string,
+    code_verifier: string,
+    nonce: string,
+    state: string,
+  ) => {
+    // TODO: update this
+    const response = await axios.get(
+      // "http://127.0.0.1:5001/compareloan-f6d21/asia-southeast1/core_kyc/sgpass/authorise",
+      "https://asia-southeast1-compareloan-f6d21.cloudfunctions.net/core_kyc/sgpass/singpassUserInfo",
+      {
+        params: {
+          code,
+          code_verifier,
+          nonce,
+          state,
+        },
+      },
+    );
+    const data = response.data?.data;
+    console.log({ data });
+  };
+
   useEffect(() => {
     const query = searchParams.get("source");
+    const code = searchParams.get("code");
+    const state = searchParams.get("state");
 
-    if (query !== "mib") {
+    // check is singpass and have mib
+    if (query === "mib" && code && state) {
+      const singpassSession = localStorage.getItem("singpass_session");
+      const { code_verifier, nonce } = JSON.parse(singpassSession || "");
+
       setSource(SOURCES_ENUM.SINGPASS);
+
+      (async () => {
+        await getSingpassUserInfo(code, code_verifier, nonce, state);
+        setIsFormReady(true);
+      })();
 
       // call api
       // set singpass data
-      setFormDefaultValues({
-        loanDetails: {
-          loanAmount: {
-            source: SOURCES_ENUM.MANUAL,
-          },
-          loanTenure: {
-            source: SOURCES_ENUM.MANUAL,
-          },
-          loanPurpose: {
-            source: SOURCES_ENUM.SINGPASS,
-            value: "testing",
-          },
-        },
-        generalInformation: {
-          fullName: {
-            source: SOURCES_ENUM.MANUAL,
-            value: "qwe 123",
-          },
-          dob: {
-            source: SOURCES_ENUM.MANUAL,
-            value: new Date("2016-04-06T16:00:00.000Z"),
-          },
-          residencyStatus: {
-            source: SOURCES_ENUM.MANUAL,
-            // value: PASS_TYPE_OPTIONS[0].value,
-            // label: PASS_TYPE_OPTIONS[0].label,
-          },
-          nationality: {
-            source: SOURCES_ENUM.MANUAL,
-            value: NATIONALITY_OPTIONS[0].value,
-            label: NATIONALITY_OPTIONS[0].label,
-          },
-        },
-        contactDetails: {
-          email: {
-            source: SOURCES_ENUM.MANUAL,
-            value: "qwe@gmail.com",
-          },
-          mobileNo: {
-            source: SOURCES_ENUM.MANUAL,
-            value: "+601133400142",
-          },
-        },
-        incomeDetails: {
-          employmentStatus: {
-            source: SOURCES_ENUM.MANUAL,
-            value: EMPLOYMENT_STATUS_OPTIONS[0].value,
-            label: EMPLOYMENT_STATUS_OPTIONS[0].label,
-          },
-          monthlyIncome: {
-            source: SOURCES_ENUM.MANUAL,
-            value: 2000,
-          },
-        },
-      });
-      setIsFormReady(true);
+      // setFormDefaultValues({
+      //   loanDetails: {
+      //     loanAmount: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //     },
+      //     loanTenure: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //     },
+      //     loanPurpose: {
+      //       source: SOURCES_ENUM.SINGPASS,
+      //       value: "testing",
+      //     },
+      //   },
+      //   generalInformation: {
+      //     fullName: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: "qwe 123",
+      //     },
+      //     dob: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: new Date("2016-04-06T16:00:00.000Z"),
+      //     },
+      //     residencyStatus: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       // value: PASS_TYPE_OPTIONS[0].value,
+      //       // label: PASS_TYPE_OPTIONS[0].label,
+      //     },
+      //     nationality: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: NATIONALITY_OPTIONS[0].value,
+      //       label: NATIONALITY_OPTIONS[0].label,
+      //     },
+      //   },
+      //   contactDetails: {
+      //     email: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: "qwe@gmail.com",
+      //     },
+      //     mobileNo: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: "+601133400142",
+      //     },
+      //   },
+      //   incomeDetails: {
+      //     employmentStatus: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: EMPLOYMENT_STATUS_OPTIONS[0].value,
+      //       label: EMPLOYMENT_STATUS_OPTIONS[0].label,
+      //     },
+      //     monthlyIncome: {
+      //       source: SOURCES_ENUM.MANUAL,
+      //       value: 2000,
+      //     },
+      //   },
+      // });
+
       return;
     }
 

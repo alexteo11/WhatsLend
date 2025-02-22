@@ -1,8 +1,13 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { Button } from "../lib/button";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import axios from "axios";
+import { toast } from "sonner";
+import { z } from "zod";
 
 const ApplyButton = ({
   className,
@@ -12,6 +17,42 @@ const ApplyButton = ({
   size: "default" | "lg" | "xl";
   onlySingpassBtn?: boolean;
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getSingpassAuthorise = async () => {
+    setIsLoading(true);
+
+    try {
+      // TODO: update this
+      const response = await axios.get(
+        // "http://127.0.0.1:5001/compareloan-f6d21/asia-southeast1/core_kyc/sgpass/authorise",
+        "https://asia-southeast1-compareloan-f6d21.cloudfunctions.net/core_kyc/sgpass/authorise",
+      );
+      const data = response.data?.data;
+
+      if (!data) {
+        throw new Error("Something went wrong. Please try again.");
+      }
+
+      const schema = z.object({
+        authorizationUrl: z.string(),
+        session: z.object({
+          code_verifier: z.string(),
+          nonce: z.string(),
+        }),
+      });
+      const { session, authorizationUrl } = schema.parse(data);
+
+      // store session into localStorage and redirect
+      localStorage.setItem("singpass_session", JSON.stringify(session));
+      window.location.href = authorizationUrl;
+    } catch (err) {
+      toast.error((err as Error).message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div
       className={cn(
@@ -30,21 +71,21 @@ const ApplyButton = ({
       )}
       <Button
         size={size}
-        asChild
         className="w-auto border border-input bg-background text-foreground shadow-sm transition-transform duration-200 ease-in-out hover:scale-[102.5%] hover:bg-background"
+        onClick={() => getSingpassAuthorise()}
       >
-        <Link href="/application?source=mib" className="relative">
-          <div className="flex items-end gap-2">
-            <span className="font-semibold">Apply via</span>
-            <Image
-              src="/singpass_logo_fullcolours.png"
-              alt="singpass_logo"
-              height={20}
-              width={115}
-              className="translate-y-[1px] object-contain"
-            />
-          </div>
-        </Link>
+        {/* <Link href="/application?source=mib" className="relative"> */}
+        <div className="flex items-end gap-2">
+          <span className="font-semibold">Apply via</span>
+          <Image
+            src="/singpass_logo_fullcolours.png"
+            alt="singpass_logo"
+            height={20}
+            width={115}
+            className="translate-y-[1px] object-contain"
+          />
+        </div>
+        {/* </Link> */}
       </Button>
     </div>
   );
