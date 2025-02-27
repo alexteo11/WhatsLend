@@ -10,7 +10,7 @@ import SliderField from "../common/SliderField";
 import {
   EMPLOYMENT_STATUS_OPTIONS,
   NATIONALITY_OPTIONS,
-  PASS_TYPE_OPTIONS,
+  RESIDENTIAL_STATUS_OPTIONS,
 } from "@/constants/formEnums";
 
 const FormOne = () => {
@@ -51,7 +51,7 @@ const FormOne = () => {
               optionLabelRef="generalInformation.residencyStatus.label"
               label="Residency Status"
               type="select"
-              options={PASS_TYPE_OPTIONS}
+              options={RESIDENTIAL_STATUS_OPTIONS}
             />
             <BaseFormField
               form={form}
@@ -133,11 +133,14 @@ const FormOne = () => {
         </div>
 
         <div className="flex justify-end">
-          <Button size="lg" onClick={() => setStep(2)}>
-            Next
+          {/* <Button size="lg" onClick={() => setStep(2)}>
+            Test Next
           </Button>
+          <Button size="lg" onClick={() => console.log(form.formState.errors)}>
+            Test Error
+          </Button> */}
           <Button size="lg" type="submit">
-            Submit
+            Next
           </Button>
         </div>
       </form>

@@ -1922,21 +1922,22 @@ export const PASS_STATUS_OPTIONS = [
   },
 ];
 
+// TODO: check SINGPASS value
 export const MARITAL_STATUS_OPTIONS = [
   {
-    value: 1,
+    value: "1",
     label: "Single",
   },
   {
-    value: 2,
+    value: "2",
     label: "Married",
   },
   {
-    value: 3,
+    value: "3",
     label: "Widowed",
   },
   {
-    value: 5,
+    value: "5",
     label: "Divorced",
   },
 ];

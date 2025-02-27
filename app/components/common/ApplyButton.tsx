@@ -23,11 +23,8 @@ const ApplyButton = ({
     setIsLoading(true);
 
     try {
-      // TODO: update this
-      const response = await axios.get(
-        // "http://127.0.0.1:5001/compareloan-f6d21/asia-southeast1/core_kyc/sgpass/authorise",
-        "https://asia-southeast1-compareloan-f6d21.cloudfunctions.net/core_kyc/sgpass/authorise",
-      );
+      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/sgpass/authorise`;
+      const response = await axios.get(endpoint);
       const data = response.data?.data;
 
       if (!data) {

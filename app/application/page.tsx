@@ -10,7 +10,7 @@ import {
 } from "../components/lib/carousel";
 import { useFormStore } from "@/stores/useFormStore";
 import FormOne from "../components/forms/FormOne";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { SOURCES_ENUM } from "@/schemas/common.schema";
 import FormStepView from "../components/forms/FormStepView";
 import Image from "next/image";
@@ -25,23 +25,99 @@ import ApplyButton from "../components/common/ApplyButton";
 import BaseDialog from "../components/common/BaseDialog";
 import Login from "../components/auth/Login";
 import { useAuth } from "@/context/auth.context";
-import {
-  EMPLOYMENT_STATUS_OPTIONS,
-  NATIONALITY_OPTIONS,
-} from "@/constants/formEnums";
 import axios from "axios";
+import { Button } from "../components/lib/button";
+import { FormData } from "@/schemas/form.schema";
+import { toast } from "sonner";
+import { LoaderWrapper } from "../components/common/LoaderWrapper";
+
+type DeepPartial<T> = T extends object
+  ? {
+      [P in keyof T]?: DeepPartial<T[P]>;
+    }
+  : T;
 
 export default function Application() {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const { step, setSource, setFormDefaultValues } = useFormStore();
+  const { step, setSource, setFormDefaultValues, isSubmittingApplication } =
+    useFormStore();
+
   const [api, setApi] = useState<CarouselApi>();
   const [isFormReady, setIsFormReady] = useState(false);
+  const [singpassUserInfo, setSingpassUserInfo] =
+    useState<DeepPartial<FormData>>();
+  // SAMPLE TESTING DATA
+  // {
+  //   generalInformation: {
+  //     fullName: {
+  //       value: "TAN SOOK MUN, EMILY",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     dob: {
+  //       value: "1991-10-10",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     residencyStatus: {
+  //       value: "C",
+  //       label: "CITIZEN",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     nationality: {
+  //       value: "SG",
+  //       label: "SINGAPORE CITIZEN",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //   },
+  //   contactDetails: {
+  //     email: {
+  //       value: "Myinfotest@gmail.com",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     mobileNo: {
+  //       value: "+6597399245",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //   },
+  //   personalDetails: {
+  //     uinfin: {
+  //       value: "S7790795E",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     civilStatus: {
+  //       value: "2",
+  //       label: "Married",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //   },
+  //   housingDetails: {
+  //     address: {
+  //       value: "115, YISHUN RING ROAD, YISHUN RING ROAD, 9-114",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     unitNo: {
+  //       value: "114",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     postalCode: {
+  //       value: "760115",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //     country: {
+  //       value: "SG",
+  //       label: "SINGAPORE",
+  //       source: SOURCES_ENUM.SINGPASS,
+  //     },
+  //   },
+  // }
 
   const { user } = useAuth();
   const [showLogin, setShowLogin] = useState(false);
+  const [showSingpassInfo, setShowSingpassInfo] = useState(false);
 
   useEffect(() => {
-    setTimeout(() => setShowLogin(!user), 500);
+    // TODO: need do or not
+    // setTimeout(() => setShowLogin(!user), 500);
   }, [user]);
 
   const getSingpassUserInfo = async (
@@ -50,24 +126,26 @@ export default function Application() {
     nonce: string,
     state: string,
   ) => {
-    // TODO: update this
-    const response = await axios.get(
-      // "http://127.0.0.1:5001/compareloan-f6d21/asia-southeast1/core_kyc/sgpass/authorise",
-      "https://asia-southeast1-compareloan-f6d21.cloudfunctions.net/core_kyc/sgpass/singpassUserInfo",
-      {
+    try {
+      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/sgpass/singpassUserInfo`;
+      const response = await axios.get(endpoint, {
         params: {
           code,
           code_verifier,
           nonce,
           state,
         },
-      },
-    );
-    const data = response.data?.data;
-    console.log({ data });
+      });
+      const userInfo = response.data?.data;
+      setSingpassUserInfo(userInfo);
+      return userInfo;
+    } catch {
+      router.replace("/");
+      toast.error("Singpass data retrieval session expired. Please try again.");
+    }
   };
 
-  useEffect(() => {
+  const initForm = async () => {
     const query = searchParams.get("source");
     const code = searchParams.get("code");
     const state = searchParams.get("state");
@@ -78,76 +156,26 @@ export default function Application() {
       const { code_verifier, nonce } = JSON.parse(singpassSession || "");
 
       setSource(SOURCES_ENUM.SINGPASS);
-
-      (async () => {
-        await getSingpassUserInfo(code, code_verifier, nonce, state);
-        setIsFormReady(true);
-      })();
-
-      // call api
-      // set singpass data
-      // setFormDefaultValues({
-      //   loanDetails: {
-      //     loanAmount: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //     },
-      //     loanTenure: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //     },
-      //     loanPurpose: {
-      //       source: SOURCES_ENUM.SINGPASS,
-      //       value: "testing",
-      //     },
-      //   },
-      //   generalInformation: {
-      //     fullName: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: "qwe 123",
-      //     },
-      //     dob: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: new Date("2016-04-06T16:00:00.000Z"),
-      //     },
-      //     residencyStatus: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       // value: PASS_TYPE_OPTIONS[0].value,
-      //       // label: PASS_TYPE_OPTIONS[0].label,
-      //     },
-      //     nationality: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: NATIONALITY_OPTIONS[0].value,
-      //       label: NATIONALITY_OPTIONS[0].label,
-      //     },
-      //   },
-      //   contactDetails: {
-      //     email: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: "qwe@gmail.com",
-      //     },
-      //     mobileNo: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: "+601133400142",
-      //     },
-      //   },
-      //   incomeDetails: {
-      //     employmentStatus: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: EMPLOYMENT_STATUS_OPTIONS[0].value,
-      //       label: EMPLOYMENT_STATUS_OPTIONS[0].label,
-      //     },
-      //     monthlyIncome: {
-      //       source: SOURCES_ENUM.MANUAL,
-      //       value: 2000,
-      //     },
-      //   },
-      // });
-
+      const userInfo = await getSingpassUserInfo(
+        code,
+        code_verifier,
+        nonce,
+        state,
+      );
+      setFormDefaultValues({
+        ...userInfo,
+      });
+      setIsFormReady(true);
       return;
     }
 
     setSource(SOURCES_ENUM.MANUAL);
-    setFormDefaultValues();
+    setFormDefaultValues(singpassUserInfo);
     setIsFormReady(true);
+  };
+
+  useEffect(() => {
+    initForm();
   }, [searchParams]);
 
   useEffect(() => {
@@ -168,65 +196,96 @@ export default function Application() {
   return (
     <div className="h-full bg-slate-200/50">
       <div className="middle-container-width m-auto flex flex-row items-start gap-10 py-10">
-        <Card className="w-full md:w-[65%]">
-          <CardContent className="p-8 md:p-10">
-            <h1 className="application__form-title">
-              Welcome to your loan service application!
-            </h1>
-            <FormStepView className="my-14 md:mx-10" />
+        <LoaderWrapper
+          className="w-full md:w-[65%]"
+          isLoading={isSubmittingApplication}
+        >
+          <Card>
+            <CardContent className="p-8 md:p-10">
+              <h1 className="application__form-title">
+                Welcome to your loan service application!
+              </h1>
+              <FormStepView className="my-14 md:mx-10" />
+              {singpassUserInfo && (
+                <div className="flex items-center justify-end text-sm">
+                  <p className="text-right">Currently applying with </p>
+                  <Image
+                    className="ml-1 mr-2 translate-y-[3px]"
+                    src="/singpass_logo_fullcolours.png"
+                    alt="singpass_logo"
+                    width={80}
+                    height={12}
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setShowSingpassInfo(true)}
+                  >
+                    View Info
+                  </Button>
+                </div>
+              )}
 
-            {!isFormReady ? (
-              <FormSkeleton />
-            ) : (
-              <Carousel
-                draggable={false}
-                opts={{
-                  watchDrag: false,
-                  watchFocus: false,
-                  watchResize: (emblaApi, entries) => {
-                    // https://github.com/davidjerleke/embla-carousel/issues/910#issuecomment-2162274395
-                    for (const entry of entries) {
-                      if (emblaApi.containerNode() === entry.target)
-                        return true;
+              {!isFormReady ? (
+                <FormSkeleton />
+              ) : (
+                <Carousel
+                  draggable={false}
+                  opts={{
+                    startIndex: step - 1,
+                    watchDrag: false,
+                    watchFocus: false,
+                    watchResize: (emblaApi, entries) => {
+                      // https://github.com/davidjerleke/embla-carousel/issues/910#issuecomment-2162274395
+                      for (const entry of entries) {
+                        if (emblaApi.containerNode() === entry.target)
+                          return true;
 
-                      console.log(`running here?`);
-                      window.requestAnimationFrame(() => {
-                        emblaApi.reInit();
-                        emblaApi.emit("resize");
-                      });
+                        window.requestAnimationFrame(() => {
+                          emblaApi.reInit();
+                          emblaApi.emit("resize");
+                        });
 
-                      break;
-                    }
-                    console.log(`running here?2`);
+                        break;
+                      }
 
-                    return true;
-                  },
-                  disableKeyBinding: true,
-                }}
-                setApi={setApi}
-                plugins={[CarouselAutoHeight()]}
-              >
-                <CarouselContent className="flex items-start">
-                  <CarouselItem>
-                    <FormOne />
-                  </CarouselItem>
-                  <CarouselItem>
-                    <FormTwo />
-                  </CarouselItem>
-                  <CarouselItem>
-                    <FormThree />
-                  </CarouselItem>
-                  <CarouselItem>
-                    <Success />
-                  </CarouselItem>
-                </CarouselContent>
-              </Carousel>
-            )}
-          </CardContent>
-        </Card>
+                      return true;
+                    },
+                    disableKeyBinding: true,
+                  }}
+                  setApi={setApi}
+                  plugins={[CarouselAutoHeight()]}
+                >
+                  <CarouselContent className="flex items-start">
+                    <CarouselItem>
+                      <FormOne />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <FormTwo />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <FormThree />
+                    </CarouselItem>
+                    <CarouselItem>
+                      <Success />
+                    </CarouselItem>
+                  </CarouselContent>
+                </Carousel>
+              )}
+            </CardContent>
+          </Card>
+        </LoaderWrapper>
         <ApplicationInformation className="hidden md:flex" />
         <BaseDialog isOpen={showLogin} onOpenChange={setShowLogin}>
           <Login />
+        </BaseDialog>
+        <BaseDialog
+          isOpen={showSingpassInfo}
+          onOpenChange={setShowSingpassInfo}
+        >
+          {singpassUserInfo && (
+            <SingpassUserInfoDialog singpassUserInfo={singpassUserInfo} />
+          )}
         </BaseDialog>
       </div>
     </div>
@@ -262,6 +321,8 @@ const FormSkeleton = () => {
 const ApplicationInformation = ({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) => {
+  const { isSingpassForm } = useFormStore();
+
   return (
     <div className={cn("flex w-[35%] flex-col gap-6", className)}>
       <Card className="bg-background">
@@ -272,18 +333,22 @@ const ApplicationInformation = ({
             <li>Step 2: Tell us more about yourself</li>
             <li>Step 3: Describe your financial situation</li>
           </ul>
-          <div className="my-4 flex items-center gap-3">
-            <div className="h-[1px] w-full bg-light-gray/30" />
-            <span className="text-light-gray">OR</span>
-            <div className="h-[1px] w-full bg-light-gray/30" />
-          </div>
-          <div className="flex items-center justify-center">
-            <ApplyButton
-              onlySingpassBtn
-              size="lg"
-              className="self-center shadow"
-            />
-          </div>
+          {!isSingpassForm() && (
+            <>
+              <div className="my-4 flex items-center gap-3">
+                <div className="h-[1px] w-full bg-light-gray/30" />
+                <span className="text-light-gray">OR</span>
+                <div className="h-[1px] w-full bg-light-gray/30" />
+              </div>
+              <div className="flex items-center justify-center">
+                <ApplyButton
+                  onlySingpassBtn
+                  size="lg"
+                  className="self-center shadow"
+                />
+              </div>
+            </>
+          )}
         </CardContent>
       </Card>
       <Card className="bg-background">
@@ -364,6 +429,92 @@ const ApplicationInformation = ({
           />
         </CardContent>
       </Card>
+    </div>
+  );
+};
+
+const SingpassUserInfoDialog = ({
+  singpassUserInfo,
+}: {
+  singpassUserInfo: DeepPartial<FormData>;
+}) => {
+  const DataRow = ({
+    title,
+    desc,
+  }: {
+    title: string;
+    desc: string | undefined;
+  }) => {
+    if (!desc) {
+      return;
+    }
+
+    return (
+      <div className="flex w-full flex-wrap text-sm">
+        <span className="flex-1 font-bold">{title}</span>
+        <span className="flex-1">{desc}</span>
+      </div>
+    );
+  };
+
+  return (
+    <div className="flex max-w-[550px] flex-col gap-2 px-6 py-10">
+      <h1 className="text-center text-3xl text-app">Singpass User Info</h1>
+      <p className="mb-8 text-center text-sm text-light-gray">
+        Please rest assured that we only retrieve the required data with your
+        consent, and we will not store or use it for any other purpose than for
+        analysis to provide you with the best loan options.
+      </p>
+      <div className="space-y-2">
+        <DataRow
+          title="Full Name"
+          desc={singpassUserInfo.generalInformation?.fullName?.value}
+        />
+        <DataRow
+          title="NRIC/FIN"
+          desc={singpassUserInfo.personalDetails?.uinfin?.value}
+        />
+        <DataRow
+          title="Date of birth"
+          desc={singpassUserInfo.generalInformation?.dob?.value as string}
+        />
+        <DataRow
+          title="Email"
+          desc={singpassUserInfo.contactDetails?.email?.value}
+        />
+        <DataRow
+          title="Mobile No."
+          desc={singpassUserInfo.contactDetails?.mobileNo?.value}
+        />
+        <DataRow
+          title="Address"
+          desc={singpassUserInfo.housingDetails?.address?.value}
+        />
+        <DataRow
+          title="Unit No."
+          desc={singpassUserInfo.housingDetails?.unitNo?.value}
+        />
+        <DataRow
+          title="Postal Code"
+          desc={singpassUserInfo.housingDetails?.postalCode?.value}
+        />
+        <DataRow
+          title="Country"
+          desc={singpassUserInfo.housingDetails?.country?.label}
+        />
+        <DataRow
+          title="Marital Status"
+          desc={singpassUserInfo.personalDetails?.civilStatus?.label}
+        />
+        {/* <DataRow
+          title="Type of Housing"
+          desc={singpassUserInfo.housingDetails.typeOfHousing.value}
+        />
+        <DataRow
+          title="Ownership of Housing"
+          desc={singpassUserInfo.housingDetails.typeOfHousing.value}
+        /> */}
+      </div>
     </div>
   );
 };

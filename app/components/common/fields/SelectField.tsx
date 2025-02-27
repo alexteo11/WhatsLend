@@ -73,7 +73,7 @@ const SelectWithSearchBox = <T extends FieldValues>({
           >
             <div className="flex-1 text-start">
               {field.value
-                ? options.find((option) => option.value === field.value)?.label
+                ? options.find((option) => option.value == field.value)?.label
                 : placeholder}
             </div>
             <ChevronsUpDown className="opacity-50" />
@@ -136,7 +136,7 @@ const SelectWithoutSearchBox = <T extends FieldValues>({
     <Select
       onValueChange={(value) => {
         field.onChange(String(value));
-        const label = options.find((option) => option.value === value)?.label;
+        const label = options.find((option) => option.value == value)?.label;
         if (label) {
           form.setValue(optionLabelRef, label as PathValue<T, Path<T>>);
         }
