@@ -25,6 +25,10 @@ export type KycApplicationStore = {
   ) => void;
   formData: Partial<FormData> | null;
   setFormData: (data: FormOneData | FormTwoData | FormThreeData) => void;
+  getFormData: () => Partial<FormData> | null;
+  isSingpassForm: () => boolean;
+  isSubmittingApplication: boolean;
+  setIsSubmittingApplication: (bool: boolean) => void;
 };
 
 export const useFormStore = create<KycApplicationStore>((set, get) => {
@@ -57,6 +61,20 @@ export const useFormStore = create<KycApplicationStore>((set, get) => {
       const { formData } = get();
       set({
         formData: merge(formData, data),
+      });
+    },
+    getFormData: () => {
+      const { formData } = get();
+      return formData;
+    },
+    isSingpassForm: () => {
+      const { source } = get();
+      return source === SOURCES_ENUM.SINGPASS;
+    },
+    isSubmittingApplication: false,
+    setIsSubmittingApplication: (bool: boolean) => {
+      set({
+        isSubmittingApplication: bool,
       });
     },
   };

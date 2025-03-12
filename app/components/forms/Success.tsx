@@ -8,10 +8,11 @@ const Success = () => {
   const [dotLottie, setDotLottie] = React.useState<DotLottie | null>(null);
 
   useEffect(() => {
-    if (step === 4) {
-      dotLottie?.play();
+    if (!dotLottie || step !== 4) {
+      return;
     }
-  }, [step]);
+    dotLottie.play();
+  }, [step, dotLottie]);
 
   const dotLottieRefCallback = (dotLottie: DotLottie | null) => {
     setDotLottie(dotLottie);

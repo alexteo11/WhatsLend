@@ -19,7 +19,7 @@ export const loanDetailsSchema = z.object({
 
 export const generalInformationSchema = z.object({
   fullName: dataSourceValuePairSchema(),
-  dob: dataSourceValuePairSchema<z.ZodDate>(requiredDateSchema),
+  dob: dataSourceValuePairSchema<z.ZodDate | z.ZodString>(requiredDateSchema),
   residencyStatus: labeledDataSourceValuePairSchema(),
   nationality: labeledDataSourceValuePairSchema(),
 });

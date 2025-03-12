@@ -1,5 +1,9 @@
 import React, { useEffect } from "react";
-import { FormThreeData, formThreeDataSchema } from "@/schemas/form.schema";
+import {
+  FormData,
+  FormThreeData,
+  formThreeDataSchema,
+} from "@/schemas/form.schema";
 import { useFormStore } from "@/stores/useFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,9 +11,17 @@ import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import { YES_NO_OPTIONS } from "@/constants/formEnums";
+import axios from "axios";
+import { toast } from "sonner";
 
 const FormThree = () => {
-  const { formThreeDefaultValues, setFormData, setStep } = useFormStore();
+  const {
+    formThreeDefaultValues,
+    getFormData,
+    setFormData,
+    setStep,
+    setIsSubmittingApplication,
+  } = useFormStore();
 
   const form = useForm<FormThreeData>({
     resolver: zodResolver(formThreeDataSchema),
@@ -23,9 +35,33 @@ const FormThree = () => {
     form.reset(formThreeDefaultValues || undefined);
   }, [formThreeDefaultValues]);
 
-  const handleSubmit = (data: FormThreeData) => {
-    console.log(`here`);
+  const submitKycApplication = async (formData: Partial<FormData> | null) => {
+    if (!formData) {
+      toast.error(`Incompleted data. Please filled in all the required field.`);
+      return;
+    }
+
+    setIsSubmittingApplication(true);
+
+    try {
+      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/kyc/submit`;
+      await axios.post(endpoint, formData);
+    } catch (err) {
+      console.log({
+        err,
+      });
+      toast.error(`Failed to submit application. Please try again.`);
+    } finally {
+      setIsSubmittingApplication(false);
+    }
+  };
+
+  const handleSubmit = async (data: FormThreeData) => {
     setFormData(data);
+
+    const formData = getFormData();
+    await submitKycApplication(formData);
+
     setStep(4);
   };
 
@@ -100,7 +136,7 @@ const FormThree = () => {
           <Button size="lg" type="submit">
             Submit
           </Button>
-          <Button
+          {/* <Button
             size="lg"
             type="button"
             onClick={() =>
@@ -111,7 +147,7 @@ const FormThree = () => {
             }
           >
             Test
-          </Button>
+          </Button> */}
         </div>
       </form>
     </Form>

@@ -157,7 +157,7 @@ const FormTwo = () => {
             form={form}
             fieldRef="housingDetails.hasProperty.value"
             optionLabelRef="housingDetails.hasProperty.label"
-            label="Do you own this propery?"
+            label="Do you own this property?"
             type="radio"
             options={YES_NO_OPTIONS}
           />
@@ -172,18 +172,21 @@ const FormTwo = () => {
           >
             Back
           </Button>
-          <Button size="lg" type="button" onClick={() => setStep(3)}>
+          {/* <Button size="lg" type="button" onClick={() => setStep(3)}>
             Next Step
           </Button>
           <Button
             size="lg"
             type="button"
-            onClick={() => console.log(form.getValues())}
+            onClick={() => {
+              console.log(form.getValues());
+              console.log(form.formState.errors);
+            }}
           >
             Tesst
-          </Button>
+          </Button> */}
           <Button size="lg" type="submit">
-            Submit
+            Next
           </Button>
         </div>
       </form>
