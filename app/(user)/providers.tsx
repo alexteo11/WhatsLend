@@ -4,15 +4,16 @@ import AuthProvider, { useAuth } from "@/context/auth.context";
 import React, { Suspense } from "react";
 import { Footer } from "react-day-picker";
 import { Toaster } from "sonner";
-import { Navbar } from "./components";
-import { LoaderWrapper } from "./components/common/LoaderWrapper";
-import GlobalDialog from "./components/layout/GlobalDialog";
+import { Navbar } from "../components";
+import { LoaderWrapper } from "../components/common/LoaderWrapper";
+import GlobalDialog from "../components/layout/GlobalDialog";
+import { Role } from "@/constants/authEnums";
 
 const RootProviders = ({
   children,
 }: React.HtmlHTMLAttributes<HTMLDivElement>) => {
   return (
-    <AuthProvider>
+    <AuthProvider role={Role.USER}>
       <Suspense>
         <Navbar />
         <AuthWrapper>{children}</AuthWrapper>

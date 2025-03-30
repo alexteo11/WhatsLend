@@ -471,3 +471,7 @@ input[type="number"] {
     100% 20px,
     100% 20px;
 }
+
+.lender-page-title {
+  @apply text-3xl font-bold;
+}

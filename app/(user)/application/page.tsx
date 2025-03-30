@@ -7,29 +7,30 @@ import {
   CarouselContent,
   CarouselItem,
   type CarouselApi,
-} from "../components/lib/carousel";
+} from "../../components/lib/carousel";
 import { useFormStore } from "@/stores/useFormStore";
-import FormOne from "../components/forms/FormOne";
+import FormOne from "../../components/forms/FormOne";
 import { useRouter, useSearchParams } from "next/navigation";
 import { SOURCES_ENUM } from "@/schemas/common.schema";
-import FormStepView from "../components/forms/FormStepView";
+import FormStepView from "../../components/forms/FormStepView";
 import Image from "next/image";
-import FormTwo from "../components/forms/FormTwo";
-import FormThree from "../components/forms/FormThree";
-import Success from "../components/forms/Success";
-import { Skeleton } from "../components/lib/skeleton";
+import FormTwo from "../../components/forms/FormTwo";
+import FormThree from "../../components/forms/FormThree";
+import Success from "../../components/forms/Success";
+import { Skeleton } from "../../components/lib/skeleton";
 import { cn } from "@/lib/utils";
-import { Card, CardContent } from "../components/lib/card";
-import FAQ from "../components/home/FAQ";
-import ApplyButton from "../components/common/ApplyButton";
-import BaseDialog from "../components/common/BaseDialog";
-import Login from "../components/auth/Login";
+import { Card, CardContent } from "../../components/lib/card";
+import FAQ from "../../components/home/FAQ";
+import ApplyButton from "../../components/common/ApplyButton";
+import BaseDialog from "../../components/common/BaseDialog";
+import Login from "../../components/auth/Login";
 import { useAuth } from "@/context/auth.context";
 import axios from "axios";
-import { Button } from "../components/lib/button";
+import { Button } from "../../components/lib/button";
 import { FormData } from "@/schemas/form.schema";
 import { toast } from "sonner";
-import { LoaderWrapper } from "../components/common/LoaderWrapper";
+import { LoaderWrapper } from "../../components/common/LoaderWrapper";
+import { BASE_CONFIG } from "@/configs/baseConfig";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -40,8 +41,13 @@ type DeepPartial<T> = T extends object
 export default function Application() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { step, setSource, setFormDefaultValues, isSubmittingApplication } =
-    useFormStore();
+  const {
+    step,
+    setSource,
+    setFormDefaultValues,
+    isSubmittingApplication,
+    resetForm,
+  } = useFormStore();
 
   const [api, setApi] = useState<CarouselApi>();
   const [isFormReady, setIsFormReady] = useState(false);
@@ -127,7 +133,7 @@ export default function Application() {
     state: string,
   ) => {
     try {
-      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/sgpass/singpassUserInfo`;
+      const endpoint = `${BASE_CONFIG.BASE_API_URL}/core_kyc/sgpass/singpassUserInfo`;
       const response = await axios.get(endpoint, {
         params: {
           code,
@@ -150,6 +156,9 @@ export default function Application() {
     const code = searchParams.get("code");
     const state = searchParams.get("state");
 
+    // always reset when come in
+    resetForm();
+
     // check is singpass and have mib
     if (query === "mib" && code && state) {
       const singpassSession = localStorage.getItem("singpass_session");
@@ -170,7 +179,7 @@ export default function Application() {
     }
 
     setSource(SOURCES_ENUM.MANUAL);
-    setFormDefaultValues(singpassUserInfo);
+    setFormDefaultValues({});
     setIsFormReady(true);
   };
 

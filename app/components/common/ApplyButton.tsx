@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "sonner";
 import { z } from "zod";
+import { BASE_CONFIG } from "@/configs/baseConfig";
 
 const ApplyButton = ({
   className,
@@ -23,7 +24,7 @@ const ApplyButton = ({
     setIsLoading(true);
 
     try {
-      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/sgpass/authorise`;
+      const endpoint = `${BASE_CONFIG.BASE_API_URL}/core_kyc/sgpass/authorise`;
       const response = await axios.get(endpoint);
       const data = response.data?.data;
 

@@ -29,9 +29,25 @@ export type KycApplicationStore = {
   isSingpassForm: () => boolean;
   isSubmittingApplication: boolean;
   setIsSubmittingApplication: (bool: boolean) => void;
+  resetForm: () => void;
 };
 
 export const useFormStore = create<KycApplicationStore>((set, get) => {
+  const _setFormDefaultValues = (
+    data?: DefaultValues<FormOneData> &
+      DefaultValues<FormTwoData> &
+      DefaultValues<FormThreeData>,
+  ) => {
+    set({
+      formOneDefaultValues: merge(formDefaultValues.formOneDefaultValues, data),
+      formTwoDefaultValues: merge(formDefaultValues.formTwoDefaultValues, data),
+      formThreeDefaultValues: merge(
+        formDefaultValues.formThreeDefaultValues,
+        data,
+      ),
+    });
+  };
+
   return {
     source: SOURCES_ENUM.MANUAL,
     setSource: (source) => set({ source }),
@@ -41,20 +57,7 @@ export const useFormStore = create<KycApplicationStore>((set, get) => {
     formTwoDefaultValues: null,
     formThreeDefaultValues: null,
     setFormDefaultValues(data) {
-      set({
-        formOneDefaultValues: merge(
-          formDefaultValues.formOneDefaultValues,
-          data,
-        ),
-        formTwoDefaultValues: merge(
-          formDefaultValues.formTwoDefaultValues,
-          data,
-        ),
-        formThreeDefaultValues: merge(
-          formDefaultValues.formThreeDefaultValues,
-          data,
-        ),
-      });
+      _setFormDefaultValues(data);
     },
     formData: null,
     setFormData: (data) => {
@@ -76,6 +79,12 @@ export const useFormStore = create<KycApplicationStore>((set, get) => {
       set({
         isSubmittingApplication: bool,
       });
+    },
+    resetForm: () => {
+      set({
+        step: 1,
+      });
+      _setFormDefaultValues({});
     },
   };
 });

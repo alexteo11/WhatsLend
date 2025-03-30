@@ -1,10 +1,10 @@
-import Hero from "./components/home/Hero";
-import Waves from "./components/home/Waves";
-import Goals from "./components/home/Goals";
-import FlexibleLoanPricing from "./components/home/FlexibleLoanPricing";
-import Steps from "./components/home/Steps";
-import FAQ from "./components/home/FAQ";
-import { Button } from "./components/lib/button";
+import Hero from "../components/home/Hero";
+import Waves from "../components/home/Waves";
+import Goals from "../components/home/Goals";
+import FlexibleLoanPricing from "../components/home/FlexibleLoanPricing";
+import Steps from "../components/home/Steps";
+import FAQ from "../components/home/FAQ";
+import { Button } from "../components/lib/button";
 import Link from "next/link";
 
 export default function Home() {

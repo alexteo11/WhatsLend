@@ -13,6 +13,7 @@ import BaseFormField from "../common/BaseFormField";
 import { YES_NO_OPTIONS } from "@/constants/formEnums";
 import axios from "axios";
 import { toast } from "sonner";
+import { BASE_CONFIG } from "@/configs/baseConfig";
 
 const FormThree = () => {
   const {
@@ -44,7 +45,7 @@ const FormThree = () => {
     setIsSubmittingApplication(true);
 
     try {
-      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/kyc/submit`;
+      const endpoint = `${BASE_CONFIG.BASE_API_URL}/core_kyc/kyc/submit`;
       await axios.post(endpoint, formData);
     } catch (err) {
       console.log({
