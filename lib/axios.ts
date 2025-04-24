@@ -1,8 +1,20 @@
 import axios from "axios";
 import { auth } from "./firebase";
-import { getIdToken } from "firebase/auth";
+import { BASE_CONFIG } from "@/configs/baseConfig";
 
-export const authAxios = axios.create();
+export default axios.create({
+  baseURL: BASE_CONFIG.BASE_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+export const authAxios = axios.create({
+  baseURL: BASE_CONFIG.BASE_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
 
 authAxios.interceptors.request.use(
   async (config) => {
@@ -10,7 +22,7 @@ authAxios.interceptors.request.use(
       return config;
     }
 
-    const token = await getIdToken(auth.currentUser);
+    const token = window.localStorage.getItem("compareLoanAccessToken");
 
     config.headers.Authorization = `Bearer ${token}`;
 

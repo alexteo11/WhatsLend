@@ -24,13 +24,24 @@ import FAQ from "../../components/home/FAQ";
 import ApplyButton from "../../components/common/ApplyButton";
 import BaseDialog from "../../components/common/BaseDialog";
 import Login from "../../components/auth/Login";
-import { useAuth } from "@/context/auth.context";
 import axios from "axios";
 import { Button } from "../../components/lib/button";
 import { FormData } from "@/schemas/form.schema";
 import { toast } from "sonner";
 import { LoaderWrapper } from "../../components/common/LoaderWrapper";
 import { BASE_CONFIG } from "@/configs/baseConfig";
+import sampleSingpassData1 from "./sampleSingpassData1.json";
+import sampleSingpassData2 from "./sampleSingpassData2.json";
+import { ColumnDef } from "@tanstack/react-table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/app/components/lib/table";
+import FormSkeleton from "@/app/components/forms/FormSkeleton";
 
 type DeepPartial<T> = T extends object
   ? {
@@ -117,14 +128,179 @@ export default function Application() {
   //   },
   // }
 
-  const { user } = useAuth();
+  const sampleFullData = {
+    personalDetails: {
+      uinfin: {
+        value: "G4440433N",
+        source: "SINGPASS",
+      },
+      fullName: {
+        value: "WATTNA TIWARAT",
+        source: "SINGPASS",
+      },
+      sex: {
+        value: "F",
+        label: "FEMALE",
+        source: "SINGPASS",
+      },
+      nationality: {
+        value: "AM",
+        label: "ARMENIAN",
+        source: "SINGPASS",
+      },
+      dob: {
+        value: "1960-05-17T00:00:00.000Z",
+        source: "SINGPASS",
+      },
+      race: {
+        value: "AM",
+        label: "ARMENIAN",
+        source: "SINGPASS",
+      },
+      birthCountry: {
+        value: "AM",
+        label: "ARMENIA",
+        source: "SINGPASS",
+      },
+      residentialStatus: {
+        value: "A",
+        label: "ALIEN",
+        source: "MANUAL",
+      },
+      passType: {
+        value: "P1Pass",
+        label: "Employment Pass",
+        source: "SINGPASS",
+      },
+      passStatus: {
+        value: "Live",
+        source: "SINGPASS",
+      },
+      passExpiryDate: {
+        value: "2030-12-31T00:00:00.000Z",
+        source: "SINGPASS",
+      },
+      maritalStatus: {
+        value: "2",
+        label: "Married",
+        source: "MANUAL",
+      },
+    },
+    contactDetails: {
+      email: {
+        value: "myinfotesting@gmail.com",
+        source: "SINGPASS",
+      },
+      mobileNo: {
+        value: "+6597399245",
+        source: "SINGPASS",
+      },
+    },
+    loanDetails: {
+      loanAmount: {
+        value: 9000,
+        source: "MANUAL",
+      },
+      loanTenure: {
+        value: 43,
+        source: "MANUAL",
+      },
+      loanPurpose: {
+        value: "qweqwe",
+        source: "MANUAL",
+      },
+    },
+    employmentDetails: {
+      occupation: {
+        value: "TRAINING MANAGER",
+        source: "SINGPASS",
+      },
+      employmentStatus: {
+        value: "student",
+        label: "Student",
+        source: "MANUAL",
+      },
+      monthlyIncome: {
+        value: 123,
+        source: "MANUAL",
+      },
+      employerName: {
+        value: "AAS SISTEMAS PTE LTD",
+        source: "SINGPASS",
+      },
+      employmentSector: {
+        value: "MANUFACTURING",
+        source: "SINGPASS",
+      },
+      timeAtCurrentEmployer: {
+        value: "6-12-months",
+        label: "6 to 12 months",
+        source: "MANUAL",
+      },
+      timeAtPreviousEmployer: {
+        value: "none",
+        label: "No previous employment",
+        source: "MANUAL",
+      },
+    },
+    housingDetails: {
+      address: {
+        value: "123, LORONG 1 TOA PAYOH, TOA PAYOH VIEW, 13-220",
+        source: "SINGPASS",
+      },
+      unitNo: {
+        value: "220",
+        source: "SINGPASS",
+      },
+      postalCode: {
+        value: "310123",
+        source: "SINGPASS",
+      },
+      country: {
+        value: "SG",
+        label: "SINGAPORE",
+        source: "SINGPASS",
+      },
+      housingType: {
+        value: "131",
+        label: "CONDOMINIUM",
+        source: "MANUAL",
+      },
+      hdbType: {
+        value: "113",
+        label: "3-ROOM FLAT (HDB)",
+        source: "SINGPASS",
+      },
+      hdbOwnership: [],
+    },
+    existingLoanDetails: {
+      isContactingWithAgency: {
+        value: false,
+        label: "No",
+        source: "MANUAL",
+      },
+      hasExistingLoans: {
+        value: false,
+        label: "No",
+        source: "MANUAL",
+      },
+      existingLoanFromBank: {
+        source: "MANUAL",
+      },
+      existingLoanFromNonBank: {
+        source: "MANUAL",
+      },
+      monthlyRepaymentToBank: {
+        source: "MANUAL",
+      },
+      monthlyRepaymentToNonBank: {
+        source: "MANUAL",
+      },
+    },
+  } as unknown as never;
+
   const [showLogin, setShowLogin] = useState(false);
   const [showSingpassInfo, setShowSingpassInfo] = useState(false);
-
-  useEffect(() => {
-    // TODO: need do or not
-    // setTimeout(() => setShowLogin(!user), 500);
-  }, [user]);
 
   const getSingpassUserInfo = async (
     code: string,
@@ -133,7 +309,7 @@ export default function Application() {
     state: string,
   ) => {
     try {
-      const endpoint = `${BASE_CONFIG.BASE_API_URL}/core_kyc/sgpass/singpassUserInfo`;
+      const endpoint = `/loan/sgpass/singpassUserInfo`;
       const response = await axios.get(endpoint, {
         params: {
           code,
@@ -179,7 +355,8 @@ export default function Application() {
     }
 
     setSource(SOURCES_ENUM.MANUAL);
-    setFormDefaultValues({});
+    setFormDefaultValues();
+    // setFormDefaultValues(sampleFullData));
     setIsFormReady(true);
   };
 
@@ -300,32 +477,6 @@ export default function Application() {
     </div>
   );
 }
-
-const FormSkeleton = () => {
-  const titleSkeleton = <Skeleton className="h-[32px] w-[200px]" />;
-  const fieldSkeleton = (
-    <div className="mt-4 flex w-full flex-col gap-2">
-      <Skeleton className="h-[20px] w-[100px]" />
-      <Skeleton className="h-[52px] w-full" />
-    </div>
-  );
-
-  return (
-    <div className="space-y-10">
-      {Array.from({ length: 3 }).map((_, i) => (
-        <div className="flex flex-col gap-2 pb-10" key={i}>
-          {titleSkeleton}
-          {fieldSkeleton}
-          {fieldSkeleton}
-          <div className="flex flex-wrap gap-4 [&>div]:flex-auto md:[&>div]:flex-1">
-            {fieldSkeleton}
-            {fieldSkeleton}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-};
 
 const ApplicationInformation = ({
   className,
@@ -475,18 +626,46 @@ const SingpassUserInfoDialog = ({
         analysis to provide you with the best loan options.
       </p>
       <div className="space-y-2">
+        <h1 className="text-xl font-bold underline">Personal Details</h1>
         <DataRow
           title="Full Name"
-          desc={singpassUserInfo.generalInformation?.fullName?.value}
+          desc={singpassUserInfo.personalDetails?.fullName?.value}
         />
         <DataRow
           title="NRIC/FIN"
           desc={singpassUserInfo.personalDetails?.uinfin?.value}
         />
         <DataRow
-          title="Date of birth"
-          desc={singpassUserInfo.generalInformation?.dob?.value as string}
+          title="Gender"
+          desc={singpassUserInfo.personalDetails?.sex?.value}
         />
+        <DataRow
+          title="Date of birth"
+          desc={singpassUserInfo.personalDetails?.dob?.value as string}
+        />
+        <DataRow
+          title="Date of birth"
+          desc={singpassUserInfo.personalDetails?.dob?.value as string}
+        />
+        <DataRow
+          title="Birth Country"
+          desc={singpassUserInfo.personalDetails?.birthCountry?.value}
+        />
+        <DataRow
+          title="Nationality"
+          desc={singpassUserInfo.personalDetails?.nationality?.value}
+        />
+        <DataRow
+          title="Race"
+          desc={singpassUserInfo.personalDetails?.race?.value}
+        />
+        <DataRow
+          title="Marital Status"
+          desc={singpassUserInfo.personalDetails?.maritalStatus?.label}
+        />
+
+        <br />
+        <h1 className="text-xl font-bold underline">Contact Details</h1>
         <DataRow
           title="Email"
           desc={singpassUserInfo.contactDetails?.email?.value}
@@ -495,6 +674,9 @@ const SingpassUserInfoDialog = ({
           title="Mobile No."
           desc={singpassUserInfo.contactDetails?.mobileNo?.value}
         />
+
+        <br />
+        <h1 className="text-xl font-bold underline">Housing Details</h1>
         <DataRow
           title="Address"
           desc={singpassUserInfo.housingDetails?.address?.value}
@@ -512,18 +694,155 @@ const SingpassUserInfoDialog = ({
           desc={singpassUserInfo.housingDetails?.country?.label}
         />
         <DataRow
-          title="Marital Status"
-          desc={singpassUserInfo.personalDetails?.civilStatus?.label}
-        />
-        {/* <DataRow
           title="Type of Housing"
-          desc={singpassUserInfo.housingDetails.typeOfHousing.value}
+          desc={singpassUserInfo.housingDetails?.housingType?.value}
         />
-        <DataRow
-          title="Ownership of Housing"
-          desc={singpassUserInfo.housingDetails.typeOfHousing.value}
-        /> */}
+
+        <DataTableView
+          tableName="HDB Ownership"
+          columns={[
+            {
+              title: "Ownership of Housing",
+            },
+            {
+              title: "HDB Type",
+            },
+            {
+              title: "Date Of Purchase",
+            },
+          ]}
+          rows={
+            singpassUserInfo.housingDetails?.hdbOwnership?.map((ownership) => {
+              if (!ownership) {
+                return [];
+              }
+              return Object.entries(ownership).map(([_, item]) => {
+                if ("label" in item && item.label) {
+                  return item.label || "";
+                }
+                return item.value || "";
+              });
+            }) || []
+          }
+        />
+
+        {singpassUserInfo.cpfDetails?.cpfContributions?.length ||
+        singpassUserInfo.cpfDetails?.cpfHousingWithdrawal?.length ? (
+          <>
+            <br />
+            <h1 className="text-xl font-bold underline">CPF Details</h1>
+            <DataTableView
+              tableName="CPF Contributions"
+              columns={[
+                {
+                  title: "Month",
+                },
+                {
+                  title: "Employer",
+                },
+                {
+                  title: "Date",
+                },
+                {
+                  title: "Amount",
+                },
+              ]}
+              rows={
+                singpassUserInfo.cpfDetails?.cpfContributions?.map((contri) => {
+                  if (!contri) {
+                    return [];
+                  }
+                  return Object.entries(contri).map(([_, item]) => {
+                    return item.value || "";
+                  });
+                }) || []
+              }
+            />
+            <br />
+            <DataTableView
+              tableName="CPF Housing Withdrawal"
+              columns={[
+                {
+                  title: "Accrued Interest Amount",
+                },
+                {
+                  title: "Principal Withdrawal Amount",
+                },
+                {
+                  title: "Total Amount of CPF Allowed For Property",
+                },
+                {
+                  title: "Monthly Installment Amount",
+                },
+              ]}
+              rows={
+                singpassUserInfo.cpfDetails?.cpfHousingWithdrawal?.map(
+                  (withdrawal) => {
+                    if (!withdrawal) {
+                      return [];
+                    }
+                    const temp = {
+                      item1: withdrawal.accruedInterestAmount,
+                      item2: withdrawal.principalWithdrawalAmount,
+                      item3: withdrawal.totalAmountOfCpfAllowedForProperty,
+                      item4: withdrawal.monthlyInstalmentAmount,
+                    };
+                    return Object.entries(temp).map(([_, item]) => {
+                      return item?.value || "";
+                    });
+                  },
+                ) || []
+              }
+            />
+          </>
+        ) : (
+          ""
+        )}
       </div>
     </div>
+  );
+};
+
+const DataTableView = ({
+  tableName,
+  columns,
+  rows,
+}: {
+  tableName: string;
+  columns: Array<{
+    title: string;
+    className?: string;
+  }>;
+  rows: Array<Array<string | number>>;
+}) => {
+  if (!rows.length) {
+    return;
+  }
+  return (
+    <>
+      <span className="text-sm font-bold">{tableName}</span>
+      <Table className="rounded-md border border-r-2 border-light-gray">
+        <TableHeader>
+          <TableRow>
+            {columns.map((column) => (
+              <TableHead key={column.title} className={column.className}>
+                {column.title}
+              </TableHead>
+            ))}
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {rows.map((row) => {
+            return (
+              <TableRow key={row[0]}>
+                {row.map((cell) => (
+                  <TableCell key={cell}>{cell}</TableCell>
+                ))}
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+    </>
   );
 };

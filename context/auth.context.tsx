@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   onAuthStateChanged,
   User as FirebaseUser,
@@ -9,21 +9,22 @@ import {
 import { auth } from "../lib/firebase";
 import { Role } from "@/constants/authEnums";
 import { authAxios } from "@/lib/axios";
-import { BASE_CONFIG } from "@/configs/baseConfig";
 import { toast } from "sonner";
 import { FirebaseError } from "firebase/app";
 
 interface AuthContext {
-  user: unknown | null; // TODO: replace with User
+  user: FirebaseUser | null; // TODO: replace with User
   userRole: Role;
   loading: boolean;
+  isAuthenticating: boolean;
   signIn: (
     email: string,
     password: string,
     successCallback?: () => void,
   ) => Promise<void>;
-  verifyAuthLogin: (role: Role, successCallback?: () => void) => Promise<void>;
   signOut: () => Promise<void>;
+  isInitializing: boolean;
+  isAuthenticatedUser: boolean;
 }
 
 const AuthContext = React.createContext<AuthContext>({} as AuthContext);
@@ -34,25 +35,27 @@ export const AuthProvider = ({
   children,
   role,
 }: React.HtmlHTMLAttributes<HTMLDivElement> & { role: Role }) => {
-  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
-  const [user, setUser] = useState<unknown>(null);
+  const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  let isSigningIn = false;
+  const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
   const [userRole] = useState<Role>(role);
 
-  console.log({
-    role,
-  });
+  const isInitializing = useMemo(() => {
+    return !user && loading && !isAuthenticating;
+  }, [user, loading, isAuthenticating]);
+
+  const isAuthenticatedUser = useMemo(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+    const _userRole = window.localStorage?.getItem("compareLoanUserRole");
+    return !!(user && _userRole === userRole);
+  }, [user, userRole, isAuthenticating]);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (_user) => {
       setLoading(true);
-      setFirebaseUser(_user);
-
-      if (_user && !isSigningIn) {
-        await verifyAuthLogin(role);
-      }
-
+      setUser(_user);
       setLoading(false);
     });
 
@@ -64,12 +67,11 @@ export const AuthProvider = ({
     password: string,
     successCallback?: () => void,
   ) => {
-    setLoading(true);
-    isSigningIn = true;
+    setIsAuthenticating(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      await verifyAuthLogin(userRole, successCallback);
+      const data = await signInWithEmailAndPassword(auth, email, password);
+      await verifyAuthLogin(data.user.uid, userRole, successCallback);
     } catch (error: unknown) {
       console.log({ error });
 
@@ -80,18 +82,24 @@ export const AuthProvider = ({
 
       toast.error("Something went wrong. Please try again.");
     } finally {
-      setLoading(false);
-      isSigningIn = false;
+      setIsAuthenticating(false);
     }
   };
 
-  const verifyAuthLogin = async (role: Role, successCallback?: () => void) => {
+  const verifyAuthLogin = async (
+    uid: string,
+    role: Role,
+    successCallback?: () => void,
+  ) => {
     try {
-      const response = await authAxios.post(
-        `${BASE_CONFIG.BASE_API_URL}/auth/${role}/verify`,
+      const response = await authAxios.post<{ data: string }>(
+        `/auth/${role}/verify/${uid}`,
       );
-      setUser(response.data.data);
-      console.log(response.data.data);
+      const accessToken = response.data.data;
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("compareLoanAccessToken", accessToken);
+        window.localStorage.setItem("compareLoanUserRole", userRole);
+      }
       successCallback?.();
     } catch {
       await signOut();
@@ -103,11 +111,24 @@ export const AuthProvider = ({
   const signOut = async () => {
     await auth.signOut();
     setUser(null);
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("compareLoanAccessToken");
+      window.localStorage.removeItem("compareLoanUserRole");
+    }
   };
 
   return (
     <AuthContext.Provider
-      value={{ user, userRole, loading, signIn, verifyAuthLogin, signOut }}
+      value={{
+        user,
+        userRole,
+        loading,
+        isAuthenticating,
+        signIn,
+        signOut,
+        isInitializing,
+        isAuthenticatedUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

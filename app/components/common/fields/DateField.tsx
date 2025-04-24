@@ -1,12 +1,14 @@
 import React from "react";
 import { FieldValues, ControllerRenderProps, FieldPath } from "react-hook-form";
 import { DateTimePicker } from "../../lib/datetime-picker";
-import { CommonFieldProps } from "../BaseFormField";
+import { DateFieldProps } from "../BaseFormField";
 
 const DateField = <T extends FieldValues>({
   field,
   disabled,
-}: CommonFieldProps<T> & {
+  calendarDisabledRange = (date) =>
+    date > new Date() || date < new Date("1900-01-01"),
+}: DateFieldProps<T> & {
   field: ControllerRenderProps<T, FieldPath<T>>;
 }) => {
   return (
@@ -15,9 +17,7 @@ const DateField = <T extends FieldValues>({
       onChange={(value) => field.onChange(value)}
       disabled={disabled}
       granularity="day"
-      calendarDisabledRange={(date) =>
-        date > new Date() || date < new Date("1900-01-01")
-      }
+      calendarDisabledRange={calendarDisabledRange}
     />
   );
 };

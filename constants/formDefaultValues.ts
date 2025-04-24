@@ -6,28 +6,41 @@ import { YES_NO_OPTIONS } from "./formEnums";
 const source = SOURCES_ENUM.MANUAL;
 
 export const formOneDefaultValues: DefaultValues<FormOneData> = {
-  loanDetails: {
-    loanAmount: {
-      source,
-    },
-    loanTenure: {
-      source,
-    },
-    loanPurpose: {
-      source,
-    },
-  },
-  generalInformation: {
+  personalDetails: {
     fullName: {
+      source,
+    },
+    uinfin: {
       source,
     },
     dob: {
       source,
     },
-    residencyStatus: {
+    birthCountry: {
+      source,
+    },
+    sex: {
+      source,
+    },
+    passType: {
+      source,
+    },
+    passStatus: {
+      source,
+    },
+    passExpiryDate: {
+      source,
+    },
+    race: {
       source,
     },
     nationality: {
+      source,
+    },
+    residentialStatus: {
+      source,
+    },
+    maritalStatus: {
       source,
     },
   },
@@ -39,30 +52,34 @@ export const formOneDefaultValues: DefaultValues<FormOneData> = {
       source,
     },
   },
-  incomeDetails: {
-    employmentStatus: {
+  loanDetails: {
+    loanAmount: {
       source,
     },
-    monthlyIncome: {
+    loanTenure: {
+      source,
+    },
+    loanPurpose: {
       source,
     },
   },
 };
 
 export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
-  personalDetails: {
-    uinfin: {
-      source,
-    },
-    civilStatus: {
-      source,
-    },
-  },
   employmentDetails: {
-    jobTitle: {
+    occupation: {
       source,
     },
-    jobIndustry: {
+    employmentStatus: {
+      source,
+    },
+    monthlyIncome: {
+      source,
+    },
+    employerName: {
+      source,
+    },
+    employmentSector: {
       source,
     },
     timeAtCurrentEmployer: {
@@ -82,43 +99,37 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
     postalCode: {
       source,
     },
+    housingType: {
+      source,
+    },
+    hdbType: {
+      source,
+    },
     country: {
-      source,
-    },
-    typeOfHousing: {
-      source,
-    },
-    housingStatus: {
-      source,
-    },
-    housingPeriod: {
-      source,
-    },
-    hasProperty: {
-      value: YES_NO_OPTIONS[0].value,
-      label: YES_NO_OPTIONS[0].label,
       source,
     },
   },
 };
 
 export const formThreeDefaultValues: DefaultValues<FormThreeData> = {
-  isContactingWithAgency: {
-    source,
-  },
-  hasExistingLoans: {
-    source,
-  },
-  existingLoanFromBank: {
-    source,
-  },
-  existingLoanFromNonBank: {
-    source,
-  },
-  monthlyRepaymentToBank: {
-    source,
-  },
-  monthlyRepaymentToNonBank: {
-    source,
+  existingLoanDetails: {
+    isContactingWithAgency: {
+      source,
+    },
+    hasExistingLoans: {
+      source,
+    },
+    existingLoanFromBank: {
+      source,
+    },
+    existingLoanFromNonBank: {
+      source,
+    },
+    monthlyRepaymentToBank: {
+      source,
+    },
+    monthlyRepaymentToNonBank: {
+      source,
+    },
   },
 };

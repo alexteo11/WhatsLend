@@ -16,6 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/lib/sidebar";
+import Link from "next/link";
 
 // Menu items.
 const items = [
@@ -51,16 +52,19 @@ export function LenderSidebar() {
     <Sidebar className="top-[var(--nav-height)] max-h-[calc(100vh-var(--nav-height))]">
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                  <SidebarMenuButton asChild className="py-6">
+                    <Link href={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
+                    {/* <a href={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </a> */}
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}

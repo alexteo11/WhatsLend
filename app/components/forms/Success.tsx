@@ -19,7 +19,7 @@ const Success = () => {
   };
 
   return (
-    <div className="flex flex-col items-center gap-4 pb-20 pt-5">
+    <div className="flex flex-col items-center gap-4 pb-20 pt-5 text-center">
       <DotLottieReact
         className="-my-10 object-contain opacity-[0.75] brightness-150"
         src="/success.lottie"

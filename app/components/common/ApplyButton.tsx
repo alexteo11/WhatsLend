@@ -8,14 +8,13 @@ import { cn } from "@/lib/utils";
 import axios from "axios";
 import { toast } from "sonner";
 import { z } from "zod";
-import { BASE_CONFIG } from "@/configs/baseConfig";
 
 const ApplyButton = ({
   className,
-  size,
+  size = "default",
   onlySingpassBtn,
 }: React.HTMLAttributes<HTMLDivElement> & {
-  size: "default" | "lg" | "xl";
+  size?: "default" | "lg" | "xl";
   onlySingpassBtn?: boolean;
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +23,7 @@ const ApplyButton = ({
     setIsLoading(true);
 
     try {
-      const endpoint = `${BASE_CONFIG.BASE_API_URL}/core_kyc/sgpass/authorise`;
+      const endpoint = `/loan/sgpass/authorise`;
       const response = await axios.get(endpoint);
       const data = response.data?.data;
 

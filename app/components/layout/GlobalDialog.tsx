@@ -7,11 +7,9 @@ import {
   DialogHeader,
   DialogDescription,
   DialogTitle,
-  //   DialogFooter,
 } from "../lib/dialog";
 import useDialogStore from "../../../stores/useDialogStore";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-// import { Button } from "../lib/button";
 
 const GlobalDialog = () => {
   const { isOpen, content, onDialogClose } = useDialogStore();

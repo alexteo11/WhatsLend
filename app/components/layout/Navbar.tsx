@@ -27,7 +27,7 @@ const ROLE_NAV_BAR_MAP = {
 };
 
 const Navbar = () => {
-  const { user, userRole } = useAuth();
+  const { userRole } = useAuth();
   const [showSideBar, setShowSideBar] = useState(false);
   const [showSignInDialog, setShowSignInDialog] = useState(false);
 
@@ -54,7 +54,6 @@ const Navbar = () => {
           />
         </Link>
         <NavigationButtons
-          user={user}
           setShowSignInDialog={setShowSignInDialog}
           className="hidden md:flex"
         />
@@ -69,7 +68,6 @@ const Navbar = () => {
               <SheetTitle>Navigation</SheetTitle>
             </VisuallyHidden>
             <NavigationSideBar
-              user={user}
               setShowSignInDialog={setShowSignInDialog}
               setShowSideBar={setShowSideBar}
             />
@@ -92,25 +90,23 @@ const Navbar = () => {
 };
 
 const SignInOrSignOutButton = ({
-  user,
   setShowSignInDialog,
   setShowSideBar,
   className,
   size,
   variant,
 }: {
-  user: unknown | null; // TODO: replace with User
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar?: Dispatch<SetStateAction<boolean>>;
   size: "default" | "lg";
   variant?: "link";
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { signOut } = useAuth();
+  const { isAuthenticatedUser, signOut } = useAuth();
 
-  const label = user ? "Sign Out" : "Sign In";
+  const label = isAuthenticatedUser ? "Sign Out" : "Sign In";
 
   const action = async () => {
-    if (user) {
+    if (isAuthenticatedUser) {
       await signOut();
       toast.success("Logged out successfully.");
       setShowSignInDialog(false);
@@ -125,7 +121,7 @@ const SignInOrSignOutButton = ({
       return variant;
     }
 
-    return user ? "default" : "app";
+    return isAuthenticatedUser ? "default" : "app";
   };
 
   return (
@@ -135,7 +131,8 @@ const SignInOrSignOutButton = ({
       className={cn(
         "border px-5 py-5 !text-white",
         className,
-        !!user && "border-destructive font-bold !text-destructive",
+        !!isAuthenticatedUser &&
+          "border-destructive font-bold !text-destructive",
       )}
       onClick={() => action()}
     >
@@ -145,11 +142,9 @@ const SignInOrSignOutButton = ({
 };
 
 const NavigationButtons = ({
-  user,
   setShowSignInDialog,
   className,
 }: {
-  user: unknown | null; // TODO: replace with User
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
   const { userRole } = useAuth();
@@ -161,7 +156,7 @@ const NavigationButtons = ({
         className,
       )}
     >
-      {userRole === Role.ADMIN && (
+      {userRole === Role.USER && (
         <>
           <Button asChild variant="link" className="text-shadow px-5">
             <Link href="/#how-it-works">How It Works</Link>
@@ -179,13 +174,17 @@ const NavigationButtons = ({
               Contact Us
             </Link>
           </Button>
+          <Button asChild variant="link" className="text-shadow">
+            <Link href="/my-applications" scroll={false}>
+              My Applications
+            </Link>
+          </Button>
         </>
       )}
       <SignInOrSignOutButton
         size="default"
         variant="link"
         className="border-2 border-white !text-white"
-        user={user}
         setShowSignInDialog={setShowSignInDialog}
       />
     </div>
@@ -193,12 +192,10 @@ const NavigationButtons = ({
 };
 
 const NavigationSideBar = ({
-  user,
   setShowSignInDialog,
   setShowSideBar,
   className,
 }: {
-  user: unknown | null; // TODO: replace with User
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
@@ -265,7 +262,6 @@ const NavigationSideBar = ({
       <SignInOrSignOutButton
         size="default"
         className="my-5"
-        user={user}
         setShowSignInDialog={setShowSignInDialog}
         setShowSideBar={setShowSideBar}
       />

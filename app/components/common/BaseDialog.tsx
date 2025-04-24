@@ -10,7 +10,7 @@ import {
 } from "../lib/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
-interface BaseDialogProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface BaseDialogProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
 }
@@ -18,7 +18,7 @@ interface BaseDialogProps extends React.HTMLAttributes<HTMLDivElement> {
 const BaseDialog = ({ isOpen, onOpenChange, children }: BaseDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange} modal={true}>
-      <DialogContent className="scrollable-dialog-content m-0 overflow-y-scroll rounded-lg p-0">
+      <DialogContent className="scrollable-dialog-content z-[88888] m-0 overflow-y-scroll rounded-lg p-0">
         <VisuallyHidden asChild>
           <DialogHeader />
         </VisuallyHidden>

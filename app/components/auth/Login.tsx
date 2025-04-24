@@ -46,7 +46,7 @@ const Login = ({
   onLoginSuccess,
   className,
 }: LoginProps & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { signIn, userRole, loading: isLoading } = useAuth();
+  const { signIn, userRole, isAuthenticating } = useAuth();
   const { openDialog, closeDialog } = useDialogStore();
 
   const form = useForm<LoginReq>({
@@ -83,7 +83,7 @@ const Login = ({
   return (
     <>
       <LoaderWrapper
-        isLoading={isLoading}
+        isLoading={isAuthenticating}
         className={cn("w-[90vw] max-w-[500px]", className)}
       >
         <div className="flex flex-col gap-2 px-6 py-10">

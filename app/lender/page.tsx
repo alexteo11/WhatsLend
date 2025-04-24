@@ -1,14 +1,17 @@
 "use client";
 
-import { useAuth } from "@/context/auth.context";
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
+import { Navbar } from "../components";
 
 const Lender = () => {
-  const { user } = useAuth();
+  const router = useRouter();
 
-  console.log({ user });
+  useEffect(() => {
+    router.replace("/lender/dashboard");
+  }, []);
 
-  return <div>Lender</div>;
+  return <Navbar />;
 };
 
 export default Lender;

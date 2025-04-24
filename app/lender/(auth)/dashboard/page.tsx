@@ -8,76 +8,117 @@ import {
   CardDescription,
   CardTitle,
 } from "@/app/components/lib/card";
-import { ChartConfig, ChartContainer } from "@/app/components/lib/chart";
-import { DateTimePicker } from "@/app/components/lib/datetime-picker";
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/app/components/lib/chart";
+import { DateRangePicker } from "@/app/components/lib/date-range-picker";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/app/components/lib/popover";
+import { formatDate } from "@/helper/dateFormatter";
 import { cn } from "@/lib/utils";
 import { addDays, format, subDays } from "date-fns";
-import { CalendarIcon } from "lucide-react";
-import React, { useState } from "react";
+import {
+  BanknoteArrowDown,
+  CalendarIcon,
+  CaptionsOff,
+  CheckCheck,
+  Send,
+} from "lucide-react";
+import React, { useMemo, useState } from "react";
 import { DateRange } from "react-day-picker";
-import { Bar, BarChart } from "recharts";
+import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
 
 const SummaryData = [
   {
-    title: "Loan Offers Sent",
-    content: "0",
+    id: 1,
+    title: "Loan Offer Sent",
+    content: "10",
     desc: "Total number of loan offers sent",
-    icon: <i className="ri-send-plane-line text-4xl"></i>,
+    icon: <Send className="text-app" />,
   },
   {
+    id: 2,
     title: "Loan Offers Accepted",
-    content: "0",
+    content: "30",
     desc: "Total number of loan offers accepted",
-    icon: <i className="ri-send-plane-line text-4xl"></i>,
+    icon: <CheckCheck className="text-app" />,
   },
   {
+    id: 3,
     title: "Loan Offers Rejected",
-    content: "0",
+    content: "5",
     desc: "Total number of loan offers rejected",
-    icon: <i className="ri-send-plane-line text-4xl"></i>,
+    icon: <CaptionsOff className="text-app" />,
   },
   {
+    id: 4,
     title: "Loan Offers Disbursed",
-    content: "0",
+    content: "7",
     desc: "Total number of loan offers disbursed",
-    icon: <i className="ri-send-plane-line text-4xl"></i>,
+    icon: <BanknoteArrowDown className="text-app" />,
   },
 ];
 
 const Dashboard = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedSummary, setSelectedSummary] = React.useState<number>(1);
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: new Date(),
+    to: addDays(new Date(), 1),
+  });
 
   return (
-    <div className="h-[150vh]">
+    <div className="flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h1 className="lender-page-title">Dashboard</h1>
         <div>
-          <DateTimeRangePicker />
+          <DateRangePicker date={date} onDateChange={setDate} />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4">
         {SummaryData.map((data, index) => (
-          <SummaryCard key={index} data={data} />
+          <SummaryCard
+            key={index}
+            data={data}
+            isSelected={selectedSummary === data.id}
+            onClick={() => setSelectedSummary(data.id)}
+          />
         ))}
       </div>
-      <DashboardChart />
+      <DashboardChart title={SummaryData[selectedSummary - 1].title} />
     </div>
   );
 };
 
 const SummaryCard = ({
   data,
+  isSelected,
+  onClick,
 }: {
-  data: { title: string; content: string; desc: string; icon: React.ReactNode };
+  data: {
+    title: string;
+    content: string;
+    desc: string;
+    icon: React.ReactNode;
+  };
+  isSelected: boolean;
+  onClick: () => void;
 }) => {
   return (
-    <Card className="flex w-auto items-center justify-between p-4">
-      <div>
+    <Card
+      className={cn(
+        "flex w-auto cursor-pointer items-start justify-between p-6",
+        isSelected && "bg-app/15",
+        isSelected && "border border-app",
+      )}
+      onClick={onClick}
+    >
+      <div className="flex flex-col gap-2">
         <CardTitle className="font-semibold">{data.title}</CardTitle>
         <CardContent className="p-1 text-2xl font-bold">
           {data.content}
@@ -91,105 +132,148 @@ const SummaryCard = ({
   );
 };
 
-const DateTimeRangePicker = () => {
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 1),
-  });
-
-  return (
-    <div className={cn("grid gap-2")}>
-      <Popover>
-        <PopoverTrigger asChild>
-          <Button
-            id="date"
-            variant={"outline"}
-            className={cn(
-              "w-[300px] justify-start text-left font-normal",
-              !date && "text-muted-foreground",
-            )}
-          >
-            <CalendarIcon />
-            {date?.from ? (
-              date.to ? (
-                <>
-                  {format(date.from, "LLL dd, y")} -{" "}
-                  {format(date.to, "LLL dd, y")}
-                </>
-              ) : (
-                format(date.from, "LLL dd, y")
-              )
-            ) : (
-              <span>Pick a date</span>
-            )}
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="start">
-          <Calendar
-            mode="range"
-            defaultMonth={date?.from}
-            selected={date}
-            onSelect={setDate}
-            numberOfMonths={2}
-          />
-        </PopoverContent>
-      </Popover>
-    </div>
-  );
-};
-
-const DashboardChart = () => {
-  const chartData = [
-    { date: subDays(new Date(), 14), desktop: 250 },
-    { date: subDays(new Date(), 13), desktop: 180 },
-    { date: subDays(new Date(), 12), desktop: 270 },
-    { date: subDays(new Date(), 11), desktop: 240 },
-    { date: subDays(new Date(), 10), desktop: 100 },
-    { date: subDays(new Date(), 9), desktop: 150 },
-    { date: subDays(new Date(), 8), desktop: 200 },
-    { date: subDays(new Date(), 7), desktop: 220 },
-    { date: subDays(new Date(), 6), desktop: 186 },
-    { date: subDays(new Date(), 5), desktop: 305 },
-    { date: subDays(new Date(), 4), desktop: 237 },
-    { date: subDays(new Date(), 3), desktop: 73 },
-    { date: subDays(new Date(), 2), desktop: 209 },
-    { date: subDays(new Date(), 1), desktop: 214 },
-    { date: subDays(new Date(), 14), desktop: 250 },
-    { date: subDays(new Date(), 13), desktop: 180 },
-    { date: subDays(new Date(), 12), desktop: 270 },
-    { date: subDays(new Date(), 11), desktop: 240 },
-    { date: subDays(new Date(), 10), desktop: 100 },
-    { date: subDays(new Date(), 9), desktop: 150 },
-    { date: subDays(new Date(), 8), desktop: 200 },
-    { date: subDays(new Date(), 7), desktop: 220 },
-    { date: subDays(new Date(), 6), desktop: 186 },
-    { date: subDays(new Date(), 5), desktop: 305 },
-    { date: subDays(new Date(), 4), desktop: 237 },
-    { date: subDays(new Date(), 3), desktop: 73 },
-    { date: subDays(new Date(), 2), desktop: 209 },
-    { date: subDays(new Date(), 1), desktop: 214 },
-    { date: subDays(new Date(), 14), desktop: 250 },
-    { date: subDays(new Date(), 13), desktop: 180 },
-    { date: subDays(new Date(), 12), desktop: 270 },
-    { date: subDays(new Date(), 11), desktop: 240 },
-    { date: subDays(new Date(), 10), desktop: 100 },
-    { date: subDays(new Date(), 9), desktop: 150 },
-    { date: subDays(new Date(), 8), desktop: 200 },
-    { date: subDays(new Date(), 7), desktop: 220 },
-    { date: subDays(new Date(), 6), desktop: 186 },
-    { date: subDays(new Date(), 5), desktop: 305 },
-    { date: subDays(new Date(), 4), desktop: 237 },
-    { date: subDays(new Date(), 3), desktop: 73 },
-    { date: subDays(new Date(), 2), desktop: 209 },
-    { date: subDays(new Date(), 1), desktop: 214 },
-  ];
+const DashboardChart = ({ title }: { title: string }) => {
+  const chartData = useMemo(() => {
+    return [
+      {
+        date: subDays(new Date(), 28),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 27),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 26),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 25),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 24),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 23),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 22),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 21),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 20),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 19),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 18),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 17),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 16),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 15),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 14),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 13),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 12),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 11),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 10),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 9),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 8),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 7),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 6),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 5),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 4),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 3),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 2),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+      {
+        date: subDays(new Date(), 1),
+        [title]: Math.floor(Math.random() * 1000),
+      },
+    ];
+  }, [title]);
 
   const chartConfig = {
-    desktop: {
-      label: "Desktop",
-      color: "#2563eb",
+    data: {
+      label: "date",
+      color: "hsl(270, 90%, 73%)",
+    },
+    "Loan Offer Sent": {
+      label: "Loan Offer Sent",
+      color: "hsl(270, 90%, 73%)",
+    },
+    "Loan Offer Accepted": {
+      label: "Loan Offer Accepted",
+      color: "hsl(270, 90%, 73%)",
+    },
+    "Loan Offer Rejected": {
+      label: "Loan Offer Rejected",
+      color: "hsl(270, 90%, 73%)",
+    },
+    "Loan Offer Disbursed": {
+      label: "Loan Offer Disbursed",
+      color: "hsl(270, 90%, 73%)",
     },
   } satisfies ChartConfig;
+
+  console.log({ chartConfig, title, chartData });
 
   return (
     <div>
@@ -199,12 +283,26 @@ const DashboardChart = () => {
         className="max-h-[50vh] min-h-[200px] w-full"
       >
         <BarChart accessibilityLayer data={chartData}>
+          <YAxis axisLine={false} tickLine={false} tickMargin={10} />
+          <XAxis
+            dataKey="date"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            tickFormatter={(value) => formatDate(value, false)}
+          />
           <Bar
-            dataKey="desktop"
-            fill="var(--color-desktop)"
+            dataKey={title}
+            fill="var(--color-data)"
             radius={4}
             width={1000}
           />
+          <Tooltip cursor={false} />
+          {/* <ChartTooltip
+            cursor={{ fill: "#f00" }}
+            label={false}
+            content={<ChartTooltipContent labelKey={title} />}
+          /> */}
         </BarChart>
       </ChartContainer>
     </div>

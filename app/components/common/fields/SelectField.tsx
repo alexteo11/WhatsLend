@@ -94,10 +94,12 @@ const SelectWithSearchBox = <T extends FieldValues>({
                     key={index}
                     onSelect={() => {
                       field.onChange(String(option.value));
-                      form.setValue(
-                        optionLabelRef,
-                        option.label as PathValue<T, Path<T>>,
-                      );
+                      if (optionLabelRef) {
+                        form.setValue(
+                          optionLabelRef,
+                          option.label as PathValue<T, Path<T>>,
+                        );
+                      }
                       setOpen(false);
                     }}
                   >
@@ -135,9 +137,14 @@ const SelectWithoutSearchBox = <T extends FieldValues>({
   return (
     <Select
       onValueChange={(value) => {
+        if (!value) {
+          return;
+        }
+
         field.onChange(String(value));
         const label = options.find((option) => option.value == value)?.label;
-        if (label) {
+
+        if (label && optionLabelRef) {
           form.setValue(optionLabelRef, label as PathValue<T, Path<T>>);
         }
       }}

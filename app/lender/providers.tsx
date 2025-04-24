@@ -7,31 +7,46 @@ import { LoaderWrapper } from "../components/common/LoaderWrapper";
 import GlobalDialog from "../components/layout/GlobalDialog";
 import { Role } from "@/constants/authEnums";
 import Login from "../components/auth/Login";
-import { SidebarProvider, SidebarTrigger } from "@/components/lib/sidebar";
+import { SidebarProvider } from "@/components/lib/sidebar";
 import { LenderSidebar } from "./components/lender-sidebar";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const RootProviders = ({
   children,
 }: React.HtmlHTMLAttributes<HTMLDivElement>) => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        // With SSR, we usually want to set some default staleTime
+        // above 0 to avoid refetching immediately on the client
+        staleTime: 60 * 1000,
+      },
+    },
+  });
+
   return (
-    <AuthProvider role={Role.LENDER}>
-      <Suspense>
-        <AuthWrapper>
-          <>{children}</>
-        </AuthWrapper>
-        <GlobalDialog />
-        <Toaster richColors closeButton />
-      </Suspense>
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider role={Role.LENDER}>
+        <Suspense>
+          <AuthWrapper>
+            <>{children}</>
+          </AuthWrapper>
+          <GlobalDialog />
+          <Toaster richColors closeButton />
+        </Suspense>
+      </AuthProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 };
 
 const AuthWrapper = ({
   children,
 }: React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { loading, user } = useAuth();
+  const { loading, isInitializing, isAuthenticatedUser } = useAuth();
 
-  if (!user && loading) {
+  if (isInitializing) {
     return (
       <LoaderWrapper isLoading>
         <div />
@@ -39,7 +54,7 @@ const AuthWrapper = ({
     );
   }
 
-  if (!user) {
+  if (!isAuthenticatedUser) {
     return (
       <div className="middle-container-width flex h-screen items-center justify-center">
         <Login className="h-auto" />

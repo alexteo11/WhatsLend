@@ -295,7 +295,7 @@
     --secondary-foreground: 222.2 47.4% 11.2%;
     --muted: 210 40% 96.1%;
     --muted-foreground: 215.4 16.3% 76.9%;
-    --accent: 270, 90%, 67%, 0.075;
+    --accent: 270, 90%, 67%, 0.175;
     --accent-foreground: 222.2 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
@@ -434,16 +434,18 @@ input[type="number"] {
   align-items: flex-start !important; /* Add this */
 }
 
-.scrollable-dialog-content::-webkit-scrollbar,
-.scrollable-sheet-content::-webkit-scrollbar {
-  display: none;
-}
-
 /* For IE, Edge and Firefox **/
 .scrollable-dialog-content,
-.scrollable-sheet-content {
+.scrollable-sheet-content,
+.scrollable-text-auto-complete-list {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+.scrollable-dialog-content::-webkit-scrollbar,
+.scrollable-sheet-content::-webkit-scrollbar,
+.scrollable-text-auto-complete-list:hover::-webkit-scrollbar {
+  display: none;
 }
 
 .scrollable-dialog-content,
@@ -472,6 +474,7 @@ input[type="number"] {
     100% 20px;
 }
 
+.user-page-title,
 .lender-page-title {
   @apply text-3xl font-bold;
 }

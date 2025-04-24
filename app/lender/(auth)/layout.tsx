@@ -10,7 +10,9 @@ export default function RootLayout({
   return (
     <>
       <Navbar />
-      <ScrollArea className="p-8">{children}</ScrollArea>
+      <ScrollArea className="p-8">
+        <div className="p-2">{children}</div>
+      </ScrollArea>
     </>
   );
 }

@@ -1,0 +1,422 @@
+{
+    "personalDetails": {
+        "uinfin": {
+            "value": "S7790713J",
+            "source": "SINGPASS"
+        },
+        "fullName": {
+            "value": "BERNARD WONG",
+            "source": "SINGPASS"
+        },
+        "sex": {
+            "value": "M",
+            "label": "MALE",
+            "source": "SINGPASS"
+        },
+        "nationality": {
+            "value": "SG",
+            "label": "SINGAPORE CITIZEN",
+            "source": "SINGPASS"
+        },
+        "dob": {
+            "value": "1948-09-10",
+            "source": "SINGPASS"
+        },
+        "race": {
+            "value": "CN",
+            "label": "CHINESE",
+            "source": "SINGPASS"
+        },
+        "birthCountry": {
+            "value": "SG",
+            "label": "SINGAPORE",
+            "source": "SINGPASS"
+        },
+        "residentialStatus": {
+            "value": "C",
+            "label": "CITIZEN",
+            "source": "SINGPASS"
+        },
+        "maritalStatus": {
+            "value": "1",
+            "label": "SINGLE",
+            "source": "SINGPASS"
+        }
+    },
+    "contactDetails": {
+        "email": {
+            "value": "myinfotesting@gmail.com",
+            "source": "SINGPASS"
+        },
+        "mobileNo": {
+            "value": "+6597399245",
+            "source": "SINGPASS"
+        }
+    },
+    "employmentDetails": {},
+    "housingDetails": {
+        "housingType": {
+            "value": "121",
+            "label": "DETACHED HOUSE",
+            "source": "SINGPASS"
+        },
+        "hdbOwnership": [
+            {
+                "monthlyLoanInstalment": {
+                    "value": "1000",
+                    "source": "SINGPASS"
+                },
+                "hdbType": {
+                    "value": "115",
+                    "label": "5-ROOM FLAT (HDB)",
+                    "source": "SINGPASS"
+                },
+                "dateOfPurchase": {
+                    "value": "2018-05-20",
+                    "source": "SINGPASS"
+                }
+            }
+        ]
+    },
+    "cpfDetails": {
+        "cpfContributions": [
+            {
+                "month": {
+                    "value": "2022-04",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-04-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1837.5,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-05",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-05-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1837.5,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-06",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-06-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 3675,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-07",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-07-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1988,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-08",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-08-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1988,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-09",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-09-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1988,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-10",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CLEAR LINK PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-10-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 3975,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-11",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CST CONTAINER SERVICES PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-11-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1237.5,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2022-12",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CST CONTAINER SERVICES PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2022-12-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 1237.5,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2023-01",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CST CONTAINER SERVICES PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2023-01-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 2475,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2023-02",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "CST CONTAINER SERVICES PTE LTD",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2023-02-07",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 2475,
+                    "source": "SINGPASS"
+                }
+            }
+        ],
+        "cpfHousingWithdrawal": [
+            {
+                "accruedInterestAmount": {
+                    "value": 8642,
+                    "source": "SINGPASS"
+                },
+                "principalWithdrawalAmount": {
+                    "value": 150600,
+                    "source": "SINGPASS"
+                },
+                "totalAmountOfCpfAllowedForProperty": {
+                    "value": 450000,
+                    "source": "SINGPASS"
+                },
+                "monthlyInstalmentAmount": {
+                    "value": 840,
+                    "source": "SINGPASS"
+                },
+                "address": {
+                    "value": "408, Bedok North Ave 2, 4-425",
+                    "source": "SINGPASS"
+                },
+                "unitNo": {
+                    "value": "425",
+                    "source": "SINGPASS"
+                },
+                "postalCode": {
+                    "value": "460408",
+                    "source": "SINGPASS"
+                },
+                "country": {
+                    "value": "SG",
+                    "label": "SINGAPORE",
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "accruedInterestAmount": {
+                    "value": 7555,
+                    "source": "SINGPASS"
+                },
+                "principalWithdrawalAmount": {
+                    "value": 50600,
+                    "source": "SINGPASS"
+                },
+                "totalAmountOfCpfAllowedForProperty": {
+                    "value": 350600,
+                    "source": "SINGPASS"
+                },
+                "monthlyInstalmentAmount": {
+                    "value": 1200,
+                    "source": "SINGPASS"
+                }
+            }
+        ],
+        "noaHistory": [
+            {
+                "rent": {
+                    "value": 100000,
+                    "source": "SINGPASS"
+                },
+                "taxClearance": {
+                    "value": "N",
+                    "source": "SINGPASS"
+                },
+                "yearOfAssessment": {
+                    "value": "2024",
+                    "source": "SINGPASS"
+                },
+                "interest": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "employment": {
+                    "value": 108900,
+                    "source": "SINGPASS"
+                },
+                "trade": {
+                    "value": 23432,
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 232332,
+                    "source": "SINGPASS"
+                },
+                "category": {
+                    "value": "ORIGINAL",
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "rent": {
+                    "value": 1231,
+                    "source": "SINGPASS"
+                },
+                "taxClearance": {
+                    "value": "N",
+                    "source": "SINGPASS"
+                },
+                "yearOfAssessment": {
+                    "value": "2023",
+                    "source": "SINGPASS"
+                },
+                "interest": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "employment": {
+                    "value": 71500,
+                    "source": "SINGPASS"
+                },
+                "trade": {
+                    "value": 6432,
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 79163,
+                    "source": "SINGPASS"
+                },
+                "category": {
+                    "value": "ORIGINAL",
+                    "source": "SINGPASS"
+                }
+            }
+        ]
+    },
+    "vehicleDetails": [
+        {
+            "effectiveOwnership": {
+                "value": "2015-05-19T10:45:50+08:00",
+                "source": "SINGPASS"
+            }
+        },
+        {
+            "effectiveOwnership": {
+                "value": "2018-04-23T13:43:34+08:00",
+                "source": "SINGPASS"
+            }
+        }
+    ]
+}
