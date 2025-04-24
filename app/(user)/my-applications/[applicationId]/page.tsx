@@ -16,9 +16,9 @@ import { useMyLoanApplicationsQuery } from "@/queries/use-my-loan-applications-q
 import { LoanData, loanSchema } from "@/schemas/loan.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowLeftIcon, Backpack } from "lucide-react";
+import { ArrowLeftIcon } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
@@ -132,7 +132,12 @@ const FormContent = ({
           isViewMode={actionMode === ActionMode.View}
         />
         <div className="flex justify-end gap-4">
-          <Button size="lg" variant="outline" onClick={() => router.back()}>
+          <Button
+            size="lg"
+            variant="outline"
+            type="button"
+            onClick={() => router.back()}
+          >
             Back
           </Button>
 

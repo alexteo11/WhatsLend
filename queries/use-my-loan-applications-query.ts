@@ -24,8 +24,7 @@ export const useMyLoanApplicationsQuery = (
         toast.error(getErrorMessage(result.error));
         throw result.error;
       }
-      // return result.data;
-      return [];
+      return result.data;
     },
     enabled: !!userId,
     placeholderData: keepPreviousData,

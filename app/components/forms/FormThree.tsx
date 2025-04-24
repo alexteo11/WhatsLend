@@ -11,6 +11,7 @@ import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import { YES_NO_OPTIONS } from "@/constants/formEnums";
+import { default as myAxios } from "@/lib/axios";
 import axios from "axios";
 import { toast } from "sonner";
 import { StatusCodes } from "@/constants/http-status-codes";
@@ -64,7 +65,7 @@ const FormThree = () => {
         userId,
         applicationPayload: formData,
       };
-      const response = await axios.post<{
+      const response = await myAxios.post<{
         data: { newUserId: string | undefined };
       }>(endpoint, postData);
       const { newUserId } = response.data.data;

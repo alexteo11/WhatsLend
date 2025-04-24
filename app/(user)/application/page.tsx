@@ -17,22 +17,20 @@ import Image from "next/image";
 import FormTwo from "../../components/forms/FormTwo";
 import FormThree from "../../components/forms/FormThree";
 import Success from "../../components/forms/Success";
-import { Skeleton } from "../../components/lib/skeleton";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "../../components/lib/card";
 import FAQ from "../../components/home/FAQ";
 import ApplyButton from "../../components/common/ApplyButton";
 import BaseDialog from "../../components/common/BaseDialog";
 import Login from "../../components/auth/Login";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { Button } from "../../components/lib/button";
 import { FormData } from "@/schemas/form.schema";
 import { toast } from "sonner";
 import { LoaderWrapper } from "../../components/common/LoaderWrapper";
-import { BASE_CONFIG } from "@/configs/baseConfig";
-import sampleSingpassData1 from "./sampleSingpassData1.json";
-import sampleSingpassData2 from "./sampleSingpassData2.json";
-import { ColumnDef } from "@tanstack/react-table";
+// import sampleSingpassData1 from "./sampleSingpassData1.json";
+// import sampleSingpassData2 from "./sampleSingpassData2.json";
+
 import {
   Table,
   TableBody,

@@ -17,6 +17,12 @@ import { LoaderWrapper } from "@/app/components/common/LoaderWrapper";
 import ApplyButton from "@/app/components/common/ApplyButton";
 import Image from "next/image";
 import Link from "next/link";
+import { authAxios } from "@/lib/axios";
+import { toast } from "sonner";
+import { getErrorMessage } from "@/helper/errorHelper";
+import { useQueryClient } from "@tanstack/react-query";
+import { QUERY_KEY } from "@/queries/constants";
+import { LOAN_STATUS_ENUM } from "@/schemas/common.schema";
 
 const MyApplications = () => {
   const { user } = useAuth();
@@ -28,7 +34,7 @@ const MyApplications = () => {
         <h1 className="user-page-title">My Applications</h1>
         {data?.length ? (
           <>
-            <div className="grid grid-cols-1 gap-4 py-8 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 py-8 md:grid-cols-2">
               {data.map((application, index) => (
                 <ApplicationCard
                   key={index}
@@ -69,49 +75,75 @@ const ApplicationCard = ({
   data: LoanData;
   index: number;
 }) => {
+  const queryClient = useQueryClient();
+  const [isLoading, setIsLoading] = React.useState(false);
+
+  const cancelLoanApplication = async () => {
+    setIsLoading(true);
+    try {
+      await authAxios.delete(`/loan/cancel/${data.id}`);
+      await queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY.MyLoanApplications],
+      });
+      toast.success("Loan application cancelled successfully.");
+    } catch (error) {
+      toast.error(getErrorMessage(error));
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <Card className="p-6">
-      <CardTitle className="text-xl text-app underline">
-        Application - {index}
-      </CardTitle>
-      <CardContent className="grid grid-cols-2 gap-x-4 gap-y-2 p-4 [&>div]:text-sm [&>span]:font-semibold">
-        <span>Loan amount: </span>
-        <div>
-          ${" "}
-          {new Intl.NumberFormat().format(
-            Number(data.loanDetails.loanAmount.value),
-          )}
-        </div>
-        <span>Loan tenure: </span>
-        <div>{data.loanDetails.loanTenure.value} months</div>
-        <span>Loan purpose: </span>
-        <div>{data.loanDetails.loanPurpose.value}</div>
-        <span>Status: </span>
-        <div>{data.status}</div>
-        <span>Applied at: </span>
-        <div>{formatDate(data.createdAt)}</div>
-        <span>Updated at: </span>
-        <div>{formatDate(data.updatedAt)}</div>
-      </CardContent>
-      <CardFooter className="flex flex-wrap justify-start gap-2 p-2">
-        <Button variant="outline" asChild>
-          <Link href={`./my-applications/${data.id}?mode=view`}>
-            <SearchIcon className="mr-1 h-4 w-4" />
-            View
-          </Link>
-        </Button>
-        <Button asChild>
-          <Link href={`./my-applications/${data.id}?mode=modify`}>
-            <EditIcon className="mr-1 h-4 w-4" />
-            Modify
-          </Link>
-        </Button>
-        <Button variant="destructive">
-          <ArchiveXIcon className="mr-1 h-4 w-4" />
-          Cancel
-        </Button>
-      </CardFooter>
-    </Card>
+    <LoaderWrapper isLoading={isLoading}>
+      <Card className="p-6">
+        <CardTitle className="text-xl text-app underline">
+          Application - {index}
+        </CardTitle>
+        <CardContent className="grid grid-cols-2 gap-x-4 gap-y-2 p-4 [&>div]:text-sm [&>span]:font-semibold">
+          <span>Loan amount: </span>
+          <div>
+            ${" "}
+            {new Intl.NumberFormat().format(
+              Number(data.loanDetails.loanAmount.value),
+            )}
+          </div>
+          <span>Loan tenure: </span>
+          <div>{data.loanDetails.loanTenure.value} months</div>
+          <span>Loan purpose: </span>
+          <div>{data.loanDetails.loanPurpose.value}</div>
+          <span>Status: </span>
+          <div>{data.status}</div>
+          <span>Applied at: </span>
+          <div>{formatDate(data.createdAt)}</div>
+          <span>Updated at: </span>
+          <div>{formatDate(data.updatedAt)}</div>
+        </CardContent>
+        <CardFooter className="flex flex-wrap justify-start gap-2 p-2">
+          <Button variant="outline" asChild>
+            <Link href={`./my-applications/${data.id}?mode=view`}>
+              <SearchIcon className="mr-1 h-4 w-4" />
+              View
+            </Link>
+          </Button>
+          <Button asChild>
+            <Link href={`./my-applications/${data.id}?mode=modify`}>
+              <EditIcon className="mr-1 h-4 w-4" />
+              Modify
+            </Link>
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={() => cancelLoanApplication()}
+            disabled={data.status === LOAN_STATUS_ENUM.CANCELLED}
+          >
+            <ArchiveXIcon className="mr-1 h-4 w-4" />
+            {data.status === LOAN_STATUS_ENUM.CANCELLED
+              ? "Cancelled"
+              : "Cancel"}
+          </Button>
+        </CardFooter>
+      </Card>
+    </LoaderWrapper>
   );
 };
 

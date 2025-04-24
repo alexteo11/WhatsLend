@@ -5,7 +5,7 @@ import { Button } from "../lib/button";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import axios from "axios";
+import axios from "@/lib/axios";
 import { toast } from "sonner";
 import { z } from "zod";
 
