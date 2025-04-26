@@ -31,6 +31,7 @@ interface BaseSliderFieldProps {
   placeholder?: string;
   description?: string;
   pattern?: string;
+  disabled?: boolean;
 }
 
 interface FormSliderFieldProps<T extends FieldValues>
@@ -55,6 +56,7 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
     placeholder,
     description,
     pattern,
+    disabled,
   } = props;
 
   const defaultValue = value;
@@ -82,9 +84,7 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
     }
     const patternValue = pattern.replaceAll(
       "{value}",
-      pattern.includes("$")
-        ? new Intl.NumberFormat().format(value)
-        : String(value),
+      new Intl.NumberFormat().format(value),
     );
     return patternValue;
   };
@@ -101,7 +101,10 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
   ) => {
     return (
       <div
-        className={cn("flex w-full translate-y-[-10px] justify-between gap-5")}
+        className={cn(
+          "flex w-full translate-y-[-10px] justify-between gap-5",
+          disabled && "cursor-not-allowed",
+        )}
       >
         <div className="relative flex w-full flex-col justify-center">
           <Slider
@@ -113,6 +116,8 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
               setValue(value[0]);
               field?.onChange(value[0]);
             }}
+            disabled={disabled}
+            className={cn(disabled && "!cursor-not-allowed")}
           />
           <div className="absolute left-0 top-[38px] flex w-full flex-row justify-between text-xs text-gray-700/70">
             <span>{formatPattern(min)}</span>
@@ -171,6 +176,7 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
               setValue(valueWithoutPattern);
               field?.onChange(valueWithoutPattern);
             }}
+            disabled={disabled}
           />
         </InputWrapper>
       </div>

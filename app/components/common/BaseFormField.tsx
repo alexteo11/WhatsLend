@@ -21,6 +21,7 @@ import SelectField from "./fields/SelectField";
 import TextField from "./fields/TextField";
 import { SOURCES_ENUM } from "@/schemas/common.schema";
 import PasswordField from "./fields/PasswordField";
+import TextAutoCompleteField from "./fields/TextAutoCompleteField";
 
 type FieldType =
   | "text"
@@ -30,7 +31,8 @@ type FieldType =
   | "date"
   | "phone"
   | "radio"
-  | "select";
+  | "select"
+  | "textAutoComplete";
 // | "checkbox";
 
 interface BaseProps<T extends FieldValues> {
@@ -44,7 +46,10 @@ interface BaseProps<T extends FieldValues> {
 }
 
 export interface CommonFieldProps<T extends FieldValues> extends BaseProps<T> {
-  type: Exclude<FieldType, "select" | "radio" | "checkbox" | "number">;
+  type: Exclude<
+    FieldType,
+    "select" | "radio" | "checkbox" | "number" | "textAutoComplete" | "date"
+  >;
 }
 
 export interface NumberFieldProps<T extends FieldValues> extends BaseProps<T> {
@@ -55,15 +60,21 @@ export interface NumberFieldProps<T extends FieldValues> extends BaseProps<T> {
 }
 
 export interface OptionsFieldProps<T extends FieldValues> extends BaseProps<T> {
-  type: "select" | "radio"; // | "checkbox";
+  type: "select" | "radio" | "textAutoComplete"; // | "checkbox";
   options: { label: string; value: string | number | boolean }[];
-  optionLabelRef: FieldPath<T>;
+  optionLabelRef?: FieldPath<T>;
+}
+
+export interface DateFieldProps<T extends FieldValues> extends BaseProps<T> {
+  type: "date";
+  calendarDisabledRange?: (date: Date) => boolean;
 }
 
 type BaseFormFieldProps<T extends FieldValues> =
   | CommonFieldProps<T>
   | NumberFieldProps<T>
-  | OptionsFieldProps<T>;
+  | OptionsFieldProps<T>
+  | DateFieldProps<T>;
 // &
 // React.InputHTMLAttributes<HTMLInputElement>;
 
@@ -71,6 +82,9 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
   const { form, fieldRef: name, label, type, description } = props;
 
   const isDisabled = useMemo(() => {
+    if (props.disabled != null) {
+      return props.disabled;
+    }
     const fieldPrefix = name.split(".").slice(0, -1).join(".");
     const sourceField = `${fieldPrefix}.source` as Path<T>;
     const isSingpassField =
@@ -89,10 +103,6 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
       return <PasswordField field={field} {...props} disabled={isDisabled} />;
     }
 
-    if (type === "date") {
-      return <DateField field={field} {...props} disabled={isDisabled} />;
-    }
-
     if (type === "phone") {
       return <PhoneField field={field} {...props} disabled={isDisabled} />;
     }
@@ -107,6 +117,16 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
 
     if (type === "number") {
       return <NumberField field={field} {...props} disabled={isDisabled} />;
+    }
+
+    if (type === "textAutoComplete") {
+      return (
+        <TextAutoCompleteField field={field} {...props} disabled={isDisabled} />
+      );
+    }
+
+    if (type === "date") {
+      return <DateField field={field} {...props} disabled={isDisabled} />;
     }
 
     // if (type === "checkbox") {

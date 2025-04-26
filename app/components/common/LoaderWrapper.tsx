@@ -8,6 +8,7 @@ interface LoaderProps {
   isLoading: boolean;
   loadingComponent?: React.ReactNode;
   label?: string;
+  isContainer?: boolean;
 }
 
 export const LoaderWrapper = ({
@@ -16,12 +17,18 @@ export const LoaderWrapper = ({
   loadingComponent,
   label = "Loading",
   className,
+  isContainer = false,
 }: LoaderProps & React.HTMLAttributes<HTMLDivElement>) => {
   return (
     <div className={cn("relative h-full w-full", className)}>
       <Slottable>{children}</Slottable>
       {isLoading && (
-        <div className="fixed left-0 top-0 z-40 flex h-full w-full flex-col items-center justify-center gap-3 bg-black/20 text-app">
+        <div
+          className={cn(
+            "left-0 top-0 z-40 flex h-full w-full flex-col items-center justify-center gap-3 bg-black/20 text-app",
+            isContainer ? "absolute" : "fixed",
+          )}
+        >
           <div className="flex animate-pulse flex-col items-center justify-center gap-3 rounded-lg bg-white/85 p-10">
             {loadingComponent ? (
               loadingComponent

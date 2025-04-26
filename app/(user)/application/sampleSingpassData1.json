@@ -1,0 +1,104 @@
+{
+    "personalDetails": {
+        "uinfin": {
+            "value": "G4440433N",
+            "source": "SINGPASS"
+        },
+        "fullName": {
+            "value": "WATTNA TIWARAT",
+            "source": "SINGPASS"
+        },
+        "sex": {
+            "value": "F",
+            "label": "FEMALE",
+            "source": "SINGPASS"
+        },
+        "nationality": {
+            "value": "AM",
+            "label": "ARMENIAN",
+            "source": "SINGPASS"
+        },
+        "dob": {
+            "value": "1960-05-17",
+            "source": "SINGPASS"
+        },
+        "race": {
+            "value": "AM",
+            "label": "ARMENIAN",
+            "source": "SINGPASS"
+        },
+        "birthCountry": {
+            "value": "AM",
+            "label": "ARMENIA",
+            "source": "SINGPASS"
+        },
+        "passType": {
+            "value": "P1Pass",
+            "label": "Employment Pass",
+            "source": "SINGPASS"
+        },
+        "passStatus": {
+            "value": "Live",
+            "source": "SINGPASS"
+        },
+        "passExpiryDate": {
+            "value": "2030-12-31",
+            "source": "SINGPASS"
+        }
+    },
+    "contactDetails": {
+        "email": {
+            "value": "myinfotesting@gmail.com",
+            "source": "SINGPASS"
+        },
+        "mobileNo": {
+            "value": "+6597399245",
+            "source": "SINGPASS"
+        }
+    },
+    "employmentDetails": {
+        "occupation": {
+            "value": "TRAINING MANAGER",
+            "source": "SINGPASS"
+        },
+        "employerName": {
+            "value": "AAS SISTEMAS PTE LTD",
+            "source": "SINGPASS"
+        },
+        "employmentSector": {
+            "value": "MANUFACTURING",
+            "source": "SINGPASS"
+        }
+    },
+    "housingDetails": {
+        "address": {
+            "value": "123, LORONG 1 TOA PAYOH, TOA PAYOH VIEW, 13-220",
+            "source": "SINGPASS"
+        },
+        "unitNo": {
+            "value": "220",
+            "source": "SINGPASS"
+        },
+        "postalCode": {
+            "value": "310123",
+            "source": "SINGPASS"
+        },
+        "country": {
+            "value": "SG",
+            "label": "SINGAPORE",
+            "source": "SINGPASS"
+        },
+        "hdbType": {
+            "value": "113",
+            "label": "3-ROOM FLAT (HDB)",
+            "source": "SINGPASS"
+        },
+        "hdbOwnership": []
+    },
+    "cpfDetails": {
+        "cpfContributions": [],
+        "cpfHousingWithdrawal": [],
+        "noaHistory": []
+    },
+    "vehicleDetails": []
+}

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   FormData,
   FormThreeData,
@@ -6,15 +6,27 @@ import {
 } from "@/schemas/form.schema";
 import { useFormStore } from "@/stores/useFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { Path, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import { YES_NO_OPTIONS } from "@/constants/formEnums";
+import { default as myAxios } from "@/lib/axios";
 import axios from "axios";
 import { toast } from "sonner";
+import { StatusCodes } from "@/constants/http-status-codes";
+import { useAuth } from "@/context/auth.context";
+import useDialogStore from "@/stores/useDialogStore";
+import Login from "../auth/Login";
+import { User } from "firebase/auth";
+import { LoanData } from "@/schemas/loan.schema";
 
 const FormThree = () => {
+  const { user, signIn } = useAuth();
+  const userRef = useRef<Record<string, User | null>>({}).current;
+  userRef.value = user;
+
+  const { openDialog, closeDialog } = useDialogStore();
   const {
     formThreeDefaultValues,
     getFormData,
@@ -29,7 +41,9 @@ const FormThree = () => {
     defaultValues: formThreeDefaultValues || undefined,
   });
 
-  const haveExistingLoan = form.watch("hasExistingLoans.value");
+  const haveExistingLoan = form.watch(
+    "existingLoanDetails.hasExistingLoans.value",
+  );
 
   useEffect(() => {
     form.reset(formThreeDefaultValues || undefined);
@@ -43,13 +57,59 @@ const FormThree = () => {
 
     setIsSubmittingApplication(true);
 
+    const userId = userRef.value?.uid;
+
     try {
-      const endpoint = `${process.env.NEXT_PUBLIC_API_BASE_URL}/core_kyc/kyc/submit`;
-      await axios.post(endpoint, formData);
+      const endpoint = `/loan/submit`;
+      const postData = {
+        userId,
+        applicationPayload: formData,
+      };
+      const response = await myAxios.post<{
+        data: { newUserId: string | undefined };
+      }>(endpoint, postData);
+      const { newUserId } = response.data.data;
+
+      if (newUserId) {
+        // AUTO LOGIN USER if is newly created user
+        await signIn(
+          formData.contactDetails?.email.value as string,
+          formData.personalDetails?.uinfin.value as string,
+          () => {
+            toast.success(
+              `A new account has been registered with your email: ${formData.contactDetails?.email.value}. You have been automatically logged in.`,
+            );
+          },
+        );
+      }
+      setStep(4);
     } catch (err) {
       console.log({
         err,
       });
+
+      if (axios.isAxiosError(err) && err.status === StatusCodes.CONFLICT) {
+        if (userId) {
+          // mean there is active ongoing application
+          toast.error(
+            "An active application already exists. Please wait until it is processed.",
+          );
+          return;
+        }
+        toast.error(
+          "Email already registered with an existing account. Please login to your account to submit your application.",
+        );
+        openDialog(
+          <Login
+            onLoginSuccess={async () => {
+              closeDialog();
+              await submitKycApplication(formData);
+            }}
+          />,
+        );
+        return;
+      }
+
       toast.error(`Failed to submit application. Please try again.`);
     } finally {
       setIsSubmittingApplication(false);
@@ -61,69 +121,12 @@ const FormThree = () => {
 
     const formData = getFormData();
     await submitKycApplication(formData);
-
-    setStep(4);
   };
 
   return (
     <Form {...form}>
       <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
-        <div className="application__form-section">
-          <h1 className="application__form-subtitle">Financial Information</h1>
-          <BaseFormField
-            form={form}
-            fieldRef="isContactingWithAgency.value"
-            optionLabelRef="isContactingWithAgency.label"
-            label="Are you currently contacting with other agency / money lender?"
-            type="radio"
-            options={YES_NO_OPTIONS}
-          />
-
-          <BaseFormField
-            form={form}
-            fieldRef="hasExistingLoans.value"
-            optionLabelRef="hasExistingLoans.label"
-            label="Do you have any existing loans?"
-            type="radio"
-            options={YES_NO_OPTIONS}
-          />
-
-          {String(haveExistingLoan) === "true" && (
-            <>
-              <BaseFormField
-                form={form}
-                fieldRef="existingLoanFromBank.value"
-                label="Existing loan amount from bank"
-                type="number"
-                pattern="$ {value}"
-              />
-
-              <BaseFormField
-                form={form}
-                fieldRef="existingLoanFromNonBank.value"
-                label="Existing loan amount from non-bank (e.g. personal loan, moneylender)"
-                type="number"
-                pattern="$ {value}"
-              />
-
-              <BaseFormField
-                form={form}
-                fieldRef="monthlyRepaymentToBank.value"
-                label="Current monthly repayment to bank"
-                type="number"
-                pattern="$ {value}"
-              />
-
-              <BaseFormField
-                form={form}
-                fieldRef="monthlyRepaymentToNonBank.value"
-                label="Current monthly repayment to non-bank"
-                type="number"
-                pattern="$ {value}"
-              />
-            </>
-          )}
-        </div>
+        <FormThreeSection form={form} haveExistingLoan={haveExistingLoan} />
         <div className="flex justify-end gap-4">
           <Button
             size="lg"
@@ -136,22 +139,102 @@ const FormThree = () => {
           <Button size="lg" type="submit">
             Submit
           </Button>
-          {/* <Button
-            size="lg"
-            type="button"
-            onClick={() =>
-              console.log({
-                errors: form.formState.errors,
-                value: form.getValues(),
-              })
-            }
-          >
-            Test
-          </Button> */}
         </div>
       </form>
     </Form>
   );
 };
 
+export const FormThreeSection = <
+  T extends Pick<LoanData, "existingLoanDetails">,
+>({
+  form,
+  haveExistingLoan,
+  isViewMode,
+}: {
+  form: UseFormReturn<T>;
+  haveExistingLoan?: boolean;
+  isViewMode?: boolean;
+}) => {
+  return (
+    <>
+      <div className="application__form-section">
+        <h1 className="application__form-subtitle">Financial Information</h1>
+        <BaseFormField
+          form={form}
+          fieldRef={
+            "existingLoanDetails.isContactingWithAgency.value" as Path<T>
+          }
+          optionLabelRef={
+            "existingLoanDetails.isContactingWithAgency.label" as Path<T>
+          }
+          label="Are you currently contacting with other agency / money lender?"
+          type="radio"
+          options={YES_NO_OPTIONS}
+          disabled={isViewMode}
+        />
+
+        <BaseFormField
+          form={form}
+          fieldRef={"existingLoanDetails.hasExistingLoans.value" as Path<T>}
+          optionLabelRef={
+            "existingLoanDetails.hasExistingLoans.label" as Path<T>
+          }
+          label="Do you have any existing loans?"
+          type="radio"
+          options={YES_NO_OPTIONS}
+          disabled={isViewMode}
+        />
+
+        {String(haveExistingLoan) === "true" && (
+          <>
+            <BaseFormField
+              form={form}
+              fieldRef={
+                "existingLoanDetails.existingLoanFromBank.value" as Path<T>
+              }
+              label="Existing loan amount from bank"
+              type="number"
+              pattern="$ {value}"
+              disabled={isViewMode}
+            />
+
+            <BaseFormField
+              form={form}
+              fieldRef={
+                "existingLoanDetails.existingLoanFromNonBank.value" as Path<T>
+              }
+              label="Existing loan amount from non-bank (e.g. personal loan, moneylender)"
+              type="number"
+              pattern="$ {value}"
+              disabled={isViewMode}
+            />
+
+            <BaseFormField
+              form={form}
+              fieldRef={
+                "existingLoanDetails.monthlyRepaymentToBank.value" as Path<T>
+              }
+              label="Current monthly repayment to bank"
+              type="number"
+              pattern="$ {value}"
+              disabled={isViewMode}
+            />
+
+            <BaseFormField
+              form={form}
+              fieldRef={
+                "existingLoanDetails.monthlyRepaymentToNonBank.value" as Path<T>
+              }
+              label="Current monthly repayment to non-bank"
+              type="number"
+              pattern="$ {value}"
+              disabled={isViewMode}
+            />
+          </>
+        )}
+      </div>
+    </>
+  );
+};
 export default FormThree;

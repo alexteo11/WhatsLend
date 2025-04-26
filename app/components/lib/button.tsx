@@ -5,20 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 aria-[invalid=true]:focus-visible:ring-destructive",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 aria-[invalid=true]:focus-visible:ring-destructive",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        app: "bg-gradient-to-r from-purple-500 to-cyan-300 text-shadow text-primary-foreground hover:bg-primary/90",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary/90 disabled:hover:bg-primary",
+        app: "bg-gradient-to-r from-purple-500 to-cyan-300 text-shadow text-primary-foreground hover:bg-primary/90 disabled:hover:bg-primary",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 disabled:hover:bg-destructive",
         outline:
-          "border border-black/55 bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border border-black/55 bg-background shadow-sm hover:bg-accent hover:text-accent-foreground disabled:hover:bg-background",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 disabled:hover:bg-secondary",
+        ghost:
+          "hover:bg-accent hover:text-accent-foreground disabled:hover:bg-accent",
+        link: "text-primary underline-offset-4 hover:underline ",
       },
       size: {
         default: "h-10 px-4 py-2",

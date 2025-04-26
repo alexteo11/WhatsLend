@@ -4,6 +4,7 @@ import {
   FormTwoData,
   FormThreeData,
   FormData,
+  AdditionalSingpassData,
 } from "@/schemas/form.schema";
 import { SOURCES_ENUM } from "@/schemas/common.schema";
 import { DefaultValues } from "react-hook-form";
@@ -21,17 +22,49 @@ export type KycApplicationStore = {
   setFormDefaultValues: (
     data?: DefaultValues<FormOneData> &
       DefaultValues<FormTwoData> &
-      DefaultValues<FormThreeData>,
+      DefaultValues<FormThreeData> &
+      Partial<AdditionalSingpassData>,
   ) => void;
   formData: Partial<FormData> | null;
-  setFormData: (data: FormOneData | FormTwoData | FormThreeData) => void;
+  setFormData: (
+    data:
+      | FormOneData
+      | FormTwoData
+      | FormThreeData
+      | Partial<AdditionalSingpassData>,
+  ) => void;
   getFormData: () => Partial<FormData> | null;
   isSingpassForm: () => boolean;
   isSubmittingApplication: boolean;
   setIsSubmittingApplication: (bool: boolean) => void;
+  resetForm: () => void;
 };
 
 export const useFormStore = create<KycApplicationStore>((set, get) => {
+  const _setFormDefaultValues = (
+    data?: DefaultValues<FormOneData> &
+      DefaultValues<FormTwoData> &
+      DefaultValues<FormThreeData> &
+      Partial<AdditionalSingpassData>,
+  ) => {
+    set({
+      formOneDefaultValues: merge(formDefaultValues.formOneDefaultValues, data),
+      formTwoDefaultValues: merge(formDefaultValues.formTwoDefaultValues, data),
+      formThreeDefaultValues: merge(
+        formDefaultValues.formThreeDefaultValues,
+        data,
+      ),
+    });
+
+    if (data?.cpfDetails && data?.vehicleDetails) {
+      const { setFormData } = get();
+      setFormData({
+        cpfDetails: data?.cpfDetails,
+        vehicleDetails: data?.vehicleDetails,
+      });
+    }
+  };
+
   return {
     source: SOURCES_ENUM.MANUAL,
     setSource: (source) => set({ source }),
@@ -41,20 +74,7 @@ export const useFormStore = create<KycApplicationStore>((set, get) => {
     formTwoDefaultValues: null,
     formThreeDefaultValues: null,
     setFormDefaultValues(data) {
-      set({
-        formOneDefaultValues: merge(
-          formDefaultValues.formOneDefaultValues,
-          data,
-        ),
-        formTwoDefaultValues: merge(
-          formDefaultValues.formTwoDefaultValues,
-          data,
-        ),
-        formThreeDefaultValues: merge(
-          formDefaultValues.formThreeDefaultValues,
-          data,
-        ),
-      });
+      _setFormDefaultValues(data);
     },
     formData: null,
     setFormData: (data) => {
@@ -76,6 +96,12 @@ export const useFormStore = create<KycApplicationStore>((set, get) => {
       set({
         isSubmittingApplication: bool,
       });
+    },
+    resetForm: () => {
+      set({
+        step: 1,
+      });
+      _setFormDefaultValues({});
     },
   };
 });

@@ -34,6 +34,7 @@ const SignUp = ({ onSignUpSuccess }: SignUpProps) => {
     setIsLoading(true);
     try {
       await createUserWithEmailAndPassword(auth, data.email, data.password);
+      // TODO: migrate to api call
       toast.success("Account created and logged in successfully.");
       form.reset();
       onSignUpSuccess?.();

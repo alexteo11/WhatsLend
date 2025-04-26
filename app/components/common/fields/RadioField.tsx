@@ -30,7 +30,7 @@ const RadioField = <T extends FieldValues>({
           const label = options.find(
             (option) => String(option.value) == value,
           )?.label;
-          if (label) {
+          if (label && optionLabelRef) {
             form.setValue(optionLabelRef, label as PathValue<T, Path<T>>);
           }
         }}

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "../lib/button";
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import BaseDialog from "../common/BaseDialog";
 import Login from "../auth/Login";
 import { cn } from "@/lib/utils";
@@ -11,19 +11,40 @@ import { MenuIcon } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../lib/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useAuth } from "@/context/auth.context";
-import { User as FirebaseUser } from "firebase/auth";
 import { toast } from "sonner";
-import { auth } from "@/lib/firebase";
+import { Role } from "@/constants/authEnums";
+
+const ROLE_NAV_BAR_MAP = {
+  [Role.ADMIN]: {
+    homeRoute: "/admin",
+  },
+  [Role.LENDER]: {
+    homeRoute: "/lender",
+  },
+  [Role.USER]: {
+    homeRoute: "/",
+  },
+};
 
 const Navbar = () => {
-  const { user } = useAuth();
+  const { userRole } = useAuth();
   const [showSideBar, setShowSideBar] = useState(false);
   const [showSignInDialog, setShowSignInDialog] = useState(false);
 
+  const { homeRoute } = useMemo(
+    () => ROLE_NAV_BAR_MAP[userRole] || {},
+    [userRole],
+  );
+
   return (
-    <header className="hero__bg fixed left-0 top-0 z-40 h-[var(--nav-height)] w-full shadow-xl">
-      <nav className="middle-container-width flex items-center justify-between py-3">
-        <Link href="/">
+    <header className="hero__bg fixed left-0 top-0 z-[888] h-[var(--nav-height)] w-full shadow-xl">
+      <nav
+        className={cn(
+          "flex items-center justify-between py-3",
+          userRole === Role.USER ? "middle-container-width" : "mx-auto w-[95%]",
+        )}
+      >
+        <Link href={homeRoute || "/"}>
           <Image
             src="/logo.png"
             alt="Compare Loan Logo"
@@ -33,7 +54,6 @@ const Navbar = () => {
           />
         </Link>
         <NavigationButtons
-          user={user}
           setShowSignInDialog={setShowSignInDialog}
           className="hidden md:flex"
         />
@@ -43,12 +63,11 @@ const Navbar = () => {
               <MenuIcon className="text-white" />
             </Button>
           </SheetTrigger>
-          <SheetContent className="max-w-[60vw]">
+          <SheetContent className="z-[999] max-w-[60vw]">
             <VisuallyHidden>
               <SheetTitle>Navigation</SheetTitle>
             </VisuallyHidden>
             <NavigationSideBar
-              user={user}
               setShowSignInDialog={setShowSignInDialog}
               setShowSideBar={setShowSideBar}
             />
@@ -71,24 +90,24 @@ const Navbar = () => {
 };
 
 const SignInOrSignOutButton = ({
-  user,
   setShowSignInDialog,
   setShowSideBar,
   className,
   size,
   variant,
 }: {
-  user: FirebaseUser | null;
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar?: Dispatch<SetStateAction<boolean>>;
   size: "default" | "lg";
   variant?: "link";
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const label = user ? "Sign Out" : "Sign In";
+  const { isAuthenticatedUser, signOut } = useAuth();
+
+  const label = isAuthenticatedUser ? "Sign Out" : "Sign In";
 
   const action = async () => {
-    if (user) {
-      await auth.signOut();
+    if (isAuthenticatedUser) {
+      await signOut();
       toast.success("Logged out successfully.");
       setShowSignInDialog(false);
       setShowSideBar?.(false);
@@ -102,7 +121,7 @@ const SignInOrSignOutButton = ({
       return variant;
     }
 
-    return user ? "default" : "app";
+    return isAuthenticatedUser ? "default" : "app";
   };
 
   return (
@@ -112,7 +131,8 @@ const SignInOrSignOutButton = ({
       className={cn(
         "border px-5 py-5 !text-white",
         className,
-        user && "border-destructive font-bold !text-destructive",
+        !!isAuthenticatedUser &&
+          "border-destructive font-bold !text-destructive",
       )}
       onClick={() => action()}
     >
@@ -122,13 +142,13 @@ const SignInOrSignOutButton = ({
 };
 
 const NavigationButtons = ({
-  user,
   setShowSignInDialog,
   className,
 }: {
-  user: FirebaseUser | null;
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
+  const { userRole } = useAuth();
+
   return (
     <div
       className={cn(
@@ -136,27 +156,35 @@ const NavigationButtons = ({
         className,
       )}
     >
-      <Button asChild variant="link" className="text-shadow px-5">
-        <Link href="/#how-it-works">How It Works</Link>
-      </Button>
-      <Button asChild variant="link" className="text-shadow">
-        <Link href="/#faqs">FAQs</Link>
-      </Button>
-      <Button asChild variant="link" className="text-shadow">
-        <Link href="/about-us" scroll={false}>
-          About Us
-        </Link>
-      </Button>
-      <Button asChild variant="link" className="text-shadow">
-        <Link href="/contact-us" scroll={false}>
-          Contact Us
-        </Link>
-      </Button>
+      {userRole === Role.USER && (
+        <>
+          <Button asChild variant="link" className="text-shadow px-5">
+            <Link href="/#how-it-works">How It Works</Link>
+          </Button>
+          <Button asChild variant="link" className="text-shadow">
+            <Link href="/#faqs">FAQs</Link>
+          </Button>
+          <Button asChild variant="link" className="text-shadow">
+            <Link href="/about-us" scroll={false}>
+              About Us
+            </Link>
+          </Button>
+          <Button asChild variant="link" className="text-shadow">
+            <Link href="/contact-us" scroll={false}>
+              Contact Us
+            </Link>
+          </Button>
+          <Button asChild variant="link" className="text-shadow">
+            <Link href="/my-applications" scroll={false}>
+              My Applications
+            </Link>
+          </Button>
+        </>
+      )}
       <SignInOrSignOutButton
         size="default"
         variant="link"
         className="border-2 border-white !text-white"
-        user={user}
         setShowSignInDialog={setShowSignInDialog}
       />
     </div>
@@ -164,12 +192,10 @@ const NavigationButtons = ({
 };
 
 const NavigationSideBar = ({
-  user,
   setShowSignInDialog,
   setShowSideBar,
   className,
 }: {
-  user: FirebaseUser | null;
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
@@ -236,7 +262,6 @@ const NavigationSideBar = ({
       <SignInOrSignOutButton
         size="default"
         className="my-5"
-        user={user}
         setShowSignInDialog={setShowSignInDialog}
         setShowSideBar={setShowSideBar}
       />
