@@ -38,12 +38,6 @@ const FormOne = () => {
         <FormOneSection form={form} />
 
         <div className="flex justify-end">
-          {/* <Button size="lg" onClick={() => setStep(2)}>
-            Test Next
-          </Button>
-          <Button size="lg" onClick={() => console.log(form.formState.errors)}>
-            Test Error
-          </Button> */}
           <Button size="lg" type="submit">
             Next
           </Button>

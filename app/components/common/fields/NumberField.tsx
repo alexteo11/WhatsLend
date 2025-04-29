@@ -29,9 +29,7 @@ const NumberField = <T extends FieldValues>({
     }
     const patternValue = pattern.replaceAll(
       "{value}",
-      pattern.includes("$")
-        ? new Intl.NumberFormat().format(value)
-        : String(value),
+      new Intl.NumberFormat().format(value),
     );
     return patternValue;
   };

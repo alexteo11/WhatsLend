@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { PaginationState, SortingState } from "@tanstack/react-table";
-import OfferDetailDialog from "../offer-detail-dialog";
+import OfferDetailInfo from "../../../components/data-display/offer-details-info";
 import { OfferData } from "@/schemas/offer.schema";
 import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
 
@@ -103,8 +103,8 @@ const OfferPage = () => {
     updatedAt: new Date(Date.now() - Math.floor(Math.random() * 10000000000)),
     stillValid: Boolean(Math.round(Math.random())),
     lender_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    loan_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
-    user_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    loanId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    userId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     loanAmount: Math.floor(Math.random() * (10000 - 100 + 1)) + 100,
     interestRate: Math.random() / 100,
     adminFee: Math.floor(Math.random() * (100 - 50 + 1)) + 50,
@@ -150,7 +150,7 @@ const OfferPage = () => {
         }}
       />
       {/* <DataTablePagination table={table} /> */}
-      <OfferDetailDialog
+      <OfferDetailInfo
         isOpen={showDialog}
         onOpenChange={setShowDialog}
         offerData={selectedRow || _data[0]}

@@ -126,13 +126,13 @@ export const existingLoanDetailsSchema = z
     hasExistingLoans:
       labeledDataSourceValuePairSchema<typeof booleanSchema>(booleanSchema),
     existingLoanFromBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     existingLoanFromNonBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     monthlyRepaymentToBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     monthlyRepaymentToNonBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
   })
   .superRefine((data, ctx) => {
     if (data.hasExistingLoans.value) {

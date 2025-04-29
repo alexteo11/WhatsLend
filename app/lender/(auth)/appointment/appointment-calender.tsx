@@ -14,7 +14,7 @@ import { Button } from "@/app/components/lib/button";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { OfferData } from "@/schemas/offer.schema";
 import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
-import OfferDetailDialog from "../offer-detail-dialog";
+import OfferDetailInfo from "../../../components/data-display/offer-details-info";
 // import { sampleData } from "../offer/page";
 
 const sampleData = {
@@ -272,7 +272,7 @@ export const AppointmentCalender = () => {
           setView(Views.DAY);
         }}
       />
-      <OfferDetailDialog
+      <OfferDetailInfo
         isOpen={showDialog}
         onOpenChange={setShowDialog}
         offerData={selectedEvent?.data || _fakeData}
