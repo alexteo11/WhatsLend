@@ -21,7 +21,6 @@ import { useAuth } from "@/context/auth.context";
 import { LoaderWrapper } from "@/app/components/common/LoaderWrapper";
 import ApplyButton from "@/app/components/common/ApplyButton";
 import Image from "next/image";
-import Link from "next/link";
 import { authAxios } from "@/lib/axios";
 import { toast } from "sonner";
 import { getErrorMessage } from "@/helper/errorHelper";
@@ -36,6 +35,10 @@ import {
 } from "@/app/components/lib/tooltip";
 import OfferDetailsDialog from "@/app/components/data-display/offer-details-dialog";
 import { useLoanOfferListQuery } from "@/queries/use-loan-offer-list-query";
+import useApplicationDetailsStore, {
+  ActionMode,
+} from "@/stores/useApplicationStore";
+import { useRouter } from "next/navigation";
 
 const MyApplications = () => {
   const { user } = useAuth();
@@ -88,9 +91,11 @@ const ApplicationCard = ({
   data: LoanData;
   index: number;
 }) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const [isLoading, setIsLoading] = React.useState(false);
   const [isOfferDialogOpen, setIsOfferDialogOpen] = React.useState(false);
+  const { setApplicationId, setActionMode } = useApplicationDetailsStore();
 
   const {
     data: offerDataList,
@@ -118,6 +123,12 @@ const ApplicationCard = ({
     setIsOfferDialogOpen(true);
   };
 
+  const navigateToLoanDetails = (id: string, mode: ActionMode) => {
+    setApplicationId(id);
+    setActionMode(mode);
+    router.push("/my-applications/details");
+  };
+
   return (
     <LoaderWrapper isLoading={isLoading}>
       <Card className="p-6">
@@ -125,16 +136,17 @@ const ApplicationCard = ({
           <div className="flex items-center justify-between">
             <h1>Application - {index}</h1>
             <div className="flex items-center justify-end gap-2">
-              <Button variant="outline" asChild>
-                <Link href={`./my-applications/${data.id}?mode=view`}>
-                  <SearchIcon className="mr-1 h-4 w-4" />
-                </Link>
+              <Button
+                variant="outline"
+                onClick={() => navigateToLoanDetails(data.id, "view")}
+              >
+                <SearchIcon className="mr-1 h-4 w-4" />
               </Button>
               {data.status !== LOAN_STATUS_ENUM.CANCELLED && (
-                <Button asChild>
-                  <Link href={`./my-applications/${data.id}?mode=modify`}>
-                    <EditIcon className="mr-1 h-4 w-4" />
-                  </Link>
+                <Button
+                  onClick={() => navigateToLoanDetails(data.id, "modify")}
+                >
+                  <EditIcon className="mr-1 h-4 w-4" />
                 </Button>
               )}
             </div>

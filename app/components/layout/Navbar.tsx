@@ -186,7 +186,7 @@ const NavigationButtons = ({
           </Button>
           <Button asChild variant="link" className="text-shadow">
             <Link href="/contact-us" scroll={false}>
-              Contact Us 123
+              Contact Us
             </Link>
           </Button>
           {isAuthenticatedUser && (
