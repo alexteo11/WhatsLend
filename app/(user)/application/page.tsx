@@ -32,8 +32,8 @@ import { LoaderWrapper } from "../../components/common/LoaderWrapper";
 // import sampleSingpassData2 from "./sampleSingpassData2.json";
 
 import FormSkeleton from "@/app/components/forms/FormSkeleton";
-import DataDetailsSection from "@/app/components/data-display/data-details-section";
-import DataDetailsTableView from "@/app/components/data-display/data-details-table-view";
+// import DataDetailsSection from "@/app/components/data-display/data-details-section";
+// import DataDetailsTableView from "@/app/components/data-display/data-details-table-view";
 import SingpassUserInfo from "@/app/components/data-display/singpass-user-info";
 
 type DeepPartial<T> = T extends object
@@ -463,7 +463,9 @@ export default function Application() {
           onOpenChange={setShowSingpassInfo}
         >
           {singpassUserInfo && (
-            <SingpassUserInfo singpassUserInfo={singpassUserInfo} />
+            <SingpassUserInfo
+              singpassUserInfo={singpassUserInfo as unknown as never}
+            />
           )}
         </BaseDialog>
       </div>

@@ -4,11 +4,11 @@ import {
   dataSourceValuePairSchema,
   dateSchema,
   labeledDataSourceValuePairSchema,
-  LOAN_STATUS_ENUM,
   optionalDataSourceValuePairSchema,
   requiredNumberSchema,
 } from "./common.schema";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
 
 // personal details
 export const personalDetailsSchema = z.object({

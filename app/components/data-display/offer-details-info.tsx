@@ -15,7 +15,7 @@ const OfferDetailInfo = ({ offerData }: { offerData: OfferData }) => {
         title=""
         data={offerData}
         rows={[
-          { title: "User email", path: "email" },
+          // { title: "User email", path: "email" },
           {
             title: "Loan Amount",
             path: "loanAmount",

@@ -86,7 +86,6 @@ const NumberField = <T extends FieldValues>({
               field?.onChange(_value);
               return;
             }
-
             const patternStr = pattern.replaceAll("{value}", "");
             const valueWithoutPattern = Number(
               e.currentTarget.value.replaceAll(patternStr, ""),

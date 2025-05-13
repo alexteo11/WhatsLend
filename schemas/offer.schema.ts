@@ -10,11 +10,11 @@ export const offerPayloadSchema = z.object({
   userId: z.string(),
   email: z.string(),
   loanAmount: z.number(),
-  interestRate: z.number(),
-  adminFee: z.number(),
-  lateInterestRate: z.number(),
-  lateChargeFees: z.number(),
   tenureMonths: z.number(),
+  interestRate: z.number().max(4),
+  lateInterestRate: z.number().max(4),
+  adminFee: z.number(),
+  lateChargeFees: z.number().max(60),
   repaymentPeriod: z.number(),
 });
 

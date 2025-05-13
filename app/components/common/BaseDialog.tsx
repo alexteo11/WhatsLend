@@ -18,7 +18,7 @@ export interface BaseDialogProps extends React.HTMLAttributes<HTMLDivElement> {
 const BaseDialog = ({ isOpen, onOpenChange, children }: BaseDialogProps) => {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange} modal={true}>
-      <DialogContent className="scrollable-dialog-content z-[88888] m-0 overflow-y-scroll rounded-lg p-0">
+      <DialogContent className="scrollable-dialog-content z-[1000] m-0 overflow-y-scroll rounded-lg p-0">
         <VisuallyHidden asChild>
           <DialogHeader />
         </VisuallyHidden>

@@ -48,7 +48,7 @@ const Navbar = ({
   }, [userRole, defaultHomeRoute]);
 
   return (
-    <header className="hero__bg fixed left-0 top-0 z-[888] h-[var(--nav-height)] w-full shadow-xl">
+    <header className="hero__bg fixed left-0 top-0 z-[50] h-[var(--nav-height)] w-full shadow-xl">
       <nav
         className={cn(
           "flex items-center justify-between py-3",
@@ -162,7 +162,7 @@ const NavigationButtons = ({
 }: {
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { userRole } = useAuth();
+  const { userRole, isAuthenticatedUser } = useAuth();
 
   return (
     <div
@@ -186,14 +186,16 @@ const NavigationButtons = ({
           </Button>
           <Button asChild variant="link" className="text-shadow">
             <Link href="/contact-us" scroll={false}>
-              Contact Us
+              Contact Us 123
             </Link>
           </Button>
-          <Button asChild variant="link" className="text-shadow">
-            <Link href="/my-applications" scroll={false}>
-              My Applications
-            </Link>
-          </Button>
+          {isAuthenticatedUser && (
+            <Button asChild variant="link" className="text-shadow">
+              <Link href="/my-applications" scroll={false}>
+                My Applications
+              </Link>
+            </Button>
+          )}
         </>
       )}
       <SignInOrSignOutButton

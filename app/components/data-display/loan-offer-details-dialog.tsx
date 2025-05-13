@@ -1,4 +1,3 @@
- 
 import BaseDialog, {
   BaseDialogProps,
 } from "@/app/components/common/BaseDialog";
@@ -16,23 +15,55 @@ import {
   TabsTrigger,
 } from "@/app/components/lib/tabs";
 import { OfferData } from "@/schemas/offer.schema";
-import React from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import LoanDetailsInfo from "./loan-details-info";
 import OfferDetailInfo from "./offer-details-info";
 import { LoanData } from "@/schemas/loan.schema";
 import { cn } from "@/lib/utils";
+import { useLoanApplicationDetailsQuery } from "@/queries/use-loan-application-details-query";
+import { Loader2 } from "lucide-react";
 
+// loanData = must have
+// offerData = optional
 interface OfferDetailDialogProps extends BaseDialogProps {
-  loanData: LoanData;
+  loanData?: LoanData;
   offerData?: OfferData;
 }
 
 const LoanOfferDetailsDialog = ({
   isOpen,
   onOpenChange,
-  loanData,
   offerData,
+  loanData,
 }: OfferDetailDialogProps) => {
+  const { data, isLoading, refetch } = useLoanApplicationDetailsQuery(
+    offerData?.loanId,
+  );
+  const [_loanData, setLoanData] = useState<LoanData | undefined>(loanData);
+
+  useEffect(() => {
+    // if already fetched data, reuse it
+    if (data && offerData?.loanId === _loanData?.id) {
+      return;
+    }
+
+    if (!offerData?.loanId) {
+      return;
+    }
+
+    (async () => {
+      await refetch();
+      setLoanData(data);
+    })();
+  }, [offerData?.loanId, data]);
+
+  const showLoading = useMemo(() => {
+    if (!offerData) {
+      return false;
+    }
+    return isLoading;
+  }, [offerData, isLoading]);
+
   return (
     <BaseDialog isOpen={isOpen} onOpenChange={onOpenChange}>
       <div className="w-[50vw] min-w-[300px] p-10">
@@ -76,7 +107,13 @@ const LoanOfferDetailsDialog = ({
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <LoanDetailsInfo loanData={loanData} />
+                {_loanData && !showLoading ? (
+                  <LoanDetailsInfo loanData={_loanData} />
+                ) : (
+                  <div className="flex h-[300px] items-center justify-center">
+                    <Loader2 className="size-10 animate-spin items-center text-app" />
+                  </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>

@@ -1,97 +1,161 @@
 "use client";
 
-import { Button } from "@/app/components/lib/button";
-import { Calendar } from "@/app/components/lib/calendar";
+import { LoaderWrapper } from "@/app/components/common/LoaderWrapper";
 import {
   Card,
   CardContent,
   CardDescription,
   CardTitle,
 } from "@/app/components/lib/card";
+import { ChartConfig, ChartContainer } from "@/app/components/lib/chart";
 import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/app/components/lib/chart";
-import { DateRangePicker } from "@/app/components/lib/date-range-picker";
+  DateRangePicker,
+  DateRangeType,
+} from "@/app/components/lib/date-range-picker";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/app/components/lib/popover";
+  LENDER_DASHBOARD_SUMMARY_TYPE_ENUM,
+  OFFER_STATUS_ENUM,
+} from "@/constants/commonEnums";
+import { useAuth } from "@/context/auth.context";
 import { formatDate } from "@/helper/dateFormatter";
 import { cn } from "@/lib/utils";
-import { addDays, format, subDays } from "date-fns";
+import { useLenderDashboardDetailsQuery } from "@/queries/use-lender-dashboard-details-query";
+import { useLenderDashboardSummaryQuery } from "@/queries/use-lender-dashboard-summary-query";
+import { LenderDashboardDetails } from "@/schemas/dashboard.schema";
+import { subDays } from "date-fns";
 import {
   BanknoteArrowDown,
-  CalendarIcon,
   CaptionsOff,
   CheckCheck,
+  Loader2,
   Send,
 } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import { DateRange } from "react-day-picker";
-import { Bar, BarChart, Tooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  Line,
+  LineChart,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
-const SummaryData = [
+const SummaryDataList = [
   {
-    id: 1,
+    id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_SENT,
     title: "Loan Offer Sent",
-    content: "10",
+    content: "0",
     desc: "Total number of loan offers sent",
     icon: <Send className="text-app" />,
+    status: OFFER_STATUS_ENUM.ISSUED,
   },
   {
-    id: 2,
+    id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_ACCEPTED,
     title: "Loan Offers Accepted",
-    content: "30",
+    content: "0",
     desc: "Total number of loan offers accepted",
     icon: <CheckCheck className="text-app" />,
+    status: OFFER_STATUS_ENUM.ACCEPTED,
   },
   {
-    id: 3,
+    id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_REJECTED,
     title: "Loan Offers Rejected",
-    content: "5",
+    content: "0",
     desc: "Total number of loan offers rejected",
     icon: <CaptionsOff className="text-app" />,
+    status: OFFER_STATUS_ENUM.REJECTED,
   },
   {
-    id: 4,
+    id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_DISBURSED,
     title: "Loan Offers Disbursed",
-    content: "7",
+    content: "0",
     desc: "Total number of loan offers disbursed",
     icon: <BanknoteArrowDown className="text-app" />,
+    status: OFFER_STATUS_ENUM.COMPLETED,
   },
 ];
 
 const Dashboard = () => {
-  const [selectedSummary, setSelectedSummary] = React.useState<number>(1);
+  const [selectedSummary, setSelectedSummary] = React.useState(
+    SummaryDataList[0],
+  );
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 1),
+    from: subDays(new Date(new Date().setHours(0, 0, 0, 0)), 29),
+    to: new Date(new Date().setHours(23, 59, 59, 999)),
   });
 
+  const { user } = useAuth();
+
+  const { data: summaryData, isLoading: isLoadingSummary } =
+    useLenderDashboardSummaryQuery(
+      {
+        start_date: date?.from?.toISOString(),
+        end_date: date?.to?.toISOString(),
+      },
+      user?.uid,
+    );
+  const { data: detailsData, isLoading: isLoadingDetails } =
+    useLenderDashboardDetailsQuery(
+      {
+        start_date: date?.from?.toISOString(),
+        end_date: date?.to?.toISOString(),
+        status: selectedSummary.status,
+      },
+      user?.uid,
+    );
+
+  const _summaryData = useMemo(() => {
+    if (!summaryData) {
+      return SummaryDataList;
+    }
+
+    Object.entries(summaryData).forEach(([key, value]) => {
+      const data = SummaryDataList.find((item) => item.id === key);
+      if (data) {
+        data.content = String(value);
+      }
+    });
+
+    return SummaryDataList;
+  }, [summaryData]);
+
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
-        <h1 className="lender-page-title">Dashboard</h1>
-        <div>
-          <DateRangePicker date={date} onDateChange={setDate} />
+    <LoaderWrapper isLoading={isLoadingSummary}>
+      <div className="flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <h1 className="lender-page-title">Dashboard</h1>
+          <div>
+            <DateRangePicker
+              date={date}
+              onDateChange={setDate}
+              selectedDateRangeType={DateRangeType.LAST_30_DAYS}
+            />
+          </div>
         </div>
+        <div className="grid grid-cols-2 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4">
+          {_summaryData.map((data, index) => (
+            <SummaryCard
+              key={index}
+              data={data}
+              isSelected={selectedSummary.id === data.id}
+              onClick={() => {
+                const selected = _summaryData.find(
+                  (item) => item.id === data.id,
+                );
+                setSelectedSummary(selected || _summaryData[0]);
+              }}
+            />
+          ))}
+        </div>
+        <DashboardChart
+          title={selectedSummary.title}
+          data={detailsData || {}}
+          isLoading={isLoadingDetails}
+        />
       </div>
-      <div className="grid grid-cols-2 gap-4 p-1 md:grid-cols-2 lg:grid-cols-4">
-        {SummaryData.map((data, index) => (
-          <SummaryCard
-            key={index}
-            data={data}
-            isSelected={selectedSummary === data.id}
-            onClick={() => setSelectedSummary(data.id)}
-          />
-        ))}
-      </div>
-      <DashboardChart title={SummaryData[selectedSummary - 1].title} />
-    </div>
+    </LoaderWrapper>
   );
 };
 
@@ -132,179 +196,74 @@ const SummaryCard = ({
   );
 };
 
-const DashboardChart = ({ title }: { title: string }) => {
+const DashboardChart = ({
+  title,
+  data,
+  isLoading,
+}: {
+  title: string;
+  data: LenderDashboardDetails;
+  isLoading: boolean;
+}) => {
   const chartData = useMemo(() => {
-    return [
-      {
-        date: subDays(new Date(), 28),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 27),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 26),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 25),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 24),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 23),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 22),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 21),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 20),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 19),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 18),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 17),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 16),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 15),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 14),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 13),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 12),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 11),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 10),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 9),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 8),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 7),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 6),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 5),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 4),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 3),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 2),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-      {
-        date: subDays(new Date(), 1),
-        [title]: Math.floor(Math.random() * 1000),
-      },
-    ];
-  }, [title]);
+    return Object.entries(data).map(([key, item]) => ({
+      date: new Date(key),
+      [title]: item,
+    }));
+  }, [data]);
 
   const chartConfig = {
     data: {
       label: "date",
       color: "hsl(270, 90%, 73%)",
     },
-    "Loan Offer Sent": {
-      label: "Loan Offer Sent",
-      color: "hsl(270, 90%, 73%)",
-    },
-    "Loan Offer Accepted": {
-      label: "Loan Offer Accepted",
-      color: "hsl(270, 90%, 73%)",
-    },
-    "Loan Offer Rejected": {
-      label: "Loan Offer Rejected",
-      color: "hsl(270, 90%, 73%)",
-    },
-    "Loan Offer Disbursed": {
-      label: "Loan Offer Disbursed",
+    [title]: {
+      label: title,
       color: "hsl(270, 90%, 73%)",
     },
   } satisfies ChartConfig;
 
-  console.log({ chartConfig, title, chartData });
-
   return (
     <div>
-      <h1 className="lender-page-title">Overview</h1>
-      <ChartContainer
-        config={chartConfig}
-        className="max-h-[50vh] min-h-[200px] w-full"
-      >
-        <BarChart accessibilityLayer data={chartData}>
-          <YAxis axisLine={false} tickLine={false} tickMargin={10} />
-          <XAxis
-            dataKey="date"
-            tickLine={false}
-            tickMargin={10}
-            axisLine={false}
-            tickFormatter={(value) => formatDate(value, false)}
-          />
-          <Bar
-            dataKey={title}
-            fill="var(--color-data)"
-            radius={4}
-            width={1000}
-          />
-          <Tooltip cursor={false} />
-          {/* <ChartTooltip
+      <h1 className="lender-page-title mb-5">Overview</h1>
+      {isLoading ? (
+        <div className="flex h-[300px] items-center justify-center">
+          <Loader2 className="size-10 animate-spin items-center text-app" />
+        </div>
+      ) : (
+        <ChartContainer
+          config={chartConfig}
+          className="max-h-[50vh] min-h-[200px] w-full"
+        >
+          <LineChart accessibilityLayer data={chartData}>
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+              allowDecimals={false}
+            />
+            <XAxis
+              dataKey="date"
+              tickLine={false}
+              tickMargin={10}
+              axisLine={false}
+              tickFormatter={(value) => formatDate(value, false)}
+            />
+            <Line
+              dataKey={title}
+              stroke="var(--color-data)"
+              strokeWidth={2}
+              dot={false}
+            />
+            <Tooltip cursor={false} />
+            {/* <ChartTooltip
             cursor={{ fill: "#f00" }}
             label={false}
             content={<ChartTooltipContent labelKey={title} />}
           /> */}
-        </BarChart>
-      </ChartContainer>
+          </LineChart>
+        </ChartContainer>
+      )}
     </div>
   );
 };

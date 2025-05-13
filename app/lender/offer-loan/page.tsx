@@ -18,7 +18,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-// http://localhost:3000/lender/offer-loan?userId=qwe123&email=qweqweqe@gmail.com&loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
+// http://localhost:3000/lender/offer-loan?userId=2X0w1yfAz2UXt4LFKoHVBNwtaz62&email=qweqweqe@gmail.com&loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
 const OfferLoanPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -39,7 +39,18 @@ const OfferLoanPage = () => {
   } = useLoanApplicationDetailsQuery(loanId);
 
   const form = useForm<OfferPayLoad>({
-    resolver: zodResolver(offerPayloadSchema),
+    resolver: zodResolver(
+      offerPayloadSchema.refine(
+        (data) => {
+          const max = Math.round((data.loanAmount || 0) * 0.1);
+          return data.adminFee <= max;
+        },
+        {
+          message: "Admin Fee cannot exceed 10% of the loan amount.",
+          path: ["adminFee"],
+        },
+      ),
+    ),
     reValidateMode: "onChange",
     defaultValues: {
       // TODO: ask William should we use jwt token to encrypt those
@@ -73,9 +84,7 @@ const OfferLoanPage = () => {
           variant="outline"
           onClick={async () => {
             await refetch();
-            if (loanData) {
-              setShowLoanDetailsDialog(true);
-            }
+            setShowLoanDetailsDialog(true);
           }}
           isLoading={isLoadingLoanDetails}
         >
@@ -117,33 +126,37 @@ const OfferLoanPage = () => {
                 <BaseFormField
                   form={form}
                   fieldRef="interestRate"
-                  label="Interest Rate (%)"
+                  label="Interest Rate per month (%)"
                   type="number"
                   pattern="{value} %"
-                />
-
-                <BaseFormField
-                  form={form}
-                  fieldRef="adminFee"
-                  label="Admin Fee ($)"
-                  type="number"
-                  pattern="$ {value}"
+                  description={`Maximum for Interest Rate is 4%.`}
                 />
 
                 <BaseFormField
                   form={form}
                   fieldRef="lateInterestRate"
-                  label="Late Interest Rate (%)"
+                  label="Late Interest Rate per month (%)"
                   type="number"
                   pattern="{value} %"
+                  description={`Maximum for Late Interest Rate is 4%`}
+                />
+
+                <BaseFormField
+                  form={form}
+                  fieldRef="adminFee"
+                  label="Admin Fee - only 1 time charge ($)"
+                  type="number"
+                  pattern="$ {value}"
+                  description={`Maximum for Admin Fee is 10% of the Loan Amount.`}
                 />
 
                 <BaseFormField
                   form={form}
                   fieldRef="lateChargeFees"
-                  label="Late Charge Fees ($)"
+                  label="Late Charge Fees - charged per month ($)"
                   type="number"
                   pattern="$ {value}"
+                  description={`Maximum for Late Charge Fees is $60.`}
                 />
 
                 <BaseFormField
@@ -164,11 +177,13 @@ const OfferLoanPage = () => {
           </CardContent>
         </Card>
       </div>
-      <LoanOfferDetailsDialog
-        isOpen={showLoanDetailsDialog}
-        onOpenChange={setShowLoanDetailsDialog}
-        loanData={loanData as NonNullable<LoanData>}
-      />
+      {loanData && (
+        <LoanOfferDetailsDialog
+          isOpen={showLoanDetailsDialog}
+          onOpenChange={setShowLoanDetailsDialog}
+          loanData={loanData as NonNullable<LoanData>}
+        />
+      )}
     </LoaderWrapper>
   );
 };
