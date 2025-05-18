@@ -1,0 +1,49 @@
+import React from "react";
+import { Slottable } from "@radix-ui/react-slot";
+import { Loader2 } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+interface LoaderProps {
+  children: React.ReactNode;
+  isLoading: boolean;
+  loadingComponent?: React.ReactNode;
+  label?: string;
+  isContainer?: boolean;
+}
+
+export const LoaderWrapper = ({
+  children,
+  isLoading,
+  loadingComponent,
+  label = "Loading",
+  className,
+  isContainer = false,
+}: LoaderProps & React.HTMLAttributes<HTMLDivElement>) => {
+  return (
+    <div className={cn("relative h-full w-full", className)}>
+      <Slottable>{children}</Slottable>
+      {isLoading && (
+        <div
+          className={cn(
+            "left-0 top-0 z-40 flex h-full w-full flex-col items-center justify-center gap-3 bg-black/20 text-app",
+            isContainer ? "absolute" : "fixed",
+          )}
+        >
+          <div className="flex animate-pulse flex-col items-center justify-center gap-3 rounded-lg bg-white/85 p-10">
+            {loadingComponent ? (
+              loadingComponent
+            ) : (
+              <Loader2 className="size-10 animate-spin items-center" />
+            )}
+            <div className="flex items-baseline gap-2 font-bold">
+              <span className="animate-pulse">{label}</span>
+              <div className="h-1 w-1 animate-pulse rounded-full bg-current delay-200"></div>
+              <div className="delay-400 h-1 w-1 animate-pulse rounded-full bg-current"></div>
+              <div className="h-1 w-1 animate-pulse rounded-full bg-current delay-200"></div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
