@@ -10,6 +10,7 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
+  ColumnSort,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -33,103 +34,129 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/lib/select";
+import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  fetchData: (
-    pagination: PaginationState,
-    sorting: SortingState,
-  ) => Promise<void>;
+  columns: ColumnDef<TData, TValue>[];
+  isLoading: boolean;
   onRowClick: (data: TData) => void;
+  onFilterChange: (filter: LoanOfferFilter) => void;
+}
+
+// interface Filter {
+// pagination: PaginationState;
+// sorting: ColumnSort;
+// }
+
+// export interface LoanOfferFilter extends Filter {
+export interface LoanOfferFilter {
+  keyword?: string;
+  date?: DateRange;
+  status?: OFFER_STATUS_ENUM & "all";
 }
 
 // https://tanstack.com/table/v8/docs/api/features/pagination
 export function DataTable<TData, TValue>({
-  columns,
   data,
-  fetchData,
+  columns,
+  isLoading,
   onRowClick,
+  onFilterChange,
 }: DataTableProps<TData, TValue>) {
-  const [isLoading, setIsLoading] = React.useState(false);
   const [pagination, setPagination] = React.useState<PaginationState>({
     pageIndex: 0,
     pageSize: 10,
   });
-  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [sorting, setSorting] = React.useState<SortingState>([
+    {
+      id: "createdAt",
+      desc: true,
+    },
+  ]);
 
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    manualPagination: true,
-    manualSorting: true,
-    pageCount: 2,
+    // manualPagination: true,
+    // manualSorting: true,
+    pageCount: Math.ceil(data.length / pagination.pageSize) || 1,
     autoResetAll: false,
     onPaginationChange: (data) => {
-      console.log({ data });
       setPagination(data);
-      console.log(table.getState().pagination.pageIndex);
     },
     getPaginationRowModel: getPaginationRowModel(),
+    // onSortingChange: (item) => {
+    //   setSorting(item);
+    // },
     onSortingChange: setSorting,
-    // getSortedRowModel: getSortedRowModel(),
+    // enableMultiSort: false,
+    // enableSorting: false, // TODO: update in future
+    getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
       pagination,
     },
   });
 
-  const _fetchData = async () => {
-    setIsLoading(true);
-    try {
-      await fetchData(pagination, sorting);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [keyword, setKeyword] = React.useState("");
+  const [status, setStatus] = React.useState<OFFER_STATUS_ENUM & "all">();
+  const [date, setDate] = React.useState<DateRange>({
+    from: new Date(new Date().setHours(0, 0, 0, 0)),
+    to: addDays(new Date().setHours(23, 59, 59, 999), 1),
+  });
 
   React.useEffect(() => {
-    console.log("why", pagination.pageIndex);
-
-    _fetchData();
-  }, [pagination.pageIndex]);
-
-  const [keyword, setKeyword] = React.useState("");
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(new Date(), 1),
-  });
+    onFilterChange({
+      keyword,
+      status,
+      date,
+      // pagination,
+      // sorting: sorting[0],
+    });
+  }, [keyword, status, date]);
+  // }, [keyword, status, date, pagination.pageIndex, sorting]);
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-4 py-4">
-        Search:{" "}
+        <div> Search: </div>
         <Input
           className="w-auto"
           placeholder="Search by email"
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
-        Status:{" "}
+        <div>Status: </div>
         <Select
           defaultValue="all"
-          onValueChange={(value) => console.log({ value })}
+          onValueChange={(value) => {
+            setStatus(value as NonNullable<LoanOfferFilter["status"]>);
+          }}
         >
           <SelectTrigger className="w-[150px] rounded-md border px-3 py-2">
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value="pending">Pending</SelectItem>
-            <SelectItem value="accepted">Accepted</SelectItem>
-            <SelectItem value="rejected">Rejected</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.ACCEPTED}>Accepted</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.COMPLETED}>
+              Completed
+            </SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.ISSUED}>Issued</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.REJECTED}>Rejected</SelectItem>
           </SelectContent>
         </Select>
         <div className="flex-auto" />
         <DateRangePicker
           date={date}
-          onDateChange={setDate}
+          onDateChange={(date) => {
+            if (date) {
+              setDate(date);
+            }
+          }}
           className="flex-auto"
         />
       </div>

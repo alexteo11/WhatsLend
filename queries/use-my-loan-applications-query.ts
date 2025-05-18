@@ -14,7 +14,7 @@ export const useMyLoanApplicationsQuery = (
   return useQuery({
     queryKey: [QUERY_KEY.MyLoanApplications, userId, page, pageSize],
     queryFn: async () => {
-      const res = await authAxios.get(`loan/user/${userId}`, {
+      const res = await authAxios.get(`/loan/user/${userId}`, {
         params: { page, pageSize },
       });
       const result = z.array(loanSchema).safeParse(res.data.data);

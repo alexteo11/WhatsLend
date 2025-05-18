@@ -14,31 +14,23 @@ import { authAxios } from "@/lib/axios";
 import { QUERY_KEY } from "@/queries/constants";
 import { useMyLoanApplicationsQuery } from "@/queries/use-my-loan-applications-query";
 import { LoanData, loanSchema } from "@/schemas/loan.schema";
+import useApplicationDetailsStore, {
+  ActionMode,
+} from "@/stores/useApplicationStore";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
 import { ArrowLeftIcon } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-enum ActionMode {
-  View = "view",
-  Modify = "modify",
-}
-
-const ViewModifyApplicationPage = ({
-  params,
-}: {
-  params: Promise<{ applicationId: string }>;
-}) => {
+const ViewModifyApplicationPage = () => {
+  const { applicationId, actionMode } = useApplicationDetailsStore();
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const actionMode = searchParams.get("mode") as ActionMode;
 
   const { user } = useAuth();
 
-  const { applicationId } = React.use(params);
   const { data, isLoading } = useMyLoanApplicationsQuery(user?.uid);
   const [isSubmittingForm, setIsSubmittingForm] = React.useState(false);
 
@@ -118,18 +110,12 @@ const FormContent = ({
   return (
     <Form {...form}>
       <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
-        <FormOneSection
-          form={form}
-          isViewMode={actionMode === ActionMode.View}
-        />
-        <FormTwoSection
-          form={form}
-          isViewMode={actionMode === ActionMode.View}
-        />
+        <FormOneSection form={form} isViewMode={actionMode === "view"} />
+        <FormTwoSection form={form} isViewMode={actionMode === "view"} />
         <FormThreeSection
           form={form}
           haveExistingLoan={haveExistingLoan}
-          isViewMode={actionMode === ActionMode.View}
+          isViewMode={actionMode === "view"}
         />
         <div className="flex justify-end gap-4">
           <Button
@@ -141,7 +127,7 @@ const FormContent = ({
             Back
           </Button>
 
-          {actionMode === ActionMode.Modify && (
+          {actionMode === "modify" && (
             <Button size="lg" type="submit">
               Modify
             </Button>

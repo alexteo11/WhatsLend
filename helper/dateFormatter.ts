@@ -1,4 +1,14 @@
-export const formatDate = (date: Date, showDateTime = true) => {
+export const formatDate = (date?: Date | string, showDateTime = true) => {
+  if (!date) {
+    return "";
+  }
+
+  let _date = date;
+
+  if (typeof _date === "string") {
+    _date = new Date(_date);
+  }
+
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "short",
@@ -11,5 +21,5 @@ export const formatDate = (date: Date, showDateTime = true) => {
     options.second = "numeric";
   }
 
-  return new Intl.DateTimeFormat("en-GB", options).format(date);
+  return new Intl.DateTimeFormat("en-GB", options).format(_date);
 };

@@ -22,10 +22,15 @@ const SortableColumn = ({
   column: Column<OfferData>;
   title: string;
 }) => {
+  // return title;
+  // TODO: enhance in future
   return (
     <Button
       variant="ghost"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      onClick={() => {
+        console.log(column.getIsSorted());
+        return column.toggleSorting(column.getIsSorted() === "asc");
+      }}
     >
       {title}
       <ArrowUpDown className="ml-2 h-4 w-4" />

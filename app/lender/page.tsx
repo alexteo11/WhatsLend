@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
-import { Navbar } from "../components";
+import { LoaderWrapper } from "../components/common/LoaderWrapper";
 
 const Lender = () => {
   const router = useRouter();
@@ -11,7 +11,11 @@ const Lender = () => {
     router.replace("/lender/dashboard");
   }, []);
 
-  return <Navbar />;
+  return (
+    <LoaderWrapper isLoading>
+      <div />
+    </LoaderWrapper>
+  );
 };
 
 export default Lender;

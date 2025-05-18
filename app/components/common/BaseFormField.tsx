@@ -33,7 +33,6 @@ type FieldType =
   | "radio"
   | "select"
   | "textAutoComplete";
-// | "checkbox";
 
 interface BaseProps<T extends FieldValues> {
   form: UseFormReturn<T>;
@@ -60,7 +59,7 @@ export interface NumberFieldProps<T extends FieldValues> extends BaseProps<T> {
 }
 
 export interface OptionsFieldProps<T extends FieldValues> extends BaseProps<T> {
-  type: "select" | "radio" | "textAutoComplete"; // | "checkbox";
+  type: "select" | "radio" | "textAutoComplete";
   options: { label: string; value: string | number | boolean }[];
   optionLabelRef?: FieldPath<T>;
 }
@@ -75,8 +74,6 @@ type BaseFormFieldProps<T extends FieldValues> =
   | NumberFieldProps<T>
   | OptionsFieldProps<T>
   | DateFieldProps<T>;
-// &
-// React.InputHTMLAttributes<HTMLInputElement>;
 
 const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
   const { form, fieldRef: name, label, type, description } = props;
@@ -128,10 +125,6 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
     if (type === "date") {
       return <DateField field={field} {...props} disabled={isDisabled} />;
     }
-
-    // if (type === "checkbox") {
-    //   return <CheckboxField field={field} {...props} />;
-    // }
   };
 
   return (
@@ -154,34 +147,5 @@ const BaseFormField = <T extends FieldValues>(props: BaseFormFieldProps<T>) => {
     />
   );
 };
-
-// const CheckboxField = <T extends FieldValues>({
-//   field,
-//   options,
-// }: OptionsFieldProps<T> & {
-//   form: UseFormReturn<T>;
-//   field: ControllerRenderProps<T, FieldPath<T>>;
-// }) => {
-//   return options.map((option) => (
-//     <FormItem
-//       key={option.value}
-//       className="flex flex-row items-start space-x-3 space-y-0"
-//     >
-//       <FormControl>
-//         <Checkbox
-//           checked={field.value?.includes(option.value)}
-//           onCheckedChange={(checked) => {
-//             return checked
-//               ? field.onChange([...field.value, option.value])
-//               : field.onChange(
-//                   field.value?.filter((value: string) => value !== option.value)
-//                 );
-//           }}
-//         />
-//       </FormControl>
-//       <FormLabel className="text-sm font-normal">{option.label}</FormLabel>
-//     </FormItem>
-//   ));
-// };
 
 export default BaseFormField;

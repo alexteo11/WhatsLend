@@ -1,22 +1,5 @@
 import { z } from "zod";
 
-export enum OFFER_STATUS_ENUM {
-  ISSUED = "ISSUED",
-  ACCEPTED = "ACCEPTED",
-  REJECTED = "REJECTED",
-  COMPLETED = "COMPLETED",
-  EXPIRED = "EXPIRED",
-}
-
-export enum LOAN_STATUS_ENUM {
-  // initiated
-  INITIAL = "INITIATED",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  EXPIRED = "EXPIRED",
-  CANCELLED = "CANCELLED",
-}
-
 export enum SOURCES_ENUM {
   SINGPASS = "SINGPASS",
   MANUAL = "MANUAL",

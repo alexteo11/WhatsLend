@@ -4,11 +4,11 @@ import {
   dataSourceValuePairSchema,
   dateSchema,
   labeledDataSourceValuePairSchema,
-  LOAN_STATUS_ENUM,
   optionalDataSourceValuePairSchema,
   requiredNumberSchema,
 } from "./common.schema";
 import { isValidPhoneNumber } from "react-phone-number-input";
+import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
 
 // personal details
 export const personalDetailsSchema = z.object({
@@ -126,13 +126,13 @@ export const existingLoanDetailsSchema = z
     hasExistingLoans:
       labeledDataSourceValuePairSchema<typeof booleanSchema>(booleanSchema),
     existingLoanFromBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     existingLoanFromNonBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     monthlyRepaymentToBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
     monthlyRepaymentToNonBank:
-      optionalDataSourceValuePairSchema(requiredNumberSchema),
+      optionalDataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
   })
   .superRefine((data, ctx) => {
     if (data.hasExistingLoans.value) {

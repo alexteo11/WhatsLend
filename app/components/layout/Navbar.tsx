@@ -26,18 +26,29 @@ const ROLE_NAV_BAR_MAP = {
   },
 };
 
-const Navbar = () => {
+const Navbar = ({
+  hideButtons,
+  defaultHomeRoute,
+}: {
+  hideButtons?: boolean;
+  defaultHomeRoute?: string;
+}) => {
   const { userRole } = useAuth();
   const [showSideBar, setShowSideBar] = useState(false);
   const [showSignInDialog, setShowSignInDialog] = useState(false);
 
-  const { homeRoute } = useMemo(
-    () => ROLE_NAV_BAR_MAP[userRole] || {},
-    [userRole],
-  );
+  const { homeRoute } = useMemo(() => {
+    if (defaultHomeRoute) {
+      return {
+        homeRoute: defaultHomeRoute,
+      };
+    }
+
+    return ROLE_NAV_BAR_MAP[userRole] || {};
+  }, [userRole, defaultHomeRoute]);
 
   return (
-    <header className="hero__bg fixed left-0 top-0 z-[888] h-[var(--nav-height)] w-full shadow-xl">
+    <header className="hero__bg fixed left-0 top-0 z-[50] h-[var(--nav-height)] w-full shadow-xl">
       <nav
         className={cn(
           "flex items-center justify-between py-3",
@@ -53,26 +64,30 @@ const Navbar = () => {
             className="object-contain"
           />
         </Link>
-        <NavigationButtons
-          setShowSignInDialog={setShowSignInDialog}
-          className="hidden md:flex"
-        />
-        <Sheet open={showSideBar} onOpenChange={setShowSideBar}>
-          <SheetTrigger className="block md:hidden">
-            <Button size="icon" variant="link" asChild>
-              <MenuIcon className="text-white" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent className="z-[999] max-w-[60vw]">
-            <VisuallyHidden>
-              <SheetTitle>Navigation</SheetTitle>
-            </VisuallyHidden>
-            <NavigationSideBar
-              setShowSignInDialog={setShowSignInDialog}
-              setShowSideBar={setShowSideBar}
-            />
-          </SheetContent>
-        </Sheet>
+        {!hideButtons && (
+          <NavigationButtons
+            setShowSignInDialog={setShowSignInDialog}
+            className="hidden md:flex"
+          />
+        )}
+        {!hideButtons && (
+          <Sheet open={showSideBar} onOpenChange={setShowSideBar}>
+            <SheetTrigger className="block md:hidden">
+              <Button size="icon" variant="link" asChild>
+                <MenuIcon className="text-white" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent className="z-[999] max-w-[60vw]">
+              <VisuallyHidden>
+                <SheetTitle>Navigation</SheetTitle>
+              </VisuallyHidden>
+              <NavigationSideBar
+                setShowSignInDialog={setShowSignInDialog}
+                setShowSideBar={setShowSideBar}
+              />
+            </SheetContent>
+          </Sheet>
+        )}
       </nav>
       <BaseDialog isOpen={showSignInDialog} onOpenChange={setShowSignInDialog}>
         <Login
@@ -147,7 +162,7 @@ const NavigationButtons = ({
 }: {
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { userRole } = useAuth();
+  const { userRole, isAuthenticatedUser } = useAuth();
 
   return (
     <div
@@ -174,11 +189,13 @@ const NavigationButtons = ({
               Contact Us
             </Link>
           </Button>
-          <Button asChild variant="link" className="text-shadow">
-            <Link href="/my-applications" scroll={false}>
-              My Applications
-            </Link>
-          </Button>
+          {isAuthenticatedUser && (
+            <Button asChild variant="link" className="text-shadow">
+              <Link href="/my-applications" scroll={false}>
+                My Applications
+              </Link>
+            </Button>
+          )}
         </>
       )}
       <SignInOrSignOutButton

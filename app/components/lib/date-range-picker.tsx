@@ -12,9 +12,10 @@ import { Calendar } from "./calendar";
 interface DateRangePicker extends React.HTMLAttributes<HTMLDivElement> {
   date: DateRange | undefined;
   onDateChange: (date: DateRange | undefined) => void;
+  selectedDateRangeType?: DateRangeType;
 }
 
-enum DateRangeType {
+export enum DateRangeType {
   CUSTOM_RANGE = "1",
   TODAY = "2",
   YESTERDAY = "3",
@@ -34,11 +35,15 @@ const dateRangeTypeOptions = [
   { value: DateRangeType.LAST_MONTH, label: "Last month" },
 ];
 
-export const DateRangePicker = ({ date, onDateChange }: DateRangePicker) => {
+export const DateRangePicker = ({
+  date,
+  onDateChange,
+  selectedDateRangeType: _selectedDateRangeType,
+}: DateRangePicker) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [tempDate, setTempDate] = useState<DateRange | undefined>(date);
   const [prevDateRangeType, setPrevDateRangeType] = useState<DateRangeType>(
-    DateRangeType.CUSTOM_RANGE,
+    _selectedDateRangeType || DateRangeType.CUSTOM_RANGE,
   );
   const [selectedDateRangeType, setSelectedDateRangeType] =
     useState<DateRangeType>(prevDateRangeType);
