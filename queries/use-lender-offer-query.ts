@@ -57,23 +57,6 @@ export const useLenderOfferQuery = (
           params,
         });
         return res.data.data;
-        // return [
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        //   // ...res.data.data,
-        //   ...res.data.data,
-        //   ...res.data.data,
-        // ];
       } catch (err) {
         toast.error(getErrorMessage(err));
         throw new Error("Something went wrong mtfk");
