@@ -1,17 +1,17 @@
-import { authAxios } from "@/lib/axios";
 import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import axios from "@/lib/axios";
+import { LoanData } from "@/schemas/loan.schema";
 import { getErrorMessage } from "@/helper/errorHelper";
-import { QUERY_KEY } from "./constants";
-import { OfferData } from "@/schemas/offer.schema";
+import { QUERY_KEY } from "../constants";
 
-export const useLoanOfferListQuery = (loanId?: string) => {
+export const useLoanApplicationDetailsQuery = (loanId?: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LoanOfferList, loanId],
+    queryKey: [QUERY_KEY.LoanApplicationDetails, loanId],
     queryFn: async () => {
       try {
-        const res = await authAxios.get<{ data: OfferData[] }>(
-          `offer/${loanId}/list`,
+        const res = await axios.get<{ data: LoanData }>(
+          `/loan/details/${loanId}`,
         );
         return res.data.data;
       } catch (err) {
@@ -20,6 +20,6 @@ export const useLoanOfferListQuery = (loanId?: string) => {
       }
     },
     enabled: false,
-    // placeholderData: keepPreviousData,
+    placeholderData: keepPreviousData,
   });
 };

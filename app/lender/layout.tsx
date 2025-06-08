@@ -1,9 +1,8 @@
-import "../globals.css";
 import type { Metadata } from "next";
 import RootProviders from "./providers";
 
 export const metadata: Metadata = {
-  title: "Compare Loan",
+  title: "Compare Loan - Lender",
   description: "Discover the best loan for yourself.",
 };
 

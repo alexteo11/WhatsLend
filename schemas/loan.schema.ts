@@ -57,7 +57,7 @@ export const housingDetailsSchema = z.object({
   country: labeledDataSourceValuePairSchema(),
   housingType: labeledDataSourceValuePairSchema(),
   hdbType: labeledDataSourceValuePairSchema(),
-  hdbOwnership: z.array(hdbOwnershipSchema),
+  hdbOwnership: z.array(hdbOwnershipSchema).catch([]),
 });
 
 const cpfContributionsSchema = z.object({

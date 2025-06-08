@@ -2,28 +2,24 @@ import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { authAxios } from "@/lib/axios";
 import { getErrorMessage } from "@/helper/errorHelper";
-import { QUERY_KEY } from "./constants";
+import { QUERY_KEY } from "../constants";
 import { LenderDashboardSummary } from "@/schemas/dashboard.schema";
 
-export const useLenderDashboardSummaryQuery = (
-  params: {
-    start_date?: string;
-    end_date?: string;
-  },
-  lenderId?: string,
-) => {
+export const useLenderDashboardSummaryQuery = (params: {
+  startDate?: string;
+  endDate?: string;
+}) => {
   return useQuery({
     queryKey: [
       QUERY_KEY.LenderDashboardSummary,
-      lenderId,
-      params?.start_date,
-      params?.end_date,
+      params?.startDate,
+      params?.endDate,
     ],
     queryFn: async () => {
       try {
         const res = await authAxios.get<{
           data: LenderDashboardSummary;
-        }>(`/report/${lenderId}/offer/summary`, {
+        }>(`/report/lender/offer/summary`, {
           params,
         });
         return res.data.data;
@@ -33,7 +29,7 @@ export const useLenderDashboardSummaryQuery = (
       }
     },
     enabled: () => {
-      return !!lenderId && !!params?.start_date && !!params?.end_date;
+      return !!params?.startDate && !!params?.endDate;
     },
     placeholderData: keepPreviousData,
   });

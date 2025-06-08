@@ -4,7 +4,7 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { authAxios } from "@/lib/axios";
 import { loanSchema } from "@/schemas/loan.schema";
 import { getErrorMessage } from "@/helper/errorHelper";
-import { QUERY_KEY } from "./constants";
+import { QUERY_KEY } from "../constants";
 
 export const useMyLoanApplicationsQuery = (
   userId?: string,

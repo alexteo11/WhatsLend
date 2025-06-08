@@ -17,12 +17,78 @@ import { Role } from "@/constants/authEnums";
 const ROLE_NAV_BAR_MAP = {
   [Role.ADMIN]: {
     homeRoute: "/admin",
+    sidebarItems: [
+      {
+        label: "Home",
+        href: "/",
+      },
+      {
+        label: "How It Works",
+        href: "/#how-it-works",
+      },
+      {
+        label: "FAQs",
+        href: "/#faqs",
+      },
+      {
+        label: "About Us",
+        href: "/about-us",
+      },
+      {
+        label: "Contact Us",
+        href: "/contact-us",
+      },
+    ],
   },
   [Role.LENDER]: {
     homeRoute: "/lender",
+    sidebarItems: [
+      {
+        label: "Dashboard",
+        href: "./dashboard",
+      },
+      {
+        label: "Offer",
+        href: "./offer",
+      },
+      {
+        label: "Appointment",
+        href: "./appointment",
+      },
+      {
+        label: "Payments",
+        href: "./payments",
+      },
+      {
+        label: "Profile",
+        href: "./profile",
+      },
+    ],
   },
   [Role.USER]: {
     homeRoute: "/",
+    sidebarItems: [
+      {
+        label: "Dashboard",
+        href: "./dashboard",
+      },
+      {
+        label: "Offer",
+        href: "./offer",
+      },
+      {
+        label: "Appointment",
+        href: "./appointment",
+      },
+      {
+        label: "Pending Payment",
+        href: "./pendingPayment",
+      },
+      {
+        label: "Profile",
+        href: "./profile",
+      },
+    ],
   },
 };
 
@@ -216,68 +282,38 @@ const NavigationSideBar = ({
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
+  const { userRole } = useAuth();
   return (
     <div className="flex flex-col justify-between">
       <div
         className={cn(
-          "scrollable-sheet-content mt-10 flex h-[calc(100vh-160px)] flex-col gap-4 overflow-scroll [&>*]:text-base [&>*]:text-primary",
+          "scrollable-sheet-content mt-10 flex h-[calc(100vh-160px)] flex-col gap-4 overflow-scroll",
           className,
         )}
       >
         <div className="h-0.5 w-full bg-app/15"></div>
-        <Button
-          asChild
-          variant="link"
-          className="text-shadow"
-          onClick={() => setShowSideBar(false)}
-        >
-          <Link href="/">Home</Link>
-        </Button>
-        <div className="h-0.5 w-full bg-app/15"></div>
-        <Button
-          asChild
-          variant="link"
-          className="text-shadow"
-          onClick={() => setShowSideBar(false)}
-        >
-          <Link href="/#how-it-works">How It Works</Link>
-        </Button>
-        <div className="h-0.5 w-full bg-app/15"></div>
-        <Button
-          asChild
-          variant="link"
-          className="text-shadow"
-          onClick={() => setShowSideBar(false)}
-        >
-          <Link href="/#faqs">FAQs</Link>
-        </Button>
-        <div className="h-0.5 w-full bg-app/15"></div>
-
-        <Button
-          asChild
-          variant="link"
-          className="text-shadow"
-          onClick={() => setShowSideBar(false)}
-        >
-          <Link href="/about-us">About Us</Link>
-        </Button>
-        <div className="h-0.5 w-full bg-app/15"></div>
-
-        <Button
-          asChild
-          variant="link"
-          className="text-shadow"
-          onClick={() => setShowSideBar(false)}
-        >
-          <Link href="/contact-us">Contact Us</Link>
-        </Button>
-
-        <div className="h-0.5 w-full bg-app/15"></div>
+        {ROLE_NAV_BAR_MAP[userRole].sidebarItems.map((item, index) => (
+          <div
+            key={index}
+            className="flex flex-col items-center justify-center gap-4 [&>*]:text-base [&>*]:text-primary"
+          >
+            <Button
+              asChild
+              variant="link"
+              className="text-shadow"
+              onClick={() => setShowSideBar(false)}
+            >
+              <Link href={item.href}>{item.label}</Link>
+            </Button>
+            <div className="h-0.5 w-full bg-app/15"></div>
+          </div>
+        ))}
       </div>
       <div className="h-0.5 w-full bg-app/15"></div>
 
       <SignInOrSignOutButton
         size="default"
+        variant="link"
         className="my-5"
         setShowSignInDialog={setShowSignInDialog}
         setShowSideBar={setShowSideBar}

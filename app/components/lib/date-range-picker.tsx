@@ -169,6 +169,12 @@ export const DateRangePicker = ({
                 defaultMonth={tempDate?.from}
                 selected={tempDate}
                 onSelect={(date) => {
+                  if (date?.from) {
+                    date.from = new Date(date.from.setHours(0, 0, 0, 0));
+                  }
+                  if (date?.to) {
+                    date.to = new Date(date.to.setHours(23, 59, 59, 999));
+                  }
                   setSelectedDateRangeType(DateRangeType.CUSTOM_RANGE);
                   setTempDate(date);
                 }}
