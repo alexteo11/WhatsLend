@@ -119,7 +119,7 @@ const getObjectNestedValue = (data: Record<string, unknown>, path: string) => {
         if (acc && typeof acc === "object" && key in acc) {
           return acc[key as keyof typeof acc];
         }
-        return undefined; // Return `undefined` if any key is missing
+        return ""; // Return `undefined` if any key is missing
       },
       data,
     );
