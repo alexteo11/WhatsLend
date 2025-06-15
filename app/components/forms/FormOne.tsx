@@ -106,6 +106,7 @@ export const FormOneSection = <
         <BaseFormField
           form={form}
           fieldRef={"personalDetails.passType.value" as Path<T>}
+          optionLabelRef={"personalDetails.passType.label" as Path<T>}
           label="Passport Type"
           type="select"
           options={PASS_TYPE_OPTIONS}

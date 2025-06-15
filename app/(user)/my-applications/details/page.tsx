@@ -12,7 +12,7 @@ import { useAuth } from "@/context/auth.context";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { authAxios } from "@/lib/axios";
 import { QUERY_KEY } from "@/queries/constants";
-import { useMyLoanApplicationsQuery } from "@/queries/use-my-loan-applications-query";
+import { useMyLoanApplicationsQuery } from "@/queries/user/use-my-loan-applications-query";
 import { LoanData, loanSchema } from "@/schemas/loan.schema";
 import useApplicationDetailsStore, {
   ActionMode,

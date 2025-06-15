@@ -16,7 +16,7 @@ import {
   HandCoinsIcon,
   SearchIcon,
 } from "lucide-react";
-import { useMyLoanApplicationsQuery } from "@/queries/use-my-loan-applications-query";
+import { useMyLoanApplicationsQuery } from "@/queries/user/use-my-loan-applications-query";
 import { useAuth } from "@/context/auth.context";
 import { LoaderWrapper } from "@/app/components/common/LoaderWrapper";
 import ApplyButton from "@/app/components/common/ApplyButton";
@@ -34,7 +34,7 @@ import {
   TooltipTrigger,
 } from "@/app/components/lib/tooltip";
 import OfferDetailsDialog from "@/app/components/data-display/offer-details-dialog";
-import { useLoanOfferListQuery } from "@/queries/use-loan-offer-list-query";
+import { useLoanOfferListQuery } from "@/queries/user/use-loan-offer-list-query";
 import useApplicationDetailsStore, {
   ActionMode,
 } from "@/stores/useApplicationStore";

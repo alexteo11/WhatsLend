@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/app/components/lib/card";
 import { Form } from "@/app/components/lib/form";
 import { getErrorMessage } from "@/helper/errorHelper";
 import axios from "@/lib/axios";
-import { useLoanApplicationDetailsQuery } from "@/queries/use-loan-application-details-query";
+import { useLoanApplicationDetailsQuery } from "@/queries/user/use-loan-application-details-query";
 import { LoanData } from "@/schemas/loan.schema";
 import { OfferPayLoad, offerPayloadSchema } from "@/schemas/offer.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -62,6 +62,7 @@ const OfferLoanPage = () => {
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // PUBLIC API
       await axios.post(`offer/${loanId}/submit/${lenderId}`, form.getValues());
       router.replace("/lender/offer-loan/success");
     } catch (err) {

@@ -7,6 +7,7 @@ import { Role } from "@/constants/authEnums";
 import Login from "../../components/auth/Login";
 import { SidebarProvider } from "@/components/lib/sidebar";
 import { LenderSidebar } from "../components/lender-sidebar";
+import GlobalDialog from "@/app/components/layout/GlobalDialog";
 
 const AuthCheckerProvider = ({
   children,
@@ -15,6 +16,7 @@ const AuthCheckerProvider = ({
     <AuthProvider role={Role.LENDER}>
       <AuthWrapper>
         <>{children}</>
+        <GlobalDialog />
       </AuthWrapper>
     </AuthProvider>
   );

@@ -2,23 +2,21 @@ import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { authAxios } from "@/lib/axios";
 import { getErrorMessage } from "@/helper/errorHelper";
-import { QUERY_KEY } from "./constants";
-import { LoanOfferFilter } from "@/app/lender/(auth)/offer/data-table";
+import { QUERY_KEY } from "../constants";
 import { OfferData } from "@/schemas/offer.schema";
 import { objectCompact } from "@/lib/objects";
+import { LoanDataTableFilter } from "@/types/dataTable.types";
 
-export const useLenderOfferAppointmentQuery = (
-  lenderId: string,
-  filter?: LoanOfferFilter,
+export const useAdminGetApplicationOfferQuery = (
+  filter: LoanDataTableFilter,
 ) => {
-  const isEnabled = !!lenderId && !!filter;
-
   return useQuery({
     queryKey: [
-      QUERY_KEY.LenderOffer,
-      lenderId,
-      filter?.date?.from,
-      filter?.date?.to,
+      QUERY_KEY.AdminGetLenderApplicationOffer,
+      filter.status,
+      filter.date.from,
+      filter.date.to,
+      filter.lenderId,
     ],
     queryFn: async () => {
       if (!filter || !filter.date?.from || !filter.date?.to) {
@@ -26,18 +24,20 @@ export const useLenderOfferAppointmentQuery = (
       }
       try {
         const {
-          date: { from: start_date, to: end_date },
+          status,
+          date: { from: startDate, to: endDate },
         } = filter;
 
         const params = objectCompact({
-          lender_id: lenderId,
-          start_date: start_date?.toISOString(),
-          end_date: end_date?.toISOString(),
+          status: status === "all" ? undefined : status,
+          startDate: startDate?.toISOString(),
+          endDate: endDate?.toISOString(),
+          lenderId: filter.lenderId === "all" ? undefined : filter.lenderId,
         });
 
         const res = await authAxios.get<{
-          data: OfferData[];
-        }>(`/offer/listByAppointmentDate`, {
+          data: (OfferData & { lenderName: string })[];
+        }>(`/offer/list`, {
           params,
         });
         return res.data.data;
@@ -46,7 +46,7 @@ export const useLenderOfferAppointmentQuery = (
         throw new Error("Something went wrong mtfk");
       }
     },
-    enabled: isEnabled,
+    enabled: true,
     placeholderData: keepPreviousData,
   });
 };
