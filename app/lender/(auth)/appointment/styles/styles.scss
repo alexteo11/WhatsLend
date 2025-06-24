@@ -1,5 +1,10 @@
-@import "./variables";
-@import "./reset";
+@use "./variables" as vars;
+@use "./reset";
+@use "./time-grid";
+@use "./toolbar";
+@use "./agenda";
+@import "./event";
+@import "./month";
 
 .rbc-calendar {
   box-sizing: border-box;
@@ -44,11 +49,11 @@
 }
 
 .rbc-off-range {
-  color: $out-of-range-color;
+  color: vars.$out-of-range-color;
 }
 
 .rbc-off-range-bg {
-  background: $out-of-range-bg-color;
+  background: vars.$out-of-range-bg-color;
 }
 
 .rbc-header {
@@ -62,15 +67,15 @@
   font-weight: bold;
   font-size: 90%;
   min-height: 0;
-  border-bottom: 1px solid $cell-border;
+  border-bottom: 1px solid vars.$cell-border;
 
   & + & {
-    border-left: 1px solid $cell-border;
+    border-left: 1px solid vars.$cell-border;
   }
 
   .rbc-rtl & + & {
     border-left-width: 0;
-    border-right: 1px solid $cell-border;
+    border-right: 1px solid vars.$cell-border;
   }
 
   & > a {
@@ -122,11 +127,6 @@
 }
 
 .rbc-today {
-  background-color: $today-highlight-bg;
+  background-color: vars.$today-highlight-bg;
 }
 
-@import "./toolbar";
-@import "./event";
-@import "./month";
-@import "./agenda";
-@import "./time-grid";

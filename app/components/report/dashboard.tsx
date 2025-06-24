@@ -16,8 +16,7 @@ import {
   LENDER_DASHBOARD_SUMMARY_TYPE_ENUM,
   OFFER_STATUS_ENUM,
 } from "@/constants/commonEnums";
-import { useAuth } from "@/context/auth.context";
-import { formatDate } from "@/helper/dateFormatter";
+import { formatDate, getLast30Days } from "@/helper/dateFormatter";
 import { cn } from "@/lib/utils";
 import { useAdminDashboardDetailsQuery } from "@/queries/admin/use-admin-dashboard-details-query";
 import { useAdminDashboardSummaryQuery } from "@/queries/admin/use-admin-dashboard-summary-query";
@@ -51,7 +50,7 @@ const SummaryDataList = [
     content: "0",
     desc: "Total number of loan offers accepted",
     icon: <CheckCheck className="text-app" />,
-    status: OFFER_STATUS_ENUM.ACCEPTED,
+    status: OFFER_STATUS_ENUM.BORROWER_ACCEPTED,
   },
   {
     id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_REJECTED,
@@ -59,7 +58,7 @@ const SummaryDataList = [
     content: "0",
     desc: "Total number of loan offers rejected",
     icon: <CaptionsOff className="text-app" />,
-    status: OFFER_STATUS_ENUM.REJECTED,
+    status: OFFER_STATUS_ENUM.BORROWER_REJECTED,
   },
   {
     id: LENDER_DASHBOARD_SUMMARY_TYPE_ENUM.OFFER_DISBURSED,
@@ -75,10 +74,7 @@ const Dashboard = ({ isAdmin }: { isAdmin: boolean }) => {
   const [selectedSummary, setSelectedSummary] = React.useState(
     SummaryDataList[0],
   );
-  const [date, setDate] = React.useState<DateRange>({
-    from: subDays(new Date(new Date().setHours(0, 0, 0, 0)), 29),
-    to: new Date(new Date().setHours(23, 59, 59, 999)),
-  });
+  const [date, setDate] = React.useState<DateRange>(getLast30Days());
 
   const { data: summaryData, isLoading: isLoadingSummary } = isAdmin
     ? useAdminDashboardSummaryQuery({

@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/app/components/lib/select";
 import { User, UserStatus } from "@/schemas/user.schema";
+import { UserStatusMapping } from "@/constants/statusMapping";
 
 const ManageUsersPage = () => {
   const [filter, setFilter] = useState<UsersDataTableFilter>({
@@ -49,6 +50,13 @@ const ManageUsersPage = () => {
           {
             key: "status",
             title: "Status",
+            cell: ({ row }) => {
+              return (
+                <div className="capitalize">
+                  {UserStatusMapping[row.original.status]}
+                </div>
+              );
+            },
           },
           {
             key: "createdAt",

@@ -1,7 +1,6 @@
 import { SOURCES_ENUM } from "@/schemas/common.schema";
 import { FormOneData, FormThreeData, FormTwoData } from "@/schemas/form.schema";
 import { DefaultValues } from "react-hook-form";
-import { YES_NO_OPTIONS } from "./formEnums";
 
 const source = SOURCES_ENUM.MANUAL;
 

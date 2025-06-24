@@ -3,29 +3,31 @@ import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import { authAxios } from "@/lib/axios";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { QUERY_KEY } from "../constants";
-import { objectCompact } from "@/lib/objects";
-import { LendersDataTableFilter } from "@/types/dataTable.types";
 import { Lender } from "@/schemas/lender.schema";
 import { LenderStaff } from "@/schemas/lenderStaff.schema";
 
-export const useAdminGetLendersQuery = (filter: LendersDataTableFilter) => {
+export const useLenderRetrieveProfileQuery = () => {
   return useQuery({
-    queryKey: [QUERY_KEY.AdminGetLenders, filter.status],
+    queryKey: [QUERY_KEY.LenderProfile],
     queryFn: async () => {
-      if (!filter) {
-        return [];
-      }
       try {
-        const { status } = filter;
-        const params = objectCompact({
-          status: status === "all" ? undefined : status,
-        });
-
         const res = await authAxios.get<{
-          data: (Lender & { staff: LenderStaff[] })[];
-        }>(`/auth/lender/admin/retrieve`, {
-          params,
-        });
+          data: {
+            lender: Lender;
+            staffs: LenderStaff[];
+          };
+        }>(`auth/lender/retrieveProfile`);
+
+        // very cacat de checking - need check how to handle this rubbish
+        if (res.data.data.lender.criteria.hasExistingLoan == undefined) {
+          res.data.data.lender.criteria.hasExistingLoan =
+            "undefined" as unknown as boolean;
+        } else {
+          res.data.data.lender.criteria.hasExistingLoan = String(
+            res.data.data.lender.criteria.hasExistingLoan,
+          ) as unknown as boolean;
+        }
+
         return res.data.data;
       } catch (err) {
         toast.error(getErrorMessage(err));

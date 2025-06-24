@@ -1,7 +1,7 @@
 "use client";
 
 import moment from "moment";
-import "./styles.scss";
+import "./styles/styles.scss";
 import {
   Calendar,
   momentLocalizer,

@@ -8,7 +8,7 @@ const Lender = () => {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace("/admin/dashboard");
+    router.replace("/admin/user/manage-users");
   }, []);
 
   return (

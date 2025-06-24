@@ -6,6 +6,7 @@ import React, {
   useImperativeHandle,
   Ref,
   forwardRef,
+  useRef,
 } from "react";
 import {
   FieldPath,
@@ -41,6 +42,7 @@ import { toast } from "sonner";
 import { DialogClose } from "@radix-ui/react-dialog";
 
 export interface ImageUploaderComponentRef {
+  onClick: VoidFunction;
   removeImage: VoidFunction;
 }
 
@@ -48,6 +50,8 @@ interface ImageUploaderProps<T extends FieldValues> {
   form: UseFormReturn<T>;
   imageRef: FieldPath<T>;
   title: string;
+  allowRemoveImage?: boolean;
+  defaultImage?: string;
   className?: string;
   imgClassName?: string;
   imgCropShape?: "rect" | "round";
@@ -59,15 +63,20 @@ const ImageUploaderContent = <T extends FieldValues>(
     form,
     imageRef,
     title,
+    defaultImage,
     className,
+    allowRemoveImage = true,
     imgClassName,
     imgCropShape = "rect",
     placeholder,
   }: ImageUploaderProps<T>,
   ref: Ref<ImageUploaderComponentRef>,
 ) => {
+  const refInput = useRef<HTMLInputElement>(null);
   const [tempImage, setTempImage] = useState<string | ArrayBuffer | null>("");
-  const [image, setImage] = useState<string | ArrayBuffer | null>("");
+  const [image, setImage] = useState<string | ArrayBuffer | null>(
+    defaultImage || "",
+  );
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
@@ -76,7 +85,7 @@ const ImageUploaderContent = <T extends FieldValues>(
 
   const [showEditorDialog, setShowEditorDialog] = useState(false);
 
-  useImperativeHandle(ref, () => ({ removeImage }));
+  useImperativeHandle(ref, () => ({ onClick, removeImage }));
 
   useEffect(() => {
     if (!showEditorDialog) {
@@ -137,11 +146,20 @@ const ImageUploaderContent = <T extends FieldValues>(
     form.resetField(imageRef);
   };
 
-  const { getRootProps, getInputProps, isDragActive, fileRejections } =
-    useDropzone({
-      onDrop,
-      maxFiles: 1,
-    });
+  const {
+    inputRef,
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    fileRejections,
+  } = useDropzone({
+    onDrop,
+    maxFiles: 1,
+  });
+
+  const onClick = () => {
+    inputRef?.current.click();
+  };
 
   return (
     <>
@@ -157,7 +175,7 @@ const ImageUploaderContent = <T extends FieldValues>(
             </FormLabel>
             <FormControl>
               <div className="relative flex w-fit items-center justify-start">
-                {image && (
+                {image && allowRemoveImage && (
                   <CircleXIcon
                     className="absolute right-0 top-0 cursor-pointer"
                     onClick={removeImage}
@@ -188,6 +206,7 @@ const ImageUploaderContent = <T extends FieldValues>(
                     )}
                     <Input
                       {...getInputProps()}
+                      // ref={refInput}
                       type="file"
                       onInput={() => setShowEditorDialog(true)}
                     />

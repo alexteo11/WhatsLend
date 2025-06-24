@@ -16,7 +16,7 @@ import {
   NATIONALITY_OPTIONS,
   OCCUPATIONS_OPTIONS,
   PREVIOUS_EMPLOYMENT_DURATION,
-} from "@/constants/formEnums";
+} from "@/constants/formOptions";
 import { LoanData } from "@/schemas/loan.schema";
 
 const FormTwo = () => {

@@ -21,7 +21,7 @@ export const userLenderPaymentsQuery = (params?: {
         return res.data.data;
       } catch (err) {
         toast.error(getErrorMessage(err));
-        throw new Error("Something went wrong mtfk");
+        throw new Error("Something went wrong.");
       }
     },
     placeholderData: keepPreviousData,

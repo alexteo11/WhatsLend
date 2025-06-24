@@ -1,17 +1,17 @@
-import { authAxios } from "@/lib/axios";
 import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import axios from "@/lib/axios";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { QUERY_KEY } from "../constants";
 import { OfferData } from "@/schemas/offer.schema";
 
-export const useLoanOfferListQuery = (loanId?: string) => {
+export const userLoanOfferDetailsQuery = (offerId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LoanOfferList, loanId],
+    queryKey: [QUERY_KEY.LoanOfferDetails, offerId],
     queryFn: async () => {
       try {
-        const res = await authAxios.get<{ data: OfferData[] }>(
-          `offer/${loanId}/list`,
+        const res = await axios.get<{ data: OfferData }>(
+          `/offer/${offerId}/offerDetails`,
         );
         return res.data.data;
       } catch (err) {
@@ -19,7 +19,7 @@ export const useLoanOfferListQuery = (loanId?: string) => {
         throw new Error("Something went wrong.");
       }
     },
-    enabled: false,
+    enabled: true,
     placeholderData: keepPreviousData,
   });
 };

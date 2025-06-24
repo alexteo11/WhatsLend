@@ -15,7 +15,7 @@ import {
   RACE_OPTIONS,
   RESIDENTIAL_STATUS_OPTIONS,
   SEX_OPTIONS,
-} from "@/constants/formEnums";
+} from "@/constants/formOptions";
 import { LoanData } from "@/schemas/loan.schema";
 
 const FormOne = () => {

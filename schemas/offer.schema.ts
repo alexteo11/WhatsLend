@@ -34,3 +34,4 @@ export const offerSchema = z
 
 export type OfferPayLoad = z.infer<typeof offerPayloadSchema>;
 export type OfferData = z.infer<typeof offerSchema>;
+export type AppointmentDetailsData = z.infer<typeof appointmentSchema>;

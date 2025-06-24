@@ -10,7 +10,7 @@ import { Path, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
-import { YES_NO_OPTIONS } from "@/constants/formEnums";
+import { YES_NO_OPTIONS } from "@/constants/formOptions";
 import { default as myAxios } from "@/lib/axios";
 import axios from "axios";
 import { toast } from "sonner";
@@ -20,11 +20,20 @@ import useDialogStore from "@/stores/useDialogStore";
 import Login from "../auth/Login";
 import { User } from "firebase/auth";
 import { LoanData } from "@/schemas/loan.schema";
+import { Role } from "@/constants/authEnums";
 
 const FormThree = () => {
-  const { user, signIn } = useAuth();
-  const userRef = useRef<Record<string, User | null>>({}).current;
-  userRef.value = user;
+  const { user, isAuthenticatedUser, signIn } = useAuth();
+  const userRef = useRef<
+    Record<
+      string,
+      {
+        user: User | null;
+        isAuthenticatedUser: boolean;
+      } | null
+    >
+  >({}).current;
+  userRef.value = { user, isAuthenticatedUser };
 
   const { openDialog, closeDialog } = useDialogStore();
   const {
@@ -57,7 +66,9 @@ const FormThree = () => {
 
     setIsSubmittingApplication(true);
 
-    const userId = userRef.value?.uid;
+    const userId = userRef.value?.isAuthenticatedUser
+      ? userRef.value?.user?.uid
+      : undefined;
 
     try {
       const endpoint = `/loan/submit`;

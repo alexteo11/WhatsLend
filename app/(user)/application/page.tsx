@@ -29,7 +29,7 @@ import { FormData } from "@/schemas/form.schema";
 import { toast } from "sonner";
 import { LoaderWrapper } from "../../components/common/LoaderWrapper";
 // import sampleSingpassData1 from "./sampleSingpassData1.json";
-// import sampleSingpassData2 from "./sampleSingpassData2.json";
+import sampleSingpassData2 from "./sampleSingpassData2.json";
 
 import FormSkeleton from "@/app/components/forms/FormSkeleton";
 // import DataDetailsSection from "@/app/components/data-display/data-details-section";
@@ -57,6 +57,9 @@ export default function Application() {
   const [isFormReady, setIsFormReady] = useState(false);
   const [singpassUserInfo, setSingpassUserInfo] =
     useState<DeepPartial<FormData>>();
+  // const [singpassUserInfo, setSingpassUserInfo] = useState<
+  //   DeepPartial<FormData>
+  // >(sampleSingpassData2 as never);
   // SAMPLE TESTING DATA
   // {
   //   generalInformation: {
@@ -349,7 +352,7 @@ export default function Application() {
 
     setSource(SOURCES_ENUM.MANUAL);
     setFormDefaultValues();
-    // setFormDefaultValues(sampleFullData));
+    // setFormDefaultValues(sampleSingpassData2 as never);
     setIsFormReady(true);
   };
 

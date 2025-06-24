@@ -1,6 +1,7 @@
 export enum QUERY_KEY {
   MyLoanApplications = "my-loan-applications",
   LoanApplicationDetails = "loan-application-details",
+  LoanOfferDetails = "loan-offer-details",
   LoanOfferList = "loan-offer-list",
 
   LenderDashboardSummary = "lender-dashboard-summary",
@@ -8,6 +9,7 @@ export enum QUERY_KEY {
   LenderOffer = "lender-offer",
   LenderOfferAppointment = "lender-offer-appointment",
   LenderPayments = "lender-payments",
+  LenderProfile = "lender-profile",
 
   AdminDashboardSummary = "admin-dashboard-summary",
   AdminDashboardDetails = "admin-dashboard-details",

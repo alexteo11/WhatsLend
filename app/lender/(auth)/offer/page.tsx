@@ -17,11 +17,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/lib/select";
-import { DateRangePicker } from "@/app/components/lib/date-range-picker";
+import {
+  DateRangePicker,
+  DateRangeType,
+} from "@/app/components/lib/date-range-picker";
 import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
-import { addDays } from "date-fns";
 import { LoanDataTableFilter } from "@/types/dataTable.types";
 import { useAuth } from "@/context/auth.context";
+import { getLast30Days } from "@/helper/dateFormatter";
 
 const OfferPage = () => {
   const { lenderId } = useAuth();
@@ -29,10 +32,7 @@ const OfferPage = () => {
   const [showDialog, setShowDialog] = useState(false);
   const [filter, setFilter] = useState<LoanDataTableFilter>({
     status: "all",
-    date: {
-      from: new Date(new Date().setHours(0, 0, 0, 0)),
-      to: addDays(new Date().setHours(23, 59, 59, 999), 1),
-    },
+    date: getLast30Days(),
     keyword: undefined,
   });
   const { data, isFetching } = useLenderOfferQuery(lenderId, filter);
@@ -137,13 +137,20 @@ const OfferPage = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.ACCEPTED}>Accepted</SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.COMPLETED}>
               Completed
             </SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.ISSUED}>Issued</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.REJECTED}>Rejected</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.BORROWER_ACCEPTED}>
+              Accepted by borrower
+            </SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.BORROWER_REJECTED}>
+              Rejected by borrower
+            </SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.LENDER_REJECTED}>
+              Rejected by lender
+            </SelectItem>
           </SelectContent>
         </Select>
         <div className="flex-auto" />
@@ -158,6 +165,7 @@ const OfferPage = () => {
             }
           }}
           className="flex-auto"
+          selectedDateRangeType={DateRangeType.LAST_30_DAYS}
         />
       </MyDataTable>
 

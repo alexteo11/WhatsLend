@@ -5,7 +5,10 @@ import { LoanData } from "@/schemas/loan.schema";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { QUERY_KEY } from "../constants";
 
-export const useLoanApplicationDetailsQuery = (loanId?: string) => {
+export const useLoanApplicationDetailsQuery = (
+  loanId?: string,
+  defaultEnable = false,
+) => {
   return useQuery({
     queryKey: [QUERY_KEY.LoanApplicationDetails, loanId],
     queryFn: async () => {
@@ -16,10 +19,10 @@ export const useLoanApplicationDetailsQuery = (loanId?: string) => {
         return res.data.data;
       } catch (err) {
         toast.error(getErrorMessage(err));
-        throw new Error("Something went wrong mtfk");
+        throw new Error("Something went wrong.");
       }
     },
-    enabled: false,
+    enabled: defaultEnable,
     placeholderData: keepPreviousData,
   });
 };

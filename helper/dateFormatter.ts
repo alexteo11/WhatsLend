@@ -1,3 +1,5 @@
+import { subDays } from "date-fns";
+
 export const formatDate = (date?: Date | string, showDateTime = true) => {
   if (!date) {
     return "";
@@ -22,4 +24,11 @@ export const formatDate = (date?: Date | string, showDateTime = true) => {
   }
 
   return new Intl.DateTimeFormat("en-GB", options).format(_date);
+};
+
+export const getLast30Days = () => {
+  return {
+    from: subDays(new Date(new Date().setHours(0, 0, 0, 0)), 29),
+    to: new Date(new Date().setHours(23, 59, 59, 999)),
+  };
 };

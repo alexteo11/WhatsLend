@@ -14,17 +14,16 @@ import { LoanData } from "@/schemas/loan.schema";
 import { OfferPayLoad, offerPayloadSchema } from "@/schemas/offer.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 // http://localhost:3000/lender/offer-loan?userId=2X0w1yfAz2UXt4LFKoHVBNwtaz62&email=qweqweqe@gmail.com&loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
+// http://localhost:3000/lender/offer-loan?loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
 const OfferLoanPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const userId = searchParams.get("userId");
-  const email = searchParams.get("email");
   const loanId = searchParams.get("loanId") || "";
   const lenderId = searchParams.get("lenderId") || "";
 
@@ -36,7 +35,7 @@ const OfferLoanPage = () => {
     data: loanData,
     isLoading: isLoadingLoanDetails,
     refetch,
-  } = useLoanApplicationDetailsQuery(loanId);
+  } = useLoanApplicationDetailsQuery(loanId, true);
 
   const form = useForm<OfferPayLoad>({
     resolver: zodResolver(
@@ -54,10 +53,17 @@ const OfferLoanPage = () => {
     reValidateMode: "onChange",
     defaultValues: {
       // TODO: ask William should we use jwt token to encrypt those
-      userId: userId || undefined, // get from url
-      email: email || undefined, // get from url or actually no need
     },
   });
+
+  useEffect(() => {
+    if (loanData?.contactDetails?.email?.value) {
+      form.setValue("email", loanData?.contactDetails?.email?.value);
+    }
+    if (loanData?.userId) {
+      form.setValue("userId", loanData?.userId);
+    }
+  }, [loanData]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -73,13 +79,13 @@ const OfferLoanPage = () => {
   };
 
   return (
-    <LoaderWrapper isLoading={isLoading}>
+    <LoaderWrapper isLoading={isLoading || isLoadingLoanDetails}>
       <Navbar hideButtons defaultHomeRoute="#" />
       <div className="middle-container-width mt-[var(--nav-height)] w-[90%] space-y-4 py-8 md:!w-[60%] md:py-14">
         <h1 className="lender-page-title">Loan Offer Submission</h1>
         <p>
           Please fill out the form below to submit your loan offer to{" "}
-          <b className="text-app">{email}</b>.
+          <b className="text-app">{loanData?.contactDetails.email.value}</b>.
         </p>
         <Button
           variant="outline"

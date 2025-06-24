@@ -52,10 +52,8 @@ const PaymentDialog = ({ selectedPayment }: { selectedPayment: Payment }) => {
     setIsLoading(true);
     try {
       const fileUrl = await uploadImageToFirebase(
-        lenderId,
-        selectedPayment.id,
         form.getValues().image,
-        imageName,
+        `payments/${lenderId}/${selectedPayment.id}-${imageName}`,
       );
       await authAxios.post(`/report/lender/payment/markAsPaid`, {
         paymentId: selectedPayment.id,

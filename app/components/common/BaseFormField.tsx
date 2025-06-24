@@ -60,12 +60,13 @@ export interface NumberFieldProps<T extends FieldValues> extends BaseProps<T> {
 
 export interface OptionsFieldProps<T extends FieldValues> extends BaseProps<T> {
   type: "select" | "radio" | "textAutoComplete";
-  options: { label: string; value: string | number | boolean }[];
+  options: { label: string; value: string | number | boolean | undefined }[];
   optionLabelRef?: FieldPath<T>;
 }
 
 export interface DateFieldProps<T extends FieldValues> extends BaseProps<T> {
   type: "date";
+  granularity?: "day" | "hour" | "minute" | "second";
   calendarDisabledRange?: (date: Date) => boolean;
 }
 

@@ -8,10 +8,11 @@ import {
 } from "firebase/auth";
 import { auth } from "../lib/firebase";
 import { Role } from "@/constants/authEnums";
-import { authAxios } from "@/lib/axios";
+import axios from "@/lib/axios";
 import { toast } from "sonner";
 import { FirebaseError } from "firebase/app";
 import { getLenderId } from "@/helper/authHelper";
+import { usePathname, useRouter } from "next/navigation";
 
 interface AuthContext {
   user: FirebaseUser | null; // TODO: replace with User
@@ -37,6 +38,8 @@ export const AuthProvider = ({
   children,
   role,
 }: React.HtmlHTMLAttributes<HTMLDivElement> & { role: Role }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [isAuthenticating, setIsAuthenticating] = useState<boolean>(false);
@@ -59,6 +62,16 @@ export const AuthProvider = ({
     const unsubscribe = onAuthStateChanged(auth, async (_user) => {
       setLoading(true);
       setUser(_user);
+
+      if (!_user && typeof window !== "undefined") {
+        if (pathname.includes("/my-applications")) {
+          router.replace("/");
+        }
+        window.localStorage.removeItem("compareLoanAccessToken");
+        window.localStorage.removeItem("compareLoanUserRole");
+        window.localStorage.removeItem("compareLoanLenderId");
+        window.localStorage.removeItem("compareLoanSelectedMenuId");
+      }
       setLoading(false);
 
       const lenderId = getLenderId();
@@ -66,9 +79,6 @@ export const AuthProvider = ({
     });
 
     const lenderId = getLenderId();
-    console.log({
-      lenderId,
-    });
     setLenderId(lenderId);
 
     return () => unsubscribe();
@@ -82,6 +92,10 @@ export const AuthProvider = ({
     setIsAuthenticating(true);
 
     try {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("compareLoanSelectedMenuId");
+      }
+
       const data = await signInWithEmailAndPassword(auth, email, password);
       await verifyAuthLogin(data.user.uid, userRole, successCallback);
     } catch (error: unknown) {
@@ -104,12 +118,14 @@ export const AuthProvider = ({
     successCallback?: () => void,
   ) => {
     try {
-      const response = await authAxios.post<{
-        data: { accessToken: string; lenderId?: string };
+      const response = await axios.post<{
+        data: { accessToken: string; refreshToken: string; lenderId?: string };
       }>(`/auth/${role}/verify/${uid}`);
-      const { accessToken, lenderId } = response.data.data;
+      const { accessToken, refreshToken, lenderId } = response.data.data;
+
       if (typeof window !== "undefined") {
         window.localStorage.setItem("compareLoanAccessToken", accessToken);
+        window.localStorage.setItem("compareLoanRefreshToken", refreshToken);
         window.localStorage.setItem("compareLoanUserRole", userRole);
 
         if (userRole === Role.LENDER && lenderId) {
@@ -127,12 +143,6 @@ export const AuthProvider = ({
 
   const signOut = async () => {
     await auth.signOut();
-    setUser(null);
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("compareLoanAccessToken");
-      window.localStorage.removeItem("compareLoanUserRole");
-      window.localStorage.removeItem("compareLoanLenderId");
-    }
   };
 
   return (

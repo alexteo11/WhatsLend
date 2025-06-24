@@ -2883,6 +2883,21 @@ export const YES_NO_OPTIONS = [
   },
 ];
 
+export const EITHER_YES_NO_OPTIONS = [
+  {
+    value: undefined,
+    label: "Either One",
+  },
+  {
+    value: true,
+    label: "Yes",
+  },
+  {
+    value: false,
+    label: "No",
+  },
+];
+
 export const OCCUPATIONS_OPTIONS = [
   {
     value: "1",
