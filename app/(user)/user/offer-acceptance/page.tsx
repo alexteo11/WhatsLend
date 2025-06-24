@@ -20,7 +20,7 @@ import {
 } from "@/schemas/offer.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import BaseDialog from "../../../components/common/BaseDialog";
@@ -32,6 +32,7 @@ import {
   CarouselItem,
 } from "@/app/components/lib/carousel";
 import CarouselAutoHeight from "embla-carousel-auto-height";
+import Image from "next/image";
 
 // http://localhost:3000/user/offer-acceptance?offerId=1JPHz8SHoV0mm44mivk7
 const OfferAcceptancePage = () => {
@@ -137,204 +138,219 @@ const OfferAcceptancePage = () => {
     }
   };
 
+  if (!offerData) {
+    return (
+      <LoaderWrapper isLoading>
+        <div />
+      </LoaderWrapper>
+    );
+  }
+
   return (
     <LoaderWrapper isLoading={isLoading || isLoadingOfferData}>
       <Navbar hideButtons defaultHomeRoute="#" />
-      <Carousel
-        draggable={false}
-        opts={{
-          startIndex: step - 1,
-          watchDrag: false,
-          watchFocus: false,
-          watchResize: (emblaApi, entries) => {
-            // https://github.com/davidjerleke/embla-carousel/issues/910#issuecomment-2162274395
-            for (const entry of entries) {
-              if (emblaApi.containerNode() === entry.target) return true;
+      <div className="middle-container-width mt-[var(--nav-height)] w-[90%] md:!w-[60%]">
+        {[
+          OFFER_STATUS_ENUM.BORROWER_ACCEPTED,
+          OFFER_STATUS_ENUM.BORROWER_REJECTED,
+          OFFER_STATUS_ENUM.EXPIRED,
+        ].includes(offerData.status) ? (
+          <AlreadyProcessed status={offerData.status} />
+        ) : (
+          <Carousel
+            draggable={false}
+            opts={{
+              startIndex: step - 1,
+              watchDrag: false,
+              watchFocus: false,
+              watchResize: (emblaApi, entries) => {
+                // https://github.com/davidjerleke/embla-carousel/issues/910#issuecomment-2162274395
+                for (const entry of entries) {
+                  if (emblaApi.containerNode() === entry.target) return true;
 
-              window.requestAnimationFrame(() => {
-                emblaApi.reInit();
-                emblaApi.emit("resize");
-              });
+                  window.requestAnimationFrame(() => {
+                    emblaApi.reInit();
+                    emblaApi.emit("resize");
+                  });
 
-              break;
-            }
+                  break;
+                }
 
-            return true;
-          },
-          disableKeyBinding: true,
-        }}
-        setApi={setApi}
-        plugins={[CarouselAutoHeight()]}
-      >
-        <CarouselContent className="flex items-start">
-          <CarouselItem>
-            <div className="middle-container-width mt-[var(--nav-height)] w-[90%] space-y-4 py-8 md:!w-[60%] md:py-14">
-              <h1 className="lender-page-title">
-                Loan Offer Submission {step}
-              </h1>
-              <p>
-                Please review the loan offer details below and decide whether to{" "}
-                <b>accept</b> or <b>reject</b> it.
-              </p>
-              <Button
-                variant="outline"
-                onClick={async () => {
-                  await refetch();
-                  setShowLoanDetailsDialog(true);
-                }}
-                isLoading={isLoadingLoanDetails}
-              >
-                View loan applications
-              </Button>
-              <br />
-              <br />
-              <Card>
-                <CardContent>
-                  {form.getValues("id") && (
-                    <Form {...form}>
+                return true;
+              },
+              disableKeyBinding: true,
+            }}
+            setApi={setApi}
+            plugins={[CarouselAutoHeight()]}
+          >
+            <CarouselContent className="my-16 flex items-start">
+              <CarouselItem className="space-y-4 px-5">
+                <h1 className="lender-page-title">
+                  Loan Offer Acceptance / Rejection
+                </h1>
+                <p>
+                  Please review the loan offer details below and decide whether
+                  to <b>accept</b> or <b>reject</b> it.
+                </p>
+                <Button
+                  variant="outline"
+                  onClick={async () => {
+                    await refetch();
+                    setShowLoanDetailsDialog(true);
+                  }}
+                  isLoading={isLoadingLoanDetails}
+                >
+                  View loan applications
+                </Button>
+                <br />
+                <br />
+                <Card>
+                  <CardContent>
+                    {form.getValues("id") && (
+                      <Form {...form}>
+                        <form
+                          className="space-y-4"
+                          onSubmit={form.handleSubmit(handleSubmit)}
+                        >
+                          <BaseFormField
+                            form={form}
+                            fieldRef="loanAmount"
+                            label="Loan Amount ($)"
+                            type="number"
+                            pattern="$ {value}"
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="tenureMonths"
+                            label="Tenure Months"
+                            type="number"
+                            pattern="{value} months"
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="interestRate"
+                            label="Interest Rate per month (%)"
+                            type="number"
+                            pattern="{value} %"
+                            description={`Maximum for Interest Rate is 4%.`}
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="lateInterestRate"
+                            label="Late Interest Rate per month (%)"
+                            type="number"
+                            pattern="{value} %"
+                            description={`Maximum for Late Interest Rate is 4%`}
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="adminFee"
+                            label="Admin Fee - only 1 time charge ($)"
+                            type="number"
+                            pattern="$ {value}"
+                            description={`Maximum for Admin Fee is 10% of the Loan Amount.`}
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="lateChargeFees"
+                            label="Late Charge Fees - charged per month ($)"
+                            type="number"
+                            pattern="$ {value}"
+                            description={`Maximum for Late Charge Fees is $60.`}
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="repaymentPeriod"
+                            label="Repayment Period"
+                            type="number"
+                            pattern="{value} months"
+                            disabled
+                          />
+
+                          <div className="flex justify-end gap-4 pt-6">
+                            <Button
+                              size="lg"
+                              variant="destructive"
+                              onClick={onRejectClick}
+                              type="button"
+                            >
+                              Reject
+                            </Button>
+                            <Button size="lg" type="submit">
+                              Accept
+                            </Button>
+                          </div>
+                        </form>
+                      </Form>
+                    )}
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+              <CarouselItem>
+                <h1 className="lender-page-title">Loan Offer Acceptance</h1>
+                <p>
+                  Please fill in the form belows in order to proceed your
+                  request.
+                </p>
+                <br />
+                <br />
+                <Card>
+                  <CardContent>
+                    <Form {...appointmentForm}>
                       <form
-                        className="space-y-4"
-                        onSubmit={form.handleSubmit(handleSubmit)}
+                        className="flex flex-col space-y-4"
+                        onSubmit={appointmentForm.handleSubmit(onAcceptClick)}
                       >
                         <BaseFormField
-                          form={form}
-                          fieldRef="loanAmount"
-                          label="Loan Amount ($)"
-                          type="number"
-                          pattern="$ {value}"
-                          disabled
+                          form={appointmentForm}
+                          type="date"
+                          granularity="minute"
+                          fieldRef="appointmentDateTime"
+                          label="Appointment Date and Time"
+                          calendarDisabledRange={(date) => date < new Date()}
                         />
 
                         <BaseFormField
-                          form={form}
-                          fieldRef="tenureMonths"
-                          label="Tenure Months"
-                          type="number"
-                          pattern="{value} months"
-                          disabled
+                          form={appointmentForm}
+                          type="text"
+                          fieldRef="appointmentLocation"
+                          label="Appointment Location"
                         />
 
-                        <BaseFormField
-                          form={form}
-                          fieldRef="interestRate"
-                          label="Interest Rate per month (%)"
-                          type="number"
-                          pattern="{value} %"
-                          description={`Maximum for Interest Rate is 4%.`}
-                          disabled
-                        />
-
-                        <BaseFormField
-                          form={form}
-                          fieldRef="lateInterestRate"
-                          label="Late Interest Rate per month (%)"
-                          type="number"
-                          pattern="{value} %"
-                          description={`Maximum for Late Interest Rate is 4%`}
-                          disabled
-                        />
-
-                        <BaseFormField
-                          form={form}
-                          fieldRef="adminFee"
-                          label="Admin Fee - only 1 time charge ($)"
-                          type="number"
-                          pattern="$ {value}"
-                          description={`Maximum for Admin Fee is 10% of the Loan Amount.`}
-                          disabled
-                        />
-
-                        <BaseFormField
-                          form={form}
-                          fieldRef="lateChargeFees"
-                          label="Late Charge Fees - charged per month ($)"
-                          type="number"
-                          pattern="$ {value}"
-                          description={`Maximum for Late Charge Fees is $60.`}
-                          disabled
-                        />
-
-                        <BaseFormField
-                          form={form}
-                          fieldRef="repaymentPeriod"
-                          label="Repayment Period"
-                          type="number"
-                          pattern="{value} months"
-                          disabled
-                        />
-
-                        <div className="flex justify-end gap-4 pt-6">
+                        <div className="flex flex-row justify-end gap-4">
                           <Button
                             size="lg"
-                            variant="destructive"
-                            onClick={onRejectClick}
+                            variant="outline"
                             type="button"
+                            onClick={onBackClick}
                           >
-                            Reject
+                            Back
                           </Button>
                           <Button size="lg" type="submit">
-                            Accept
+                            Confirm Accept
                           </Button>
                         </div>
                       </form>
                     </Form>
-                  )}
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-          <CarouselItem>
-            <div className="middle-container-width mt-[var(--nav-height)] w-[90%] space-y-4 py-8 md:!w-[60%] md:py-14">
-              <h1 className="lender-page-title">Loan Offer Acceptance</h1>
-              <p>
-                Please fill in the form belows in order to proceed your request.
-              </p>
-              <br />
-              <br />
-              <Card>
-                <CardContent>
-                  <Form {...appointmentForm}>
-                    <form
-                      className="flex flex-col space-y-4"
-                      onSubmit={appointmentForm.handleSubmit(onAcceptClick)}
-                    >
-                      <BaseFormField
-                        form={appointmentForm}
-                        type="date"
-                        granularity="minute"
-                        fieldRef="appointmentDateTime"
-                        label="Appointment Date and Time"
-                        calendarDisabledRange={(date) => date < new Date()}
-                      />
-
-                      <BaseFormField
-                        form={appointmentForm}
-                        type="text"
-                        fieldRef="appointmentLocation"
-                        label="Appointment Location"
-                      />
-
-                      <div className="flex flex-row justify-end gap-4">
-                        <Button
-                          size="lg"
-                          variant="outline"
-                          type="button"
-                          onClick={onBackClick}
-                        >
-                          Back
-                        </Button>
-                        <Button size="lg" type="submit">
-                          Confirm Accept
-                        </Button>
-                      </div>
-                    </form>
-                  </Form>
-                </CardContent>
-              </Card>
-            </div>
-          </CarouselItem>
-        </CarouselContent>
-      </Carousel>
+                  </CardContent>
+                </Card>
+              </CarouselItem>
+            </CarouselContent>
+          </Carousel>
+        )}
+      </div>
       {loanData && (
         <LoanOfferDetailsDialog
           isOpen={showLoanDetailsDialog}
@@ -366,6 +382,35 @@ const OfferAcceptancePage = () => {
         </div>
       </BaseDialog>
     </LoaderWrapper>
+  );
+};
+
+const AlreadyProcessed = ({ status }: { status: OFFER_STATUS_ENUM }) => {
+  const statusText = useMemo(() => {
+    if (status === OFFER_STATUS_ENUM.BORROWER_ACCEPTED) {
+      return "accepted by you previously";
+    }
+    if (status === OFFER_STATUS_ENUM.BORROWER_REJECTED) {
+      return "rejected by you previously";
+    }
+    return "expired";
+  }, [status]);
+
+  return (
+    <div className="flex h-[80vh] items-center justify-center gap-4">
+      <div className="flex w-[300px] flex-col items-center space-y-6">
+        <Image
+          src="../../../result-not-found.svg"
+          width={200}
+          height={200}
+          alt="result-not-found"
+        />
+        <h1 className="text-center text-lg text-light-gray">
+          This offer is already {statusText}. This request no longer needs to be
+          processed.
+        </h1>
+      </div>
+    </div>
   );
 };
 
