@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { OfferData } from "@/schemas/offer.schema";
 import LoanOfferDetailsDialog from "@/app/components/data-display/loan-offer-details-dialog";
 import { MyDataTable } from "@/app/components/data-display/my-data-table";
 import {
@@ -16,22 +15,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/lib/select";
-import { DateRangePicker } from "@/app/components/lib/date-range-picker";
+import {
+  DateRangePicker,
+  DateRangeType,
+} from "@/app/components/lib/date-range-picker";
 import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
-import { subDays } from "date-fns";
 import { UserApplicationHistoryDataTableFilter } from "@/types/dataTable.types";
 import { useAdminGetApplicationHistoryQuery } from "@/queries/admin/use-admin-get-application-history-query";
 import { LoanData } from "@/schemas/loan.schema";
+import { getLast30Days } from "@/helper/dateFormatter";
+import { LoanStatusMapping } from "@/constants/statusMapping";
 
 const ApplicationHistoryPage = () => {
   const [selectedRow, setSelectedRow] = useState<LoanData | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [filter, setFilter] = useState<UserApplicationHistoryDataTableFilter>({
     status: "all",
-    date: {
-      from: subDays(new Date(new Date().setHours(0, 0, 0, 0)), 29),
-      to: new Date(new Date().setHours(23, 59, 59, 999)),
-    },
+    date: getLast30Days(),
     keyword: undefined,
   });
   const { data, isFetching } = useAdminGetApplicationHistoryQuery(filter);
@@ -75,6 +75,9 @@ const ApplicationHistoryPage = () => {
           {
             key: "status",
             title: "Status",
+            cell: ({ row }) => {
+              return <div>{LoanStatusMapping[row.original.status]}</div>;
+            },
           },
           {
             key: "createdAt",
@@ -139,9 +142,6 @@ const ApplicationHistoryPage = () => {
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.INITIAL}>Initial</SelectItem>
-            <SelectItem value={LOAN_STATUS_ENUM.IN_PROGRESS}>
-              In Progress
-            </SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.CANCELLED}>
               Cancelled
@@ -163,6 +163,7 @@ const ApplicationHistoryPage = () => {
             }
           }}
           className="flex-auto"
+          selectedDateRangeType={DateRangeType.LAST_30_DAYS}
         />
       </MyDataTable>
 
@@ -170,7 +171,6 @@ const ApplicationHistoryPage = () => {
         isOpen={showDialog}
         onOpenChange={setShowDialog}
         loanData={selectedRow || filteredData[0]}
-        // offerData={selectedRow || filteredData[0]}
       />
     </div>
   );

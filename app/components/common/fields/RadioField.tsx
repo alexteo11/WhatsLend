@@ -26,6 +26,9 @@ const RadioField = <T extends FieldValues>({
       <RadioGroup
         onValueChange={(value) => {
           field.onChange(value);
+          console.log({
+            value,
+          });
 
           const label = options.find(
             (option) => String(option.value) == value,

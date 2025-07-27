@@ -63,7 +63,7 @@ export const labeledDataSourceValuePairSchema = <
 ) => {
   return z.object({
     value: optional ? z.optional(zodType as T) : (zodType as T),
-    label: requiredStringSchema,
+    label: optional ? z.string().optional() : requiredStringSchema,
     source: z.nativeEnum(SOURCES_ENUM),
   });
 };
@@ -75,7 +75,7 @@ export const optionalLabeledDataSourceValuePairSchema = <
 ) => {
   return z.object({
     value: z.optional(zodType as T),
-    label: requiredStringSchema,
+    label: z.string().optional(),
     source: z.nativeEnum(SOURCES_ENUM),
   });
 };

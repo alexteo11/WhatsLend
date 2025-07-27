@@ -30,10 +30,9 @@ import { toast } from "sonner";
 import { LoaderWrapper } from "../../components/common/LoaderWrapper";
 // import sampleSingpassData1 from "./sampleSingpassData1.json";
 // import sampleSingpassData2 from "./sampleSingpassData2.json";
+// import sampleSingpassData3 from "./sampleSingpassData3.json"; // singpass test
 
 import FormSkeleton from "@/app/components/forms/FormSkeleton";
-// import DataDetailsSection from "@/app/components/data-display/data-details-section";
-// import DataDetailsTableView from "@/app/components/data-display/data-details-table-view";
 import SingpassUserInfo from "@/app/components/data-display/singpass-user-info";
 
 type DeepPartial<T> = T extends object
@@ -57,6 +56,9 @@ export default function Application() {
   const [isFormReady, setIsFormReady] = useState(false);
   const [singpassUserInfo, setSingpassUserInfo] =
     useState<DeepPartial<FormData>>();
+  // const [singpassUserInfo, setSingpassUserInfo] = useState<
+  //   DeepPartial<FormData>
+  // >(sampleSingpassData3 as never); // singpass test
   // SAMPLE TESTING DATA
   // {
   //   generalInformation: {
@@ -121,176 +123,176 @@ export default function Application() {
   //   },
   // }
 
-  const sampleFullData = {
-    personalDetails: {
-      uinfin: {
-        value: "G4440433N",
-        source: "SINGPASS",
-      },
-      fullName: {
-        value: "WATTNA TIWARAT",
-        source: "SINGPASS",
-      },
-      sex: {
-        value: "F",
-        label: "FEMALE",
-        source: "SINGPASS",
-      },
-      nationality: {
-        value: "AM",
-        label: "ARMENIAN",
-        source: "SINGPASS",
-      },
-      dob: {
-        value: "1960-05-17T00:00:00.000Z",
-        source: "SINGPASS",
-      },
-      race: {
-        value: "AM",
-        label: "ARMENIAN",
-        source: "SINGPASS",
-      },
-      birthCountry: {
-        value: "AM",
-        label: "ARMENIA",
-        source: "SINGPASS",
-      },
-      residentialStatus: {
-        value: "A",
-        label: "ALIEN",
-        source: "MANUAL",
-      },
-      passType: {
-        value: "P1Pass",
-        label: "Employment Pass",
-        source: "SINGPASS",
-      },
-      passStatus: {
-        value: "Live",
-        source: "SINGPASS",
-      },
-      passExpiryDate: {
-        value: "2030-12-31T00:00:00.000Z",
-        source: "SINGPASS",
-      },
-      maritalStatus: {
-        value: "2",
-        label: "Married",
-        source: "MANUAL",
-      },
-    },
-    contactDetails: {
-      email: {
-        value: "myinfotesting@gmail.com",
-        source: "SINGPASS",
-      },
-      mobileNo: {
-        value: "+6597399245",
-        source: "SINGPASS",
-      },
-    },
-    loanDetails: {
-      loanAmount: {
-        value: 9000,
-        source: "MANUAL",
-      },
-      loanTenure: {
-        value: 43,
-        source: "MANUAL",
-      },
-      loanPurpose: {
-        value: "qweqwe",
-        source: "MANUAL",
-      },
-    },
-    employmentDetails: {
-      occupation: {
-        value: "TRAINING MANAGER",
-        source: "SINGPASS",
-      },
-      employmentStatus: {
-        value: "student",
-        label: "Student",
-        source: "MANUAL",
-      },
-      monthlyIncome: {
-        value: 123,
-        source: "MANUAL",
-      },
-      employerName: {
-        value: "AAS SISTEMAS PTE LTD",
-        source: "SINGPASS",
-      },
-      employmentSector: {
-        value: "MANUFACTURING",
-        source: "SINGPASS",
-      },
-      timeAtCurrentEmployer: {
-        value: "6-12-months",
-        label: "6 to 12 months",
-        source: "MANUAL",
-      },
-      timeAtPreviousEmployer: {
-        value: "none",
-        label: "No previous employment",
-        source: "MANUAL",
-      },
-    },
-    housingDetails: {
-      address: {
-        value: "123, LORONG 1 TOA PAYOH, TOA PAYOH VIEW, 13-220",
-        source: "SINGPASS",
-      },
-      unitNo: {
-        value: "220",
-        source: "SINGPASS",
-      },
-      postalCode: {
-        value: "310123",
-        source: "SINGPASS",
-      },
-      country: {
-        value: "SG",
-        label: "SINGAPORE",
-        source: "SINGPASS",
-      },
-      housingType: {
-        value: "131",
-        label: "CONDOMINIUM",
-        source: "MANUAL",
-      },
-      hdbType: {
-        value: "113",
-        label: "3-ROOM FLAT (HDB)",
-        source: "SINGPASS",
-      },
-      hdbOwnership: [],
-    },
-    existingLoanDetails: {
-      isContactingWithAgency: {
-        value: false,
-        label: "No",
-        source: "MANUAL",
-      },
-      hasExistingLoans: {
-        value: false,
-        label: "No",
-        source: "MANUAL",
-      },
-      existingLoanFromBank: {
-        source: "MANUAL",
-      },
-      existingLoanFromNonBank: {
-        source: "MANUAL",
-      },
-      monthlyRepaymentToBank: {
-        source: "MANUAL",
-      },
-      monthlyRepaymentToNonBank: {
-        source: "MANUAL",
-      },
-    },
-  } as unknown as never;
+  // const sampleFullData = {
+  //   personalDetails: {
+  //     uinfin: {
+  //       value: "G4440433N",
+  //       source: "SINGPASS",
+  //     },
+  //     fullName: {
+  //       value: "WATTNA TIWARAT",
+  //       source: "SINGPASS",
+  //     },
+  //     sex: {
+  //       value: "F",
+  //       label: "FEMALE",
+  //       source: "SINGPASS",
+  //     },
+  //     nationality: {
+  //       value: "AM",
+  //       label: "ARMENIAN",
+  //       source: "SINGPASS",
+  //     },
+  //     dob: {
+  //       value: "1960-05-17T00:00:00.000Z",
+  //       source: "SINGPASS",
+  //     },
+  //     race: {
+  //       value: "AM",
+  //       label: "ARMENIAN",
+  //       source: "SINGPASS",
+  //     },
+  //     birthCountry: {
+  //       value: "AM",
+  //       label: "ARMENIA",
+  //       source: "SINGPASS",
+  //     },
+  //     residentialStatus: {
+  //       value: "A",
+  //       label: "ALIEN",
+  //       source: "MANUAL",
+  //     },
+  //     passType: {
+  //       value: "P1Pass",
+  //       label: "Employment Pass",
+  //       source: "SINGPASS",
+  //     },
+  //     passStatus: {
+  //       value: "Live",
+  //       source: "SINGPASS",
+  //     },
+  //     passExpiryDate: {
+  //       value: "2030-12-31T00:00:00.000Z",
+  //       source: "SINGPASS",
+  //     },
+  //     maritalStatus: {
+  //       value: "2",
+  //       label: "Married",
+  //       source: "MANUAL",
+  //     },
+  //   },
+  //   contactDetails: {
+  //     email: {
+  //       value: "myinfotesting@gmail.com",
+  //       source: "SINGPASS",
+  //     },
+  //     mobileNo: {
+  //       value: "+6597399245",
+  //       source: "SINGPASS",
+  //     },
+  //   },
+  //   loanDetails: {
+  //     loanAmount: {
+  //       value: 9000,
+  //       source: "MANUAL",
+  //     },
+  //     loanTenure: {
+  //       value: 43,
+  //       source: "MANUAL",
+  //     },
+  //     loanPurpose: {
+  //       value: "qweqwe",
+  //       source: "MANUAL",
+  //     },
+  //   },
+  //   employmentDetails: {
+  //     occupation: {
+  //       value: "TRAINING MANAGER",
+  //       source: "SINGPASS",
+  //     },
+  //     employmentStatus: {
+  //       value: "student",
+  //       label: "Student",
+  //       source: "MANUAL",
+  //     },
+  //     monthlyIncome: {
+  //       value: 123,
+  //       source: "MANUAL",
+  //     },
+  //     employerName: {
+  //       value: "AAS SISTEMAS PTE LTD",
+  //       source: "SINGPASS",
+  //     },
+  //     employmentSector: {
+  //       value: "MANUFACTURING",
+  //       source: "SINGPASS",
+  //     },
+  //     timeAtCurrentEmployer: {
+  //       value: "6-12-months",
+  //       label: "6 to 12 months",
+  //       source: "MANUAL",
+  //     },
+  //     timeAtPreviousEmployer: {
+  //       value: "none",
+  //       label: "No previous employment",
+  //       source: "MANUAL",
+  //     },
+  //   },
+  //   housingDetails: {
+  //     address: {
+  //       value: "123, LORONG 1 TOA PAYOH, TOA PAYOH VIEW, 13-220",
+  //       source: "SINGPASS",
+  //     },
+  //     unitNo: {
+  //       value: "220",
+  //       source: "SINGPASS",
+  //     },
+  //     postalCode: {
+  //       value: "310123",
+  //       source: "SINGPASS",
+  //     },
+  //     country: {
+  //       value: "SG",
+  //       label: "SINGAPORE",
+  //       source: "SINGPASS",
+  //     },
+  //     housingType: {
+  //       value: "131",
+  //       label: "CONDOMINIUM",
+  //       source: "MANUAL",
+  //     },
+  //     hdbType: {
+  //       value: "113",
+  //       label: "3-ROOM FLAT (HDB)",
+  //       source: "SINGPASS",
+  //     },
+  //     hdbOwnership: [],
+  //   },
+  //   existingLoanDetails: {
+  //     isContactingWithAgency: {
+  //       value: false,
+  //       label: "No",
+  //       source: "MANUAL",
+  //     },
+  //     hasExistingLoans: {
+  //       value: false,
+  //       label: "No",
+  //       source: "MANUAL",
+  //     },
+  //     existingLoanFromBank: {
+  //       source: "MANUAL",
+  //     },
+  //     existingLoanFromNonBank: {
+  //       source: "MANUAL",
+  //     },
+  //     monthlyRepaymentToBank: {
+  //       source: "MANUAL",
+  //     },
+  //     monthlyRepaymentToNonBank: {
+  //       source: "MANUAL",
+  //     },
+  //   },
+  // } as unknown as never;
 
   const [showLogin, setShowLogin] = useState(false);
   const [showSingpassInfo, setShowSingpassInfo] = useState(false);
@@ -349,7 +351,7 @@ export default function Application() {
 
     setSource(SOURCES_ENUM.MANUAL);
     setFormDefaultValues();
-    // setFormDefaultValues(sampleFullData));
+    // setFormDefaultValues(sampleSingpassData3 as never); // singpass test
     setIsFormReady(true);
   };
 

@@ -49,7 +49,11 @@ const OfferDetailInfo = ({ offerData }: { offerData: OfferData }) => {
           {
             title: "Repayment Period",
             path: "repaymentPeriod",
-            formatter: monthFormatter,
+          },
+          {
+            title: "Guarantor Required",
+            path: "guarantorRequired",
+            formatter: (value) => (value ? "Yes" : "No"),
           },
           {
             title: "Created At",

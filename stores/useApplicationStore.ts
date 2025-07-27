@@ -10,9 +10,15 @@ interface ApplicationDetailsState {
 }
 
 const useApplicationDetailsStore = create<ApplicationDetailsState>((set) => ({
-  applicationId: "",
+  applicationId:
+    typeof window !== "undefined"
+      ? window.localStorage.getItem("compareLoanApplicationId") || ""
+      : "",
   actionMode: "view",
-  setApplicationId: (id) => set({ applicationId: id }),
+  setApplicationId: (id) => {
+    window.localStorage.setItem("compareLoanApplicationId", id);
+    set({ applicationId: id });
+  },
   setActionMode: (actionMode) => set({ actionMode }),
 }));
 

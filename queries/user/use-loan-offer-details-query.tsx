@@ -1,27 +1,17 @@
 import { toast } from "sonner";
 import { useQuery, keepPreviousData } from "@tanstack/react-query";
 import axios from "@/lib/axios";
-import { LoanData } from "@/schemas/loan.schema";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { QUERY_KEY } from "../constants";
-import { Role } from "@/constants/authEnums";
+import { OfferData } from "@/schemas/offer.schema";
 
-export const useLoanApplicationDetailsQuery = (
-  role: Role,
-  loanId?: string,
-  defaultEnable = false,
-) => {
+export const userLoanOfferDetailsQuery = (offerId: string) => {
   return useQuery({
-    queryKey: [QUERY_KEY.LoanApplicationDetails, loanId],
+    queryKey: [QUERY_KEY.LoanOfferDetails, offerId],
     queryFn: async () => {
       try {
-        const res = await axios.get<{ data: LoanData }>(
-          `/loan/details/${loanId}`,
-          {
-            params: {
-              role,
-            },
-          },
+        const res = await axios.get<{ data: OfferData }>(
+          `/offer/${offerId}/offerDetails`,
         );
         return res.data.data;
       } catch (err) {
@@ -29,7 +19,7 @@ export const useLoanApplicationDetailsQuery = (
         throw new Error("Something went wrong.");
       }
     },
-    enabled: defaultEnable,
+    enabled: true,
     placeholderData: keepPreviousData,
   });
 };

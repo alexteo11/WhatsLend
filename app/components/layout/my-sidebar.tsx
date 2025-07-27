@@ -24,6 +24,7 @@ import {
   useState,
 } from "react";
 import { cn } from "@/lib/utils";
+import { usePathname, useRouter } from "next/navigation";
 
 interface MenuItem {
   id: number;
@@ -35,8 +36,15 @@ interface MenuItem {
   children?: Pick<MenuItem, "id" | "title" | "url">[];
 }
 
+interface SelectedMenu {
+  id: number;
+  path: string;
+}
+
 export function MySidebar({ menuItems }: { menuItems: MenuItem[] }) {
-  const [selectedMenu, setSelectedMenu] = useState<number>();
+  const router = useRouter();
+  const pathname = usePathname();
+  const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>();
 
   useEffect(() => {
     if (typeof window === "undefined") {
@@ -47,9 +55,24 @@ export function MySidebar({ menuItems }: { menuItems: MenuItem[] }) {
     );
 
     if (_selectedMenu) {
-      setSelectedMenu(Number(_selectedMenu));
+      const _selectedMenuData = JSON.parse(_selectedMenu) as SelectedMenu;
+      setSelectedMenu(_selectedMenuData);
+
+      if (pathname !== _selectedMenuData.path) {
+        router.replace(_selectedMenuData.path);
+      }
     } else {
-      setSelectedMenu(1);
+      if (menuItems[0].children?.length) {
+        setSelectedMenu({
+          id: menuItems[0].children[0].id,
+          path: menuItems[0].children[0].url,
+        });
+        return;
+      }
+      setSelectedMenu({
+        id: menuItems[0].id,
+        path: menuItems[0].url,
+      });
     }
   }, [window]);
 
@@ -60,7 +83,10 @@ export function MySidebar({ menuItems }: { menuItems: MenuItem[] }) {
 
     window.localStorage.setItem(
       "compareLoanSelectedMenuId",
-      selectedMenu.toString(),
+      JSON.stringify({
+        id: selectedMenu.id,
+        path: selectedMenu.path,
+      }),
     );
   }, [selectedMenu]);
 
@@ -112,8 +138,8 @@ export const NormalItem = ({
   setSelectedMenu,
 }: {
   menuItem: MenuItem | Pick<MenuItem, "id" | "title" | "url">;
-  selectedMenu: number | undefined;
-  setSelectedMenu: Dispatch<SetStateAction<number | undefined>>;
+  selectedMenu: SelectedMenu | undefined;
+  setSelectedMenu: Dispatch<SetStateAction<SelectedMenu | undefined>>;
 }) => {
   return (
     <SidebarMenuItem key={menuItem.title}>
@@ -121,11 +147,19 @@ export const NormalItem = ({
         asChild
         className={cn(
           "py-7",
-          menuItem.id === selectedMenu &&
+          menuItem.id === selectedMenu?.id &&
             "border border-app bg-app/50 hover:bg-app/50",
         )}
       >
-        <Link href={menuItem.url} onClick={() => setSelectedMenu(menuItem.id)}>
+        <Link
+          href={menuItem.url}
+          onClick={() =>
+            setSelectedMenu({
+              id: menuItem.id,
+              path: menuItem.url,
+            })
+          }
+        >
           {"icon" in menuItem && menuItem.icon && <menuItem.icon />}
           <span className="!whitespace-break-spaces">{menuItem.title}</span>
         </Link>
@@ -140,15 +174,15 @@ export const ParentItem = ({
   setSelectedMenu,
 }: {
   menuItem: MenuItem;
-  selectedMenu: number | undefined;
-  setSelectedMenu: Dispatch<SetStateAction<number | undefined>>;
+  selectedMenu: SelectedMenu | undefined;
+  setSelectedMenu: Dispatch<SetStateAction<SelectedMenu | undefined>>;
 }) => {
   const [isOpen, setIsOpen] = useState(
     !!menuItem.children?.find((item) => {
       if (!selectedMenu) {
         return false;
       }
-      return item.id === selectedMenu;
+      return item.id === selectedMenu.id;
     }),
   );
 
@@ -186,13 +220,18 @@ export const ParentItem = ({
                 key={index}
                 className={cn(
                   "py-6",
-                  child.id === selectedMenu &&
+                  child.id === selectedMenu?.id &&
                     "border border-app bg-app/50 hover:bg-app/50",
                 )}
               >
                 <Link
                   href={child.url}
-                  onClick={() => setSelectedMenu(child.id)}
+                  onClick={() =>
+                    setSelectedMenu({
+                      id: child.id,
+                      path: child.url,
+                    })
+                  }
                 >
                   <span className="!whitespace-break-spaces">
                     • {"  "} {child.title}

@@ -16,22 +16,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/app/components/lib/select";
-import { DateRangePicker } from "@/app/components/lib/date-range-picker";
+import {
+  DateRangePicker,
+  DateRangeType,
+} from "@/app/components/lib/date-range-picker";
 import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
-import { subDays } from "date-fns";
 import { LoanDataTableFilter } from "@/types/dataTable.types";
 import { useAdminGetApplicationOfferQuery } from "@/queries/admin/use-admin-get-application-offer-query";
 import { useAdminGetLendersQuery } from "@/queries/admin/use-admin-get-lenders-query";
+import { getLast30Days } from "@/helper/dateFormatter";
+import { OfferStatusMapping } from "@/constants/statusMapping";
 
 const ApplicationOfferPage = () => {
   const [selectedRow, setSelectedRow] = useState<OfferData | null>(null);
   const [showDialog, setShowDialog] = useState(false);
   const [filter, setFilter] = useState<LoanDataTableFilter>({
     status: "all",
-    date: {
-      from: subDays(new Date(new Date().setHours(0, 0, 0, 0)), 29),
-      to: new Date(new Date().setHours(23, 59, 59, 999)),
-    },
+    date: getLast30Days(),
     lenderId: undefined,
     keyword: undefined,
   });
@@ -98,6 +99,9 @@ const ApplicationOfferPage = () => {
           {
             key: "status",
             title: "Status",
+            cell: ({ row }) => {
+              return <div>{OfferStatusMapping[row.original.status]}</div>;
+            },
           },
           {
             key: "createdAt",
@@ -161,13 +165,20 @@ const ApplicationOfferPage = () => {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.ACCEPTED}>Accepted</SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.BORROWER_ACCEPTED}>
+              Borrower Accepted
+            </SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.BORROWER_REJECTED}>
+              Borrower Rejected
+            </SelectItem>
+            <SelectItem value={OFFER_STATUS_ENUM.LENDER_REJECTED}>
+              Lender Rejected
+            </SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.COMPLETED}>
               Completed
             </SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
             <SelectItem value={OFFER_STATUS_ENUM.ISSUED}>Issued</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.REJECTED}>Rejected</SelectItem>
           </SelectContent>
         </Select>
 
@@ -190,14 +201,6 @@ const ApplicationOfferPage = () => {
                 {lender.name}
               </SelectItem>
             ))}
-            {/* <SelectItem value="all">All</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.ACCEPTED}>Accepted</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.COMPLETED}>
-              Completed
-            </SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.ISSUED}>Issued</SelectItem>
-            <SelectItem value={OFFER_STATUS_ENUM.REJECTED}>Rejected</SelectItem> */}
           </SelectContent>
         </Select>
         <div className="flex-auto" />
@@ -212,6 +215,7 @@ const ApplicationOfferPage = () => {
             }
           }}
           className="flex-auto"
+          selectedDateRangeType={DateRangeType.LAST_30_DAYS}
         />
       </MyDataTable>
 

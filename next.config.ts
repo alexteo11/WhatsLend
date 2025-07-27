@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   reactStrictMode: true,
+  sassOptions: {
+    // This silences the deprecation warning
+    silenceDeprecations: ["legacy-js-api"],
+  },
 };
 
 export default nextConfig;

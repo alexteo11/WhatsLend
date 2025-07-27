@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { MyDataTable } from "@/app/components/data-display/my-data-table";
-import { UsersDataTableFilter } from "@/types/dataTable.types";
+import { LendersDataTableFilter } from "@/types/dataTable.types";
 import {
   getDataColumns,
   renderDataTableActionButtons,
@@ -18,9 +18,10 @@ import {
 import { useAdminGetLendersQuery } from "@/queries/admin/use-admin-get-lenders-query";
 import { Lender, LenderStatus } from "@/schemas/lender.schema";
 import { LenderStaff } from "@/schemas/lenderStaff.schema";
+import { LenderStatusMapping } from "@/constants/statusMapping";
 
 const ManageLendersPage = () => {
-  const [filter, setFilter] = useState<UsersDataTableFilter>({
+  const [filter, setFilter] = useState<LendersDataTableFilter>({
     status: "all",
   });
   const { data, isFetching } = useAdminGetLendersQuery(filter);
@@ -31,7 +32,7 @@ const ManageLendersPage = () => {
     }
     if (filter?.keyword) {
       const _keyword = filter.keyword;
-      return data.filter((item) => item.email.toLowerCase().includes(_keyword));
+      return data.filter((item) => item.name.toLowerCase().includes(_keyword));
     }
     return data;
   }, [data, filter?.keyword]);
@@ -81,6 +82,13 @@ const ManageLendersPage = () => {
             key: "status",
             title: "Status",
             isCenterText: true,
+            cell: ({ row }) => {
+              return (
+                <div className="text-center capitalize">
+                  {LenderStatusMapping[row.original.status]}
+                </div>
+              );
+            },
           },
           {
             key: "licenseExpiryDate",
@@ -129,7 +137,7 @@ const ManageLendersPage = () => {
         <div> Search: </div>
         <Input
           className="w-auto"
-          placeholder="Search by email"
+          placeholder="Search by lender name"
           value={filter.keyword || ""}
           onChange={(e) => {
             setFilter({
@@ -144,7 +152,7 @@ const ManageLendersPage = () => {
           onValueChange={(value) => {
             setFilter({
               ...filter,
-              status: value as NonNullable<UsersDataTableFilter["status"]>,
+              status: value as NonNullable<LendersDataTableFilter["status"]>,
             });
           }}
         >

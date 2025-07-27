@@ -732,7 +732,7 @@ const DateTimePicker = React.forwardRef<
       defaultPopupValue = new Date(new Date().setHours(0, 0, 0, 0)),
       value,
       onChange,
-      hourCycle = 24,
+      hourCycle = 12,
       yearRange = 100,
       disabled = false,
       displayFormat,
@@ -860,7 +860,7 @@ const DateTimePicker = React.forwardRef<
             <CalendarIcon className="mr-2 h-4 w-4" />
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0">
+        <PopoverContent className="z-[500] w-auto p-0">
           <Calendar
             mode="single"
             selected={displayDate}

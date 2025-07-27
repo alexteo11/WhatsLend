@@ -1,8 +1,8 @@
 @use "sass:color";
-@import "./variables";
+@use "./variables" as vars;
 
-$active-background: color.scale($btn-bg, $lightness: -10%);
-$active-border: color.scale($btn-border, $lightness: -12%);
+$active-background: color.scale(vars.$btn-bg, $lightness: -10%);
+$active-border: color.scale(vars.$btn-border, $lightness: -12%);
 
 .rbc-toolbar {
   display: flex;
@@ -19,14 +19,14 @@ $active-border: color.scale($btn-border, $lightness: -12%);
   }
 
   & button {
-    color: $btn-color;
+    color: vars.$btn-color;
     display: inline-block;
     margin: 0;
     text-align: center;
     vertical-align: middle;
     background: none;
     background-image: none;
-    border: 1px solid $btn-border;
+    border: 1px solid vars.$btn-border;
     padding: 0.375rem 1rem;
     border-radius: 4px;
     line-height: normal;
@@ -41,20 +41,20 @@ $active-border: color.scale($btn-border, $lightness: -12%);
 
       &:hover,
       &:focus {
-        color: $btn-color;
-        background-color: color.scale($btn-bg, $lightness: -17%);
-        border-color: color.scale($btn-border, $lightness: -25%);
+        color: vars.$btn-color;
+        background-color: color.scale(vars.$btn-bg, $lightness: -17%);
+        border-color: color.scale(vars.$btn-border, $lightness: -25%);
       }
     }
 
     &:focus {
-      color: $btn-color;
+      color: vars.$btn-color;
       background-color: $active-background;
       border-color: $active-border;
     }
 
     &:hover {
-      color: $btn-color;
+      color: vars.$btn-color;
       cursor: pointer;
       background-color: $active-background;
       border-color: $active-border;

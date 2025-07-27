@@ -5,5 +5,7 @@
     "Code_Cleaning",
     "Lender_Page"
   ],
-  "css.customData": [".vscode/tailwind.json"]
+  "css.customData": [
+    ".vscode/tailwind.json"
+  ]
 }

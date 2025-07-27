@@ -81,14 +81,16 @@ const NumberField = <T extends FieldValues>({
           }}
           onChange={(e) => {
             if (!pattern) {
-              const _value = Number(e.currentTarget.value);
+              const _value = Number(e.currentTarget.value.replace(/\D/g, ""));
               setValue(_value);
               field?.onChange(_value);
               return;
             }
             const patternStr = pattern.replaceAll("{value}", "");
             const valueWithoutPattern = Number(
-              e.currentTarget.value.replaceAll(patternStr, ""),
+              e.currentTarget.value
+                .replace(/\D/g, "")
+                .replaceAll(patternStr, ""),
             );
             setValue(valueWithoutPattern);
             field?.onChange(valueWithoutPattern);

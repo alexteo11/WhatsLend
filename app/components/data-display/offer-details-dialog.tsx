@@ -69,7 +69,8 @@ const OfferDetailsDialog = ({
                     className="h-[42px] hover:bg-accent"
                   >
                     {/* TODO: updated with lender actual name */}
-                    {offerData.status === OFFER_STATUS_ENUM.ACCEPTED
+                    {/* TODO: important censor data */}
+                    {offerData.status === OFFER_STATUS_ENUM.BORROWER_ACCEPTED
                       ? `${offerData.id} - Accepted ✅`
                       : offerData.id}
                   </SelectItem>
