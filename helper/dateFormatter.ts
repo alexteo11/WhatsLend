@@ -8,6 +8,10 @@ export const formatDate = (date?: Date | string, showDateTime = true) => {
   let _date = date;
 
   if (typeof _date === "string") {
+    if (date === "******") {
+      return "******";
+    }
+
     _date = new Date(_date);
   }
 
@@ -23,7 +27,13 @@ export const formatDate = (date?: Date | string, showDateTime = true) => {
     options.second = "numeric";
   }
 
-  return new Intl.DateTimeFormat("en-GB", options).format(_date);
+  try {
+    const dateString = new Intl.DateTimeFormat("en-GB", options).format(_date);
+    return dateString;
+  } catch (error) {
+    console.error(error);
+    return "Invalid Date";
+  }
 };
 
 export const getLast30Days = () => {

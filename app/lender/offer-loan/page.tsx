@@ -7,7 +7,12 @@ import LoanOfferDetailsDialog from "@/app/components/data-display/loan-offer-det
 import { Button } from "@/app/components/lib/button";
 import { Card, CardContent } from "@/app/components/lib/card";
 import { Form } from "@/app/components/lib/form";
-import { LOAN_STATUS_ENUM, OFFER_STATUS_ENUM } from "@/constants/commonEnums";
+import { Role } from "@/constants/authEnums";
+import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
+import {
+  REPAYMENT_PERIOD_OPTION,
+  YES_NO_OPTIONS,
+} from "@/constants/formOptions";
 import { getErrorMessage } from "@/helper/errorHelper";
 import axios from "@/lib/axios";
 import { useLoanApplicationDetailsQuery } from "@/queries/user/use-loan-application-details-query";
@@ -37,7 +42,7 @@ const OfferLoanPage = () => {
     data: loanData,
     isLoading: isLoadingLoanDetails,
     refetch,
-  } = useLoanApplicationDetailsQuery(loanId, true);
+  } = useLoanApplicationDetailsQuery(Role.LENDER, loanId, true);
 
   const form = useForm<OfferPayLoad>({
     resolver: zodResolver(
@@ -58,14 +63,7 @@ const OfferLoanPage = () => {
     },
   });
 
-  useEffect(() => {
-    if (loanData?.contactDetails?.email?.value) {
-      form.setValue("email", loanData?.contactDetails?.email?.value);
-    }
-    if (loanData?.userId) {
-      form.setValue("userId", loanData?.userId);
-    }
-  }, [loanData]);
+  useEffect(() => {}, [loanData]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -92,7 +90,7 @@ const OfferLoanPage = () => {
     <LoaderWrapper isLoading={isLoading || isLoadingLoanDetails}>
       <Navbar hideButtons defaultHomeRoute="#" />
       <div className="middle-container-width mt-[var(--nav-height)] w-[90%] space-y-4 py-8 md:!w-[60%] md:py-14">
-        {loanData.status !== LOAN_STATUS_ENUM.INITIAL ? (
+        {loanData.status === LOAN_STATUS_ENUM.COMPLETED ? (
           <AlreadyProcessed status={loanData.status} />
         ) : (
           <>
@@ -121,13 +119,13 @@ const OfferLoanPage = () => {
                     className="space-y-4"
                     onSubmit={form.handleSubmit(handleSubmit)}
                   >
-                    <BaseFormField
+                    {/* <BaseFormField
                       form={form}
                       fieldRef="email"
                       label="Email"
                       type="email"
                       disabled
-                    />
+                    /> */}
 
                     <BaseFormField
                       form={form}
@@ -181,12 +179,28 @@ const OfferLoanPage = () => {
                       description={`Maximum for Late Charge Fees is $60.`}
                     />
 
-                    <BaseFormField
+                    {/* <BaseFormField
                       form={form}
                       fieldRef="repaymentPeriod"
                       label="Repayment Period"
                       type="number"
                       pattern="{value} months"
+                    /> */}
+
+                    <BaseFormField
+                      form={form}
+                      fieldRef="repaymentPeriod"
+                      label="Repayment Period"
+                      type="select"
+                      options={REPAYMENT_PERIOD_OPTION}
+                    />
+
+                    <BaseFormField
+                      form={form}
+                      fieldRef="guarantorRequired"
+                      label="Guarantor Required"
+                      type="radio"
+                      options={YES_NO_OPTIONS}
                     />
 
                     <div className="flex justify-end pt-6">

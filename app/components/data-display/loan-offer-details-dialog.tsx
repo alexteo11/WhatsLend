@@ -22,6 +22,7 @@ import { LoanData } from "@/schemas/loan.schema";
 import { cn } from "@/lib/utils";
 import { useLoanApplicationDetailsQuery } from "@/queries/user/use-loan-application-details-query";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/context/auth.context";
 
 // loanData = must have
 // offerData = optional
@@ -36,8 +37,12 @@ const LoanOfferDetailsDialog = ({
   offerData,
   loanData,
 }: OfferDetailDialogProps) => {
+  const { userRole } = useAuth();
   const loanId = offerData?.loanId || loanData?.id;
-  const { data, isLoading, refetch } = useLoanApplicationDetailsQuery(loanId);
+  const { data, isLoading, refetch } = useLoanApplicationDetailsQuery(
+    userRole,
+    loanId,
+  );
   const [_loanData, setLoanData] = useState<LoanData | undefined>(loanData);
 
   useEffect(() => {

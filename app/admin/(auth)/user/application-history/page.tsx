@@ -142,9 +142,6 @@ const ApplicationHistoryPage = () => {
           <SelectContent>
             <SelectItem value="all">All</SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.INITIAL}>Initial</SelectItem>
-            <SelectItem value={LOAN_STATUS_ENUM.IN_PROGRESS}>
-              In Progress
-            </SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.EXPIRED}>Expired</SelectItem>
             <SelectItem value={LOAN_STATUS_ENUM.CANCELLED}>
               Cancelled

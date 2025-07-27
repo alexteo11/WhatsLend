@@ -5,31 +5,45 @@ import DataDetailsTableView from "@/app/components/data-display/data-details-tab
 import { formatDate } from "@/helper/dateFormatter";
 import { currencyFormatter, monthFormatter } from "@/helper/numberFormatter";
 import { Path } from "react-hook-form";
+import { foreignIdType } from "@/constants/formOptions";
 
 const LoanDetailsInfo = ({ loanData }: { loanData: LoanData }) => {
+  const rows: {
+    [K in Path<LoanData["personalDetails"]>]: Row<
+      LoanData["personalDetails"],
+      K
+    >;
+  }[Path<LoanData["personalDetails"]>][] = [
+    { title: "NRIC/FIN", path: "uinfin.value" },
+    { title: "Full Name", path: "fullName.value" },
+    { title: "Gender", path: "sex.label" },
+    { title: "Nationality", path: "nationality.label" },
+    { title: "Date of Birth", path: "dob.value", formatter: formatDate },
+    { title: "Birth Country", path: "birthCountry.label" },
+    { title: "Race", path: "race.label" },
+    { title: "Residential Status", path: "residentialStatus.label" },
+    { title: "Marital Status", path: "maritalStatus.label" },
+    { title: "ID Type", path: "idType.label" },
+  ];
+
+  if (loanData.personalDetails?.idType?.value === foreignIdType) {
+    rows.push(
+      { title: "Passport Type", path: "passType.label" },
+      { title: "Passport Status", path: "passStatus.value" },
+      {
+        title: "Passport Expiry Date",
+        path: "passExpiryDate.value",
+        formatter: formatDate,
+      },
+    );
+  }
+
   return (
     <>
       <DataDetailsSection
         title="Personal Details"
         data={loanData.personalDetails}
-        rows={[
-          { title: "NRIC/FIN", path: "uinfin.value" },
-          { title: "Full Name", path: "fullName.value" },
-          { title: "Gender", path: "sex.label" },
-          { title: "Nationality", path: "nationality.label" },
-          { title: "Date of Birth", path: "dob.value", formatter: formatDate },
-          { title: "Birth Country", path: "birthCountry.label" },
-          { title: "Race", path: "race.label" },
-          { title: "Residential Status", path: "residentialStatus.label" },
-          { title: "Marital Status", path: "maritalStatus.label" },
-          { title: "Passport Type", path: "passType.label" },
-          { title: "Passport Status", path: "passStatus.value" },
-          {
-            title: "Passport Expiry Date",
-            path: "passExpiryDate.value",
-            formatter: formatDate,
-          },
-        ]}
+        rows={rows}
       />
 
       <br />
@@ -69,8 +83,23 @@ const LoanDetailsInfo = ({ loanData }: { loanData: LoanData }) => {
           { title: "Occupation", path: "occupation.value" },
           { title: "Employment Status", path: "employmentStatus.label" },
           {
-            title: "Monthly Income",
-            path: "monthlyIncome.value",
+            title: "Latest 3 Month Income 1",
+            path: "monthlyIncome1.value",
+            formatter: currencyFormatter,
+          },
+          {
+            title: "Latest 3 Month Income 2",
+            path: "monthlyIncome2.value",
+            formatter: currencyFormatter,
+          },
+          {
+            title: "Latest 3 Month Income 3",
+            path: "monthlyIncome3.value",
+            formatter: currencyFormatter,
+          },
+          {
+            title: "Total Latest 3 Month Income",
+            path: "totalMonthlyIncome.value",
             formatter: currencyFormatter,
           },
           { title: "Employer Name", path: "employerName.value" },
@@ -82,6 +111,18 @@ const LoanDetailsInfo = ({ loanData }: { loanData: LoanData }) => {
           {
             title: "Time At Previous Employer",
             path: "timeAtPreviousEmployer.label",
+          },
+          {
+            title: "Office Address",
+            path: "officeAddress.value",
+          },
+          {
+            title: "Office Unit No",
+            path: "officeUnitNo.value",
+          },
+          {
+            title: "Office Postal Code",
+            path: "officePostalCode.value",
           },
         ]}
       />
@@ -96,6 +137,12 @@ const LoanDetailsInfo = ({ loanData }: { loanData: LoanData }) => {
           { title: "Postal Code", path: "postalCode.value" },
           { title: "Country", path: "country.label" },
           { title: "Type of Housing", path: "housingType.label" },
+          { title: "Housing Status", path: "housingStatus.label" },
+          {
+            title: "Has Own Private Property",
+            path: "hasOwnPrivateProperty.value",
+            formatter: (value) => (value ? "Yes" : "No"),
+          },
         ]}
       />
       <DataDetailsTableView data={loanData} />

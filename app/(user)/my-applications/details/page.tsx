@@ -8,6 +8,7 @@ import { FormTwoSection } from "@/app/components/forms/FormTwo";
 import { Button } from "@/app/components/lib/button";
 import { Card, CardContent } from "@/app/components/lib/card";
 import { Form } from "@/app/components/lib/form";
+import { Separator } from "@/app/components/lib/separator";
 import { useAuth } from "@/context/auth.context";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { authAxios } from "@/lib/axios";
@@ -35,6 +36,11 @@ const ViewModifyApplicationPage = () => {
   const [isSubmittingForm, setIsSubmittingForm] = React.useState(false);
 
   const selectedApplication = useMemo(() => {
+    console.log({
+      data,
+      applicationId,
+    });
+    console.log(data?.find((item) => item.id === applicationId));
     return data?.find((item) => item.id === applicationId);
   }, [applicationId, data]);
 
@@ -111,7 +117,9 @@ const FormContent = ({
     <Form {...form}>
       <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormOneSection form={form} isViewMode={actionMode === "view"} />
+        <Separator />
         <FormTwoSection form={form} isViewMode={actionMode === "view"} />
+        <Separator />
         <FormThreeSection
           form={form}
           haveExistingLoan={haveExistingLoan}

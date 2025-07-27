@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { OFFER_STATUS_ENUM } from "@/constants/commonEnums";
+import { booleanSchema } from "./common.schema";
 
 export const appointmentSchema = z.object({
   appointmentDateTime: z.coerce.date(),
@@ -7,15 +8,14 @@ export const appointmentSchema = z.object({
 });
 
 export const offerPayloadSchema = z.object({
-  userId: z.string(),
-  email: z.string(),
   loanAmount: z.number(),
   tenureMonths: z.number(),
   interestRate: z.number().max(4),
   lateInterestRate: z.number().max(4),
   adminFee: z.number(),
   lateChargeFees: z.number().max(60),
-  repaymentPeriod: z.number(),
+  repaymentPeriod: z.string(),
+  guarantorRequired: booleanSchema,
 });
 
 export const offerSchema = z
@@ -23,6 +23,9 @@ export const offerSchema = z
     id: z.string(),
     loanId: z.string(),
     lenderId: z.string(),
+    lenderName: z.string(),
+    userId: z.string(),
+    email: z.string(),
     status: z.nativeEnum(OFFER_STATUS_ENUM),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),

@@ -12,6 +12,9 @@ export const formOneDefaultValues: DefaultValues<FormOneData> = {
     uinfin: {
       source,
     },
+    idType: {
+      source,
+    },
     dob: {
       source,
     },
@@ -72,7 +75,16 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
     employmentStatus: {
       source,
     },
-    monthlyIncome: {
+    monthlyIncome1: {
+      source,
+    },
+    monthlyIncome2: {
+      source,
+    },
+    monthlyIncome3: {
+      source,
+    },
+    totalMonthlyIncome: {
       source,
     },
     employerName: {
@@ -85,6 +97,15 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
       source,
     },
     timeAtPreviousEmployer: {
+      source,
+    },
+    officeAddress: {
+      source,
+    },
+    officeUnitNo: {
+      source,
+    },
+    officePostalCode: {
       source,
     },
   },
@@ -101,10 +122,17 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
     housingType: {
       source,
     },
+    housingStatus: {
+      source,
+    },
     hdbType: {
       source,
     },
     country: {
+      source,
+    },
+    hasOwnPrivateProperty: {
+      value: false,
       source,
     },
   },

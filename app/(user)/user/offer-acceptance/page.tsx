@@ -33,6 +33,11 @@ import {
 } from "@/app/components/lib/carousel";
 import CarouselAutoHeight from "embla-carousel-auto-height";
 import Image from "next/image";
+import { Role } from "@/constants/authEnums";
+import {
+  REPAYMENT_PERIOD_OPTION,
+  YES_NO_OPTIONS,
+} from "@/constants/formOptions";
 
 // http://localhost:3000/user/offer-acceptance?offerId=1JPHz8SHoV0mm44mivk7
 const OfferAcceptancePage = () => {
@@ -71,7 +76,7 @@ const OfferAcceptancePage = () => {
     data: loanData,
     isLoading: isLoadingLoanDetails,
     refetch,
-  } = useLoanApplicationDetailsQuery(offerData?.loanId);
+  } = useLoanApplicationDetailsQuery(Role.USER, offerData?.loanId);
 
   const form = useForm<OfferData>({
     resolver: zodResolver(
@@ -270,12 +275,31 @@ const OfferAcceptancePage = () => {
                             disabled
                           />
 
-                          <BaseFormField
+                          {/* <BaseFormField
                             form={form}
                             fieldRef="repaymentPeriod"
                             label="Repayment Period"
                             type="number"
                             pattern="{value} months"
+                            disabled
+                          /> */}
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="repaymentPeriod"
+                            label="Repayment Period"
+                            type="select"
+                            options={REPAYMENT_PERIOD_OPTION}
+                            disabled
+                          />
+
+                          <BaseFormField
+                            form={form}
+                            fieldRef="guarantorRequired"
+                            optionLabelRef="guarantorRequired"
+                            label="Guarantor Required"
+                            type="radio"
+                            options={YES_NO_OPTIONS}
                             disabled
                           />
 

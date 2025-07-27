@@ -4,7 +4,6 @@ import { UserStatus } from "@/schemas/user.schema";
 
 export const LoanStatusMapping: Record<LOAN_STATUS_ENUM, string> = {
   [LOAN_STATUS_ENUM.INITIAL]: "Initiated",
-  [LOAN_STATUS_ENUM.IN_PROGRESS]: "In Progress",
   [LOAN_STATUS_ENUM.COMPLETED]: "Completed",
   [LOAN_STATUS_ENUM.EXPIRED]: "Expired",
   [LOAN_STATUS_ENUM.CANCELLED]: "Cancelled",

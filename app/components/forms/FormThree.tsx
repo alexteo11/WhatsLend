@@ -20,7 +20,7 @@ import useDialogStore from "@/stores/useDialogStore";
 import Login from "../auth/Login";
 import { User } from "firebase/auth";
 import { LoanData } from "@/schemas/loan.schema";
-import { Role } from "@/constants/authEnums";
+import CancelForm from "./CancelForm";
 
 const FormThree = () => {
   const { user, isAuthenticatedUser, signIn } = useAuth();
@@ -138,7 +138,15 @@ const FormThree = () => {
     <Form {...form}>
       <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormThreeSection form={form} haveExistingLoan={haveExistingLoan} />
-        <div className="flex justify-end gap-4">
+        <div className="flex flex-wrap justify-end gap-4">
+          <Button
+            size="lg"
+            type="button"
+            variant="destructive"
+            onClick={() => openDialog(<CancelForm />)}
+          >
+            Cancel
+          </Button>
           <Button
             size="lg"
             variant={"outline"}

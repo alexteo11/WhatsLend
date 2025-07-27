@@ -163,7 +163,7 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
             }}
             onChange={(e) => {
               if (!pattern) {
-                const value = Number(e.currentTarget.value);
+                const value = Number(e.currentTarget.value.replace(/\D/g, ""));
                 setValue(value);
                 field?.onChange(value);
                 return;
@@ -171,7 +171,9 @@ const SliderField = <T extends FieldValues>(props: SliderFieldProps<T>) => {
 
               const patternStr = pattern.replaceAll("{value}", "");
               const valueWithoutPattern = Number(
-                e.currentTarget.value.replaceAll(patternStr, ""),
+                e.currentTarget.value
+                  .replace(/\D/g, "")
+                  .replaceAll(patternStr, ""),
               );
               setValue(valueWithoutPattern);
               field?.onChange(valueWithoutPattern);

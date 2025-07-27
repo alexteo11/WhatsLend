@@ -11,7 +11,7 @@ const SingpassUserInfo = ({
   singpassUserInfo: DeepPartial<FormData>;
 }) => {
   return (
-    <div className="flex max-w-[550px] flex-col gap-2 px-6 py-10">
+    <div className="flex max-w-[650px] flex-col gap-2 px-6 py-10">
       <h1 className="text-center text-3xl text-app">Singpass User Info</h1>
       <p className="mb-8 text-center text-sm text-light-gray">
         Please rest assured that we only retrieve the required data with your

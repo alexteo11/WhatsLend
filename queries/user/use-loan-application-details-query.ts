@@ -4,8 +4,10 @@ import axios from "@/lib/axios";
 import { LoanData } from "@/schemas/loan.schema";
 import { getErrorMessage } from "@/helper/errorHelper";
 import { QUERY_KEY } from "../constants";
+import { Role } from "@/constants/authEnums";
 
 export const useLoanApplicationDetailsQuery = (
+  role: Role,
   loanId?: string,
   defaultEnable = false,
 ) => {
@@ -15,6 +17,11 @@ export const useLoanApplicationDetailsQuery = (
       try {
         const res = await axios.get<{ data: LoanData }>(
           `/loan/details/${loanId}`,
+          {
+            params: {
+              role,
+            },
+          },
         );
         return res.data.data;
       } catch (err) {
