@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 export enum SOURCES_ENUM {
   SINGPASS = "SINGPASS",
@@ -33,6 +34,10 @@ export const requiredNumberSchema = z
 export const dateSchema = z.coerce.date({
   required_error: "Field is required.",
 });
+
+export const phoneNumberSchema = z
+  .string()
+  .refine(isValidPhoneNumber, { message: "Invalid phone number" });
 
 export const dataSourceValuePairSchema = <T extends z.ZodType = z.ZodString>(
   zodType: z.ZodType = requiredStringSchema,

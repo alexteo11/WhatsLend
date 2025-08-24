@@ -84,12 +84,12 @@ export const FormOneSection = <
 
   useEffect(() => {
     if (passExpiryDate) {
-      const isLivePassport = new Date(passExpiryDate as Date) > new Date();
+      const isLivePass = new Date(passExpiryDate as Date) > new Date();
 
       form.setValue(
         "personalDetails.passStatus" as Path<T>,
         {
-          value: isLivePassport
+          value: isLivePass
             ? PASS_STATUS_OPTIONS[0].value
             : PASS_STATUS_OPTIONS[1].value,
           source: SOURCES_ENUM.MANUAL,
@@ -206,7 +206,7 @@ export const FormOneSection = <
             label="Marital Status"
             type="select"
             options={MARITAL_STATUS_OPTIONS}
-            disabled={isViewMode}
+            disabled={isViewMode == undefined ? false : isViewMode}
           />
         </div>
 
@@ -226,7 +226,7 @@ export const FormOneSection = <
               form={form}
               fieldRef={"personalDetails.passType.value" as Path<T>}
               optionLabelRef={"personalDetails.passType.label" as Path<T>}
-              label="Passport Type"
+              label="Pass Type"
               type="select"
               options={PASS_TYPE_OPTIONS}
               disabled={isViewMode}
@@ -234,7 +234,7 @@ export const FormOneSection = <
             <BaseFormField
               form={form}
               fieldRef={"personalDetails.passExpiryDate.value" as Path<T>}
-              label="Passport Expiry Date"
+              label="Pass Expiry Date"
               type="date"
               calendarDisabledRange={() => {
                 return false;

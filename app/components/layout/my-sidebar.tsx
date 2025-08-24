@@ -42,7 +42,7 @@ interface SelectedMenu {
 }
 
 export function MySidebar({ menuItems }: { menuItems: MenuItem[] }) {
-  const router = useRouter();
+  // const router = useRouter();
   const pathname = usePathname();
   const [selectedMenu, setSelectedMenu] = useState<SelectedMenu>();
 
@@ -59,7 +59,12 @@ export function MySidebar({ menuItems }: { menuItems: MenuItem[] }) {
       setSelectedMenu(_selectedMenuData);
 
       if (pathname !== _selectedMenuData.path) {
-        router.replace(_selectedMenuData.path);
+        // TODO: temp monitor this needed or not
+        // console.log({
+        //   here: pathname,
+        //   there: _selectedMenuData.path,
+        // });
+        // router.replace(_selectedMenuData.path);
       }
     } else {
       if (menuItems[0].children?.length) {

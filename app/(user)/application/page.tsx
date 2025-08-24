@@ -297,6 +297,15 @@ export default function Application() {
   const [showLogin, setShowLogin] = useState(false);
   const [showSingpassInfo, setShowSingpassInfo] = useState(false);
 
+  const onSingpassError = async () => {
+    // delay for 100 ms
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    router.replace("/");
+    toast.error(
+      "Myinfo is currently unavailable. Please try again shortly or apply the application manually.",
+    );
+  };
+
   const getSingpassUserInfo = async (
     code: string,
     code_verifier: string,
@@ -317,18 +326,26 @@ export default function Application() {
       setSingpassUserInfo(userInfo);
       return userInfo;
     } catch {
-      router.replace("/");
-      toast.error("Singpass data retrieval session expired. Please try again.");
+      onSingpassError();
     }
   };
 
+  // https://compare-loan-will.web.app/application?source=mib&error_description=Resource+owner+did+not+authorise+the+request&error=access_denied&state=6db2e36ed2dcc684c991dfe085c1db78
   const initForm = async () => {
     const query = searchParams.get("source");
     const code = searchParams.get("code");
     const state = searchParams.get("state");
+    const errorDesciption = searchParams.get("error_description");
+    const error = searchParams.get("error");
 
     // always reset when come in
     resetForm();
+
+    // check is singpass and have error
+    if (query === "mib" && error && errorDesciption) {
+      onSingpassError();
+      return;
+    }
 
     // check is singpass and have mib
     if (query === "mib" && code && state) {
@@ -501,7 +518,7 @@ const ApplicationInformation = ({
                 <ApplyButton
                   onlySingpassBtn
                   size="lg"
-                  className="self-center shadow"
+                  className="self-center"
                 />
               </div>
             </>

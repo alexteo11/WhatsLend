@@ -9,7 +9,7 @@ export default function NotFound() {
       <body>
         <div className="flex h-screen flex-col items-center justify-center gap-4">
           <Image
-            src="../result-not-found.svg"
+            src="/result-not-found.svg"
             width={200}
             height={200}
             alt="result-not-found"

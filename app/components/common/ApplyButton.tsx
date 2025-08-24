@@ -17,6 +17,7 @@ const ApplyButton = ({
   size?: "default" | "lg" | "xl";
   onlySingpassBtn?: boolean;
 }) => {
+  // TODO: global loading
   const [isLoading, setIsLoading] = useState(false);
 
   const getSingpassAuthorise = async () => {
@@ -53,7 +54,7 @@ const ApplyButton = ({
   return (
     <div
       className={cn(
-        "flex flex-row flex-wrap items-center justify-start gap-4 md:justify-start [&>*]:min-w-[250px] [&>*]:max-w-[300px] [&>*]:flex-1",
+        "flex flex-row flex-wrap items-center justify-start gap-4 md:justify-start [&>*]:min-w-[250px]",
         className,
       )}
     >
@@ -68,21 +69,15 @@ const ApplyButton = ({
       )}
       <Button
         size={size}
-        className="w-auto border border-input bg-background text-foreground shadow-sm transition-transform duration-200 ease-in-out hover:scale-[102.5%] hover:bg-background"
+        className="w-auto bg-transparent p-0 shadow-none transition-transform duration-200 ease-in-out hover:scale-[102.5%] hover:bg-transparent"
         onClick={() => getSingpassAuthorise()}
       >
-        {/* <Link href="/application?source=mib" className="relative"> */}
-        <div className="flex items-end gap-2">
-          <span className="font-semibold">Apply via</span>
-          <Image
-            src="/singpass_logo_fullcolours.png"
-            alt="singpass_logo"
-            height={20}
-            width={115}
-            className="translate-y-[1px] object-contain"
-          />
-        </div>
-        {/* </Link> */}
+        <Image
+          src="/retrieve_myinfo_with_singpass.png"
+          alt="singpass_logo"
+          height={60}
+          width={350}
+        />
       </Button>
     </div>
   );

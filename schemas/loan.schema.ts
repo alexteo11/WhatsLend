@@ -6,10 +6,10 @@ import {
   labeledDataSourceValuePairSchema,
   optionalDataSourceValuePairSchema,
   optionalLabeledDataSourceValuePairSchema,
+  phoneNumberSchema,
   requiredNumberSchema,
   requiredStringSchema,
 } from "./common.schema";
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
 import { foreignIdType } from "@/constants/formOptions";
 
@@ -64,9 +64,7 @@ export const personalDetailsSchema = z
 
 export const contactDetailsSchema = z.object({
   email: dataSourceValuePairSchema(z.string().email()),
-  mobileNo: dataSourceValuePairSchema(
-    z.string().refine(isValidPhoneNumber, { message: "Invalid phone number" }),
-  ),
+  mobileNo: dataSourceValuePairSchema(phoneNumberSchema),
 });
 
 export const employmentDetailsSchema = z.object({

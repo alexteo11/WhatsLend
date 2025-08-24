@@ -7828,3 +7828,14 @@ export const ID_TYPE_OPTIONS = [
   { value: "UNIQUE_ENTITY_NO", label: "Unique Entity No" },
   { value: "OTHERS", label: "Others" },
 ];
+
+export const LENDER_STAFF_POSITIONS = [
+  {
+    value: "MANAGER",
+    label: "MANAGER",
+  },
+  {
+    value: "LOAN OFFICER",
+    label: "LOAN OFFICER",
+  },
+];

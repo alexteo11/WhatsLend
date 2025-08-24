@@ -19,6 +19,9 @@ import { useAdminGetLendersQuery } from "@/queries/admin/use-admin-get-lenders-q
 import { Lender, LenderStatus } from "@/schemas/lender.schema";
 import { LenderStaff } from "@/schemas/lenderStaff.schema";
 import { LenderStatusMapping } from "@/constants/statusMapping";
+import { Button } from "@/app/components/lib/button";
+import Link from "next/link";
+import { Plus } from "lucide-react";
 
 const ManageLendersPage = () => {
   const [filter, setFilter] = useState<LendersDataTableFilter>({
@@ -165,6 +168,14 @@ const ManageLendersPage = () => {
             <SelectItem value={LenderStatus.INACTIVE}>Inactive</SelectItem>
           </SelectContent>
         </Select>
+
+        <div className="flex-auto"></div>
+        <Button asChild>
+          <Link href="./manage-lenders/add-lender">
+            <span>Add Lender </span>
+            <Plus />
+          </Link>
+        </Button>
       </MyDataTable>
     </div>
   );
