@@ -134,7 +134,12 @@ export const renderDataTableActionButtons = <TData,>(
   }[],
 ) => {
   return (
-    <div>
+    <div
+      className="z-10"
+      onClick={(event) => {
+        event.stopPropagation();
+      }}
+    >
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">

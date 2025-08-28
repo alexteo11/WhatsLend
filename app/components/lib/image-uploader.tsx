@@ -44,6 +44,7 @@ import { DialogClose } from "@radix-ui/react-dialog";
 export interface ImageUploaderComponentRef {
   onClick: VoidFunction;
   removeImage: VoidFunction;
+  scrollIntoView: VoidFunction;
 }
 
 interface ImageUploaderProps<T extends FieldValues> {
@@ -85,7 +86,7 @@ const ImageUploaderContent = <T extends FieldValues>(
 
   const [showEditorDialog, setShowEditorDialog] = useState(false);
 
-  useImperativeHandle(ref, () => ({ onClick, removeImage }));
+  useImperativeHandle(ref, () => ({ onClick, removeImage, scrollIntoView }));
 
   useEffect(() => {
     if (!showEditorDialog) {
@@ -146,6 +147,13 @@ const ImageUploaderContent = <T extends FieldValues>(
     form.resetField(imageRef);
   };
 
+  const scrollIntoView = () => {
+    refInput.current?.scrollIntoView({
+      behavior: "smooth",
+      block: "center",
+    });
+  };
+
   const {
     inputRef,
     getRootProps,
@@ -174,7 +182,10 @@ const ImageUploaderContent = <T extends FieldValues>(
               {title}
             </FormLabel>
             <FormControl>
-              <div className="relative flex w-fit items-center justify-start">
+              <div
+                className="relative flex w-fit items-center justify-start"
+                ref={refInput}
+              >
                 {image && allowRemoveImage && (
                   <CircleXIcon
                     className="absolute right-0 top-0 cursor-pointer"
@@ -206,7 +217,6 @@ const ImageUploaderContent = <T extends FieldValues>(
                     )}
                     <Input
                       {...getInputProps()}
-                      // ref={refInput}
                       type="file"
                       onInput={() => setShowEditorDialog(true)}
                     />

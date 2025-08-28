@@ -28,10 +28,10 @@ const LoanDetailsInfo = ({ loanData }: { loanData: LoanData }) => {
 
   if (loanData.personalDetails?.idType?.value === foreignIdType) {
     rows.push(
-      { title: "Passport Type", path: "passType.label" },
-      { title: "Passport Status", path: "passStatus.value" },
+      { title: "Pass Type", path: "passType.label" },
+      { title: "Pass Status", path: "passStatus.value" },
       {
-        title: "Passport Expiry Date",
+        title: "Pass Expiry Date",
         path: "passExpiryDate.value",
         formatter: formatDate,
       },

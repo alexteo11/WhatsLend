@@ -36,10 +36,10 @@ const SingpassUserInfo = ({
             { title: "Race", path: "race.label" },
             { title: "Residential Status", path: "residentialStatus.label" },
             { title: "Marital Status", path: "maritalStatus.label" },
-            { title: "Passport Type", path: "passType.label" },
-            { title: "Passport Status", path: "passStatus.value" },
+            { title: "Pass Type", path: "passType.label" },
+            { title: "Pass Status", path: "passStatus.value" },
             {
-              title: "Passport Expiry Date",
+              title: "Pass Expiry Date",
               path: "passExpiryDate.value",
               formatter: formatDate,
             },
