@@ -34,11 +34,11 @@ Compare Loan is an online loan platform where users can search, compare and appl
 
 ### Deployment
 
-```json
-// dev env
+```bash
+# dev env
 yarn deploy:dev
 
-// prod env
+# prod env
 yarn deploy:prod
 ```
 
