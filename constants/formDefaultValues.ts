@@ -1,7 +1,6 @@
 import { SOURCES_ENUM } from "@/schemas/common.schema";
 import { FormOneData, FormThreeData, FormTwoData } from "@/schemas/form.schema";
 import { DefaultValues } from "react-hook-form";
-import { YES_NO_OPTIONS } from "./formEnums";
 
 const source = SOURCES_ENUM.MANUAL;
 
@@ -11,6 +10,9 @@ export const formOneDefaultValues: DefaultValues<FormOneData> = {
       source,
     },
     uinfin: {
+      source,
+    },
+    idType: {
       source,
     },
     dob: {
@@ -73,7 +75,16 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
     employmentStatus: {
       source,
     },
-    monthlyIncome: {
+    monthlyIncome1: {
+      source,
+    },
+    monthlyIncome2: {
+      source,
+    },
+    monthlyIncome3: {
+      source,
+    },
+    totalMonthlyIncome: {
       source,
     },
     employerName: {
@@ -86,6 +97,15 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
       source,
     },
     timeAtPreviousEmployer: {
+      source,
+    },
+    officeAddress: {
+      source,
+    },
+    officeUnitNo: {
+      source,
+    },
+    officePostalCode: {
       source,
     },
   },
@@ -102,10 +122,17 @@ export const formTwoDefaultValues: DefaultValues<FormTwoData> = {
     housingType: {
       source,
     },
+    housingStatus: {
+      source,
+    },
     hdbType: {
       source,
     },
     country: {
+      source,
+    },
+    hasOwnPrivateProperty: {
+      value: false,
       source,
     },
   },

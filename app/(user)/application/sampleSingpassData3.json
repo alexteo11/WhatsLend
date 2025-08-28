@@ -1,0 +1,519 @@
+{
+    "personalDetails": {
+        "uinfin": {
+            "value": "S7790721A",
+            "source": "SINGPASS"
+        },
+        "fullName": {
+            "value": "FELICIA TAN WEI LIN",
+            "source": "SINGPASS"
+        },
+        "sex": {
+            "value": "M",
+            "label": "MALE",
+            "source": "SINGPASS"
+        },
+        "nationality": {
+            "value": "CN",
+            "label": "CHINESE",
+            "source": "SINGPASS"
+        },
+        "dob": {
+            "value": "1990-03-03",
+            "source": "SINGPASS"
+        },
+        "race": {
+            "value": "CN",
+            "label": "CHINESE",
+            "source": "SINGPASS"
+        },
+        "birthCountry": {
+            "value": "CN",
+            "label": "CHINA",
+            "source": "SINGPASS"
+        },
+        "residentialStatus": {
+            "value": "P",
+            "label": "PR",
+            "source": "SINGPASS"
+        },
+        "maritalStatus": {
+            "value": "2",
+            "label": "MARRIED",
+            "source": "SINGPASS"
+        }
+    },
+    "contactDetails": {
+        "email": {
+            "value": "myinfotesting@gmail.com",
+            "source": "SINGPASS"
+        },
+        "mobileNo": {
+            "value": "+601133400142",
+            "source": "SINGPASS"
+        }
+    },
+    "employmentDetails": {},
+    "housingDetails": {
+        "address": {
+            "value": "288A, JURONG EAST STREET 21, 8-367",
+            "source": "SINGPASS"
+        },
+        "unitNo": {
+            "value": "367",
+            "source": "SINGPASS"
+        },
+        "postalCode": {
+            "value": "601288",
+            "source": "SINGPASS"
+        },
+        "country": {
+            "value": "SG",
+            "label": "SINGAPORE",
+            "source": "SINGPASS"
+        },
+        "hdbType": {
+            "value": "115",
+            "label": "5-ROOM FLAT (HDB)",
+            "source": "SINGPASS"
+        },
+        "hdbOwnership": [
+            {
+                "monthlyLoanInstalment": {
+                    "value": "3333.33",
+                    "source": "SINGPASS"
+                },
+                "hdbType": {
+                    "value": "115",
+                    "label": "5-ROOM FLAT (HDB)",
+                    "source": "SINGPASS"
+                },
+                "dateOfPurchase": {
+                    "value": "2017-01-19",
+                    "source": "SINGPASS"
+                },
+                "outstandingLoanBalance": {
+                    "value": 349500,
+                    "source": "SINGPASS"
+                }
+            }
+        ]
+    },
+    "cpfDetails": {
+        "cpfContributions": [
+            {
+                "month": {
+                    "value": "2024-03",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-03-03",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-04",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-04-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-05",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-05-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-06",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-06-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-07",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-07-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-08",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-08-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-09",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-09-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-10",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-10-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-11",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-11-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2024-12",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2024-12-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2025-01",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2025-01-01",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2025-02",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2025-02-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2025-03",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2025-03-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2025-04",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2025-04-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 50000,
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "month": {
+                    "value": "2025-05",
+                    "source": "SINGPASS"
+                },
+                "employer": {
+                    "value": "1Aaaaaaaa 2AAAAAAAA 3AAAAAAAA 4AAAAAAAA 5AAAAAAAA 6AAAAAAAA 7AAAAAAAA 8AAAAAAAA 9AAAAAAAA 0AAAAAAAAA",
+                    "source": "SINGPASS"
+                },
+                "date": {
+                    "value": "2025-05-02",
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 2516,
+                    "source": "SINGPASS"
+                }
+            }
+        ],
+        "cpfHousingWithdrawal": [
+            {
+                "accruedInterestAmount": {
+                    "value": 8250,
+                    "source": "SINGPASS"
+                },
+                "principalWithdrawalAmount": {
+                    "value": 140250,
+                    "source": "SINGPASS"
+                },
+                "totalAmountOfCpfAllowedForProperty": {
+                    "value": 330000,
+                    "source": "SINGPASS"
+                },
+                "monthlyInstalmentAmount": {
+                    "value": 1100,
+                    "source": "SINGPASS"
+                },
+                "address": {
+                    "value": "504, West Coast Drive, 11-98",
+                    "source": "SINGPASS"
+                },
+                "unitNo": {
+                    "value": "98",
+                    "source": "SINGPASS"
+                },
+                "postalCode": {
+                    "value": "120504",
+                    "source": "SINGPASS"
+                },
+                "country": {
+                    "value": "SG",
+                    "label": "SINGAPORE",
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "accruedInterestAmount": {
+                    "value": 10000,
+                    "source": "SINGPASS"
+                },
+                "principalWithdrawalAmount": {
+                    "value": 170000,
+                    "source": "SINGPASS"
+                },
+                "totalAmountOfCpfAllowedForProperty": {
+                    "value": 400000,
+                    "source": "SINGPASS"
+                },
+                "monthlyInstalmentAmount": {
+                    "value": 1330,
+                    "source": "SINGPASS"
+                },
+                "address": {
+                    "value": "190, Lengkok Bahru, 6-990",
+                    "source": "SINGPASS"
+                },
+                "unitNo": {
+                    "value": "990",
+                    "source": "SINGPASS"
+                },
+                "postalCode": {
+                    "value": "150058",
+                    "source": "SINGPASS"
+                },
+                "country": {
+                    "value": "SG",
+                    "label": "SINGAPORE",
+                    "source": "SINGPASS"
+                }
+            }
+        ],
+        "noaHistory": [
+            {
+                "rent": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "taxClearance": {
+                    "value": "N",
+                    "source": "SINGPASS"
+                },
+                "yearOfAssessment": {
+                    "value": "2024",
+                    "source": "SINGPASS"
+                },
+                "interest": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "employment": {
+                    "value": 600000,
+                    "source": "SINGPASS"
+                },
+                "trade": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 600000,
+                    "source": "SINGPASS"
+                },
+                "category": {
+                    "value": "ORIGINAL",
+                    "source": "SINGPASS"
+                }
+            },
+            {
+                "rent": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "taxClearance": {
+                    "value": "N",
+                    "source": "SINGPASS"
+                },
+                "yearOfAssessment": {
+                    "value": "2023",
+                    "source": "SINGPASS"
+                },
+                "interest": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "employment": {
+                    "value": 500000,
+                    "source": "SINGPASS"
+                },
+                "trade": {
+                    "value": 0,
+                    "source": "SINGPASS"
+                },
+                "amount": {
+                    "value": 500000,
+                    "source": "SINGPASS"
+                },
+                "category": {
+                    "value": "ORIGINAL",
+                    "source": "SINGPASS"
+                }
+            }
+        ]
+    },
+    "vehicleDetails": []
+}

@@ -20,8 +20,9 @@ import LoanDetailsInfo from "./loan-details-info";
 import OfferDetailInfo from "./offer-details-info";
 import { LoanData } from "@/schemas/loan.schema";
 import { cn } from "@/lib/utils";
-import { useLoanApplicationDetailsQuery } from "@/queries/use-loan-application-details-query";
+import { useLoanApplicationDetailsQuery } from "@/queries/user/use-loan-application-details-query";
 import { Loader2 } from "lucide-react";
+import { useAuth } from "@/context/auth.context";
 
 // loanData = must have
 // offerData = optional
@@ -36,18 +37,21 @@ const LoanOfferDetailsDialog = ({
   offerData,
   loanData,
 }: OfferDetailDialogProps) => {
+  const { userRole } = useAuth();
+  const loanId = offerData?.loanId || loanData?.id;
   const { data, isLoading, refetch } = useLoanApplicationDetailsQuery(
-    offerData?.loanId,
+    userRole,
+    loanId,
   );
   const [_loanData, setLoanData] = useState<LoanData | undefined>(loanData);
 
   useEffect(() => {
     // if already fetched data, reuse it
-    if (data && offerData?.loanId === _loanData?.id) {
+    if (data && loanId === _loanData?.id) {
       return;
     }
 
-    if (!offerData?.loanId) {
+    if (!loanId) {
       return;
     }
 
@@ -55,7 +59,7 @@ const LoanOfferDetailsDialog = ({
       await refetch();
       setLoanData(data);
     })();
-  }, [offerData?.loanId, data]);
+  }, [loanId, data]);
 
   const showLoading = useMemo(() => {
     if (!offerData) {

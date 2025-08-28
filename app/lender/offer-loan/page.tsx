@@ -7,24 +7,30 @@ import LoanOfferDetailsDialog from "@/app/components/data-display/loan-offer-det
 import { Button } from "@/app/components/lib/button";
 import { Card, CardContent } from "@/app/components/lib/card";
 import { Form } from "@/app/components/lib/form";
+import { Role } from "@/constants/authEnums";
+import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
+import {
+  REPAYMENT_PERIOD_OPTION,
+  YES_NO_OPTIONS,
+} from "@/constants/formOptions";
 import { getErrorMessage } from "@/helper/errorHelper";
 import axios from "@/lib/axios";
-import { useLoanApplicationDetailsQuery } from "@/queries/use-loan-application-details-query";
+import { useLoanApplicationDetailsQuery } from "@/queries/user/use-loan-application-details-query";
 import { LoanData } from "@/schemas/loan.schema";
 import { OfferPayLoad, offerPayloadSchema } from "@/schemas/offer.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
 // http://localhost:3000/lender/offer-loan?userId=2X0w1yfAz2UXt4LFKoHVBNwtaz62&email=qweqweqe@gmail.com&loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
+// http://localhost:3000/lender/offer-loan?loanId=RXXrGrnyOEC3b1ovsoTU&lenderId=gZ4TUqUdbYMnwdqBIT5gRnkwAQ83
 const OfferLoanPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const userId = searchParams.get("userId");
-  const email = searchParams.get("email");
   const loanId = searchParams.get("loanId") || "";
   const lenderId = searchParams.get("lenderId") || "";
 
@@ -36,7 +42,7 @@ const OfferLoanPage = () => {
     data: loanData,
     isLoading: isLoadingLoanDetails,
     refetch,
-  } = useLoanApplicationDetailsQuery(loanId);
+  } = useLoanApplicationDetailsQuery(Role.LENDER, loanId, true);
 
   const form = useForm<OfferPayLoad>({
     resolver: zodResolver(
@@ -54,14 +60,15 @@ const OfferLoanPage = () => {
     reValidateMode: "onChange",
     defaultValues: {
       // TODO: ask William should we use jwt token to encrypt those
-      userId: userId || undefined, // get from url
-      email: email || undefined, // get from url or actually no need
     },
   });
+
+  useEffect(() => {}, [loanData]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // PUBLIC API
       await axios.post(`offer/${loanId}/submit/${lenderId}`, form.getValues());
       router.replace("/lender/offer-loan/success");
     } catch (err) {
@@ -71,111 +78,142 @@ const OfferLoanPage = () => {
     }
   };
 
+  if (!loanData) {
+    return (
+      <LoaderWrapper isLoading>
+        <div />
+      </LoaderWrapper>
+    );
+  }
+
   return (
-    <LoaderWrapper isLoading={isLoading}>
+    <LoaderWrapper isLoading={isLoading || isLoadingLoanDetails}>
       <Navbar hideButtons defaultHomeRoute="#" />
       <div className="middle-container-width mt-[var(--nav-height)] w-[90%] space-y-4 py-8 md:!w-[60%] md:py-14">
-        <h1 className="lender-page-title">Loan Offer Submission</h1>
-        <p>
-          Please fill out the form below to submit your loan offer to{" "}
-          <b className="text-app">{email}</b>.
-        </p>
-        <Button
-          variant="outline"
-          onClick={async () => {
-            await refetch();
-            setShowLoanDetailsDialog(true);
-          }}
-          isLoading={isLoadingLoanDetails}
-        >
-          View loan applications
-        </Button>
-        <br />
-        <br />
-        <Card>
-          <CardContent>
-            <Form {...form}>
-              <form
-                className="space-y-4"
-                onSubmit={form.handleSubmit(handleSubmit)}
-              >
-                <BaseFormField
-                  form={form}
-                  fieldRef="email"
-                  label="Email"
-                  type="email"
-                  disabled
-                />
+        {loanData.status === LOAN_STATUS_ENUM.COMPLETED ? (
+          <AlreadyProcessed status={loanData.status} />
+        ) : (
+          <>
+            <h1 className="lender-page-title">Loan Offer Submission</h1>
+            <p>
+              Please fill out the form below to submit your loan offer to{" "}
+              <b className="text-app">{loanData?.contactDetails.email.value}</b>
+              .
+            </p>
+            <Button
+              variant="outline"
+              onClick={async () => {
+                await refetch();
+                setShowLoanDetailsDialog(true);
+              }}
+              isLoading={isLoadingLoanDetails}
+            >
+              View loan applications
+            </Button>
+            <br />
+            <br />
+            <Card>
+              <CardContent>
+                <Form {...form}>
+                  <form
+                    className="space-y-4"
+                    onSubmit={form.handleSubmit(handleSubmit)}
+                  >
+                    {/* <BaseFormField
+                      form={form}
+                      fieldRef="email"
+                      label="Email"
+                      type="email"
+                      disabled
+                    /> */}
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="loanAmount"
-                  label="Loan Amount ($)"
-                  type="number"
-                  pattern="$ {value}"
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="loanAmount"
+                      label="Loan Amount ($)"
+                      type="number"
+                      pattern="$ {value}"
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="tenureMonths"
-                  label="Tenure Months"
-                  type="number"
-                  pattern="{value} months"
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="tenureMonths"
+                      label="Tenure Months"
+                      type="number"
+                      pattern="{value} months"
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="interestRate"
-                  label="Interest Rate per month (%)"
-                  type="number"
-                  pattern="{value} %"
-                  description={`Maximum for Interest Rate is 4%.`}
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="interestRate"
+                      label="Interest Rate per month (%)"
+                      type="number"
+                      pattern="{value} %"
+                      description={`Maximum for Interest Rate is 4%.`}
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="lateInterestRate"
-                  label="Late Interest Rate per month (%)"
-                  type="number"
-                  pattern="{value} %"
-                  description={`Maximum for Late Interest Rate is 4%`}
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="lateInterestRate"
+                      label="Late Interest Rate per month (%)"
+                      type="number"
+                      pattern="{value} %"
+                      description={`Maximum for Late Interest Rate is 4%`}
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="adminFee"
-                  label="Admin Fee - only 1 time charge ($)"
-                  type="number"
-                  pattern="$ {value}"
-                  description={`Maximum for Admin Fee is 10% of the Loan Amount.`}
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="adminFee"
+                      label="Admin Fee - only 1 time charge ($)"
+                      type="number"
+                      pattern="$ {value}"
+                      description={`Maximum for Admin Fee is 10% of the Loan Amount.`}
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="lateChargeFees"
-                  label="Late Charge Fees - charged per month ($)"
-                  type="number"
-                  pattern="$ {value}"
-                  description={`Maximum for Late Charge Fees is $60.`}
-                />
+                    <BaseFormField
+                      form={form}
+                      fieldRef="lateChargeFees"
+                      label="Late Charge Fees - charged per month ($)"
+                      type="number"
+                      pattern="$ {value}"
+                      description={`Maximum for Late Charge Fees is $60.`}
+                    />
 
-                <BaseFormField
-                  form={form}
-                  fieldRef="repaymentPeriod"
-                  label="Repayment Period"
-                  type="number"
-                  pattern="{value} months"
-                />
+                    {/* <BaseFormField
+                      form={form}
+                      fieldRef="repaymentPeriod"
+                      label="Repayment Period"
+                      type="number"
+                      pattern="{value} months"
+                    /> */}
 
-                <div className="flex justify-end pt-6">
-                  <Button size="lg" type="submit">
-                    Submit
-                  </Button>
-                </div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
+                    <BaseFormField
+                      form={form}
+                      fieldRef="repaymentPeriod"
+                      label="Repayment Period"
+                      type="select"
+                      options={REPAYMENT_PERIOD_OPTION}
+                    />
+
+                    <BaseFormField
+                      form={form}
+                      fieldRef="guarantorRequired"
+                      label="Guarantor Required"
+                      type="radio"
+                      options={YES_NO_OPTIONS}
+                    />
+
+                    <div className="flex justify-end pt-6">
+                      <Button size="lg" type="submit">
+                        Submit
+                      </Button>
+                    </div>
+                  </form>
+                </Form>
+              </CardContent>
+            </Card>
+          </>
+        )}
       </div>
       {loanData && (
         <LoanOfferDetailsDialog
@@ -185,6 +223,37 @@ const OfferLoanPage = () => {
         />
       )}
     </LoaderWrapper>
+  );
+};
+
+const AlreadyProcessed = ({ status }: { status: LOAN_STATUS_ENUM }) => {
+  const statusText = useMemo(() => {
+    if (status === LOAN_STATUS_ENUM.EXPIRED) {
+      return "expired";
+    }
+    if (status === LOAN_STATUS_ENUM.CANCELLED) {
+      return "cancelled";
+    }
+    if (status !== LOAN_STATUS_ENUM.INITIAL) {
+      return "processed";
+    }
+  }, [status]);
+
+  return (
+    <div className="flex h-[80vh] items-center justify-center gap-4">
+      <div className="flex w-[300px] flex-col items-center space-y-6">
+        <Image
+          src="../../../result-not-found.svg"
+          width={200}
+          height={200}
+          alt="result-not-found"
+        />
+        <h1 className="text-center text-lg text-light-gray">
+          This loan application is already {statusText}. This request no longer
+          needs to be processed.
+        </h1>
+      </div>
+    </div>
   );
 };
 

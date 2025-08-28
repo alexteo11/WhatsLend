@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FormOneData, formOneDataSchema } from "@/schemas/form.schema";
 import { useFormStore } from "@/stores/useFormStore";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FieldValues, Path, useForm, UseFormReturn } from "react-hook-form";
+import { Path, PathValue, useForm, UseFormReturn } from "react-hook-form";
 import { Form } from "../lib/form";
 import { Button } from "../lib/button";
 import BaseFormField from "../common/BaseFormField";
 import SliderField from "../common/SliderField";
 import {
+  COUNTRY_PLACE_OPTIONS,
+  foreignIdType,
+  ID_TYPE_OPTIONS,
   MARITAL_STATUS_OPTIONS,
   NATIONALITY_OPTIONS,
   PASS_STATUS_OPTIONS,
@@ -15,10 +18,15 @@ import {
   RACE_OPTIONS,
   RESIDENTIAL_STATUS_OPTIONS,
   SEX_OPTIONS,
-} from "@/constants/formEnums";
+} from "@/constants/formOptions";
 import { LoanData } from "@/schemas/loan.schema";
+import useDialogStore from "@/stores/useDialogStore";
+import CancelForm from "./CancelForm";
+import { SOURCES_ENUM } from "@/schemas/common.schema";
+import { Separator } from "../lib/separator";
 
 const FormOne = () => {
+  const { openDialog } = useDialogStore();
   const { formOneDefaultValues, setFormData, setStep } = useFormStore();
 
   const form = useForm<FormOneData>({
@@ -37,7 +45,16 @@ const FormOne = () => {
       <form className="space-y-10" onSubmit={form.handleSubmit(handleSubmit)}>
         <FormOneSection form={form} />
 
-        <div className="flex justify-end">
+        <div className="flex flex-wrap justify-end gap-4">
+          <Button
+            size="lg"
+            type="button"
+            variant="destructive"
+            onClick={() => openDialog(<CancelForm />)}
+          >
+            Cancel
+          </Button>
+
           <Button size="lg" type="submit">
             Next
           </Button>
@@ -59,6 +76,53 @@ export const FormOneSection = <
   form: UseFormReturn<T>;
   isViewMode?: boolean;
 }) => {
+  const passExpiryDate = form.watch(
+    "personalDetails.passExpiryDate.value" as Path<T>,
+  );
+
+  const idType = form.watch("personalDetails.idType.value" as Path<T>);
+
+  useEffect(() => {
+    if (passExpiryDate) {
+      const isLivePass = new Date(passExpiryDate as Date) > new Date();
+
+      form.setValue(
+        "personalDetails.passStatus" as Path<T>,
+        {
+          value: isLivePass
+            ? PASS_STATUS_OPTIONS[0].value
+            : PASS_STATUS_OPTIONS[1].value,
+          source: SOURCES_ENUM.MANUAL,
+        } as PathValue<T, Path<T>>,
+      );
+    }
+  }, [passExpiryDate]);
+
+  useEffect(() => {
+    if (idType !== foreignIdType) {
+      if (
+        form.getValues("personalDetails.passType.source" as Path<T>) ===
+        SOURCES_ENUM.MANUAL
+      ) {
+        form.resetField("personalDetails.passType" as Path<T>);
+      }
+
+      if (
+        form.getValues("personalDetails.passStatus.source" as Path<T>) ===
+        SOURCES_ENUM.MANUAL
+      ) {
+        form.resetField("personalDetails.passStatus" as Path<T>);
+      }
+
+      if (
+        form.getValues("personalDetails.passExpiryDate.source" as Path<T>) ===
+        SOURCES_ENUM.MANUAL
+      ) {
+        form.resetField("personalDetails.passExpiryDate" as Path<T>);
+      }
+    }
+  }, [idType]);
+
   return (
     <>
       <div className="application__form-section">
@@ -71,8 +135,8 @@ export const FormOneSection = <
           disabled={isViewMode}
         />
         <BaseFormField
-          form={form}
           fieldRef={"personalDetails.uinfin.value" as Path<T>}
+          form={form}
           label="NRIC / FIN"
           type="text"
           placeholder="S1234567A"
@@ -91,7 +155,7 @@ export const FormOneSection = <
           optionLabelRef={"personalDetails.birthCountry.label" as Path<T>}
           label="Birth Country"
           type="select"
-          options={NATIONALITY_OPTIONS}
+          options={COUNTRY_PLACE_OPTIONS}
           disabled={isViewMode}
         />
         <BaseFormField
@@ -103,34 +167,6 @@ export const FormOneSection = <
           options={SEX_OPTIONS}
           disabled={isViewMode}
         />
-        <BaseFormField
-          form={form}
-          fieldRef={"personalDetails.passType.value" as Path<T>}
-          label="Passport Type"
-          type="select"
-          options={PASS_TYPE_OPTIONS}
-          disabled={isViewMode}
-        />
-        <div className="flex w-full flex-wrap gap-4 [&>div]:w-full md:[&>div]:flex-1">
-          <BaseFormField
-            form={form}
-            fieldRef={"personalDetails.passStatus.value" as Path<T>}
-            label="Passport Status"
-            type="select"
-            options={PASS_STATUS_OPTIONS}
-            disabled={isViewMode}
-          />
-          <BaseFormField
-            form={form}
-            fieldRef={"personalDetails.passExpiryDate.value" as Path<T>}
-            label="Passport Expiry Date"
-            type="date"
-            calendarDisabledRange={() => {
-              return false;
-            }}
-            disabled={isViewMode}
-          />
-        </div>
         <div className="flex w-full flex-wrap gap-4 [&>div]:w-full md:[&>div]:flex-1">
           <BaseFormField
             form={form}
@@ -170,10 +206,47 @@ export const FormOneSection = <
             label="Marital Status"
             type="select"
             options={MARITAL_STATUS_OPTIONS}
-            disabled={isViewMode}
+            disabled={isViewMode == undefined ? false : isViewMode}
           />
         </div>
+
+        <BaseFormField
+          form={form}
+          fieldRef={"personalDetails.idType.value" as Path<T>}
+          optionLabelRef={"personalDetails.idType.label" as Path<T>}
+          label="ID Type"
+          type="select"
+          options={ID_TYPE_OPTIONS}
+          disabled={isViewMode}
+        />
+
+        {idType === foreignIdType && (
+          <div className="flex w-full flex-wrap gap-4 [&>div]:w-full md:[&>div]:flex-1">
+            <BaseFormField
+              form={form}
+              fieldRef={"personalDetails.passType.value" as Path<T>}
+              optionLabelRef={"personalDetails.passType.label" as Path<T>}
+              label="Pass Type"
+              type="select"
+              options={PASS_TYPE_OPTIONS}
+              disabled={isViewMode}
+            />
+            <BaseFormField
+              form={form}
+              fieldRef={"personalDetails.passExpiryDate.value" as Path<T>}
+              label="Pass Expiry Date"
+              type="date"
+              calendarDisabledRange={() => {
+                return false;
+              }}
+              disabled={isViewMode}
+            />
+          </div>
+        )}
       </div>
+
+      <br />
+      <Separator />
 
       <div className="application__form-section">
         <h1 className="application__form-subtitle">Contact Details</h1>
@@ -183,7 +256,7 @@ export const FormOneSection = <
           label="Email"
           type="email"
           placeholder="johndoe@gmail.com"
-          disabled={isViewMode}
+          disabled={isViewMode == undefined ? false : isViewMode}
         />
         <BaseFormField
           form={form}
@@ -191,9 +264,12 @@ export const FormOneSection = <
           label="Mobile Number"
           type="phone"
           placeholder="+6595556969"
-          disabled={isViewMode}
+          disabled={isViewMode == undefined ? false : isViewMode}
         />
       </div>
+
+      <br />
+      <Separator />
 
       <div className="application__form-section">
         <h1 className="application__form-subtitle">Loan Details</h1>

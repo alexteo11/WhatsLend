@@ -5,42 +5,83 @@ import {
   dateSchema,
   labeledDataSourceValuePairSchema,
   optionalDataSourceValuePairSchema,
+  optionalLabeledDataSourceValuePairSchema,
+  phoneNumberSchema,
   requiredNumberSchema,
+  requiredStringSchema,
 } from "./common.schema";
-import { isValidPhoneNumber } from "react-phone-number-input";
 import { LOAN_STATUS_ENUM } from "@/constants/commonEnums";
+import { foreignIdType } from "@/constants/formOptions";
 
 // personal details
-export const personalDetailsSchema = z.object({
-  uinfin: dataSourceValuePairSchema(),
-  fullName: dataSourceValuePairSchema(),
-  sex: labeledDataSourceValuePairSchema(),
-  nationality: labeledDataSourceValuePairSchema(),
-  dob: dataSourceValuePairSchema<z.ZodDate>(dateSchema),
-  race: labeledDataSourceValuePairSchema(),
-  birthCountry: labeledDataSourceValuePairSchema(),
-  residentialStatus: labeledDataSourceValuePairSchema(),
-  passType: labeledDataSourceValuePairSchema(),
-  passStatus: dataSourceValuePairSchema(),
-  passExpiryDate: dataSourceValuePairSchema<z.ZodDate>(dateSchema),
-  maritalStatus: labeledDataSourceValuePairSchema(),
-});
+export const personalDetailsSchema = z
+  .object({
+    uinfin: dataSourceValuePairSchema(
+      requiredStringSchema.min(6, "Must be at least 6 characters."),
+    ),
+    idType: labeledDataSourceValuePairSchema(),
+    fullName: dataSourceValuePairSchema(),
+    sex: labeledDataSourceValuePairSchema(),
+    nationality: labeledDataSourceValuePairSchema(),
+    dob: dataSourceValuePairSchema<z.ZodDate>(dateSchema),
+    race: labeledDataSourceValuePairSchema(),
+    birthCountry: labeledDataSourceValuePairSchema(),
+    residentialStatus: labeledDataSourceValuePairSchema(),
+    passType: optionalLabeledDataSourceValuePairSchema(),
+    passStatus: optionalDataSourceValuePairSchema(),
+    passExpiryDate: optionalDataSourceValuePairSchema<z.ZodDate>(dateSchema),
+    maritalStatus: labeledDataSourceValuePairSchema(),
+  })
+  .superRefine((data, ctx) => {
+    const isForeignID = data.idType?.value === foreignIdType;
+
+    if (isForeignID) {
+      if (!data.passType?.value) {
+        ctx.addIssue({
+          path: ["passType.value"],
+          code: z.NEVER,
+          message: "Field is required.",
+        });
+      }
+
+      if (!data.passStatus?.value) {
+        ctx.addIssue({
+          path: ["passStatus.value"],
+          code: z.NEVER,
+          message: "Field is required.",
+        });
+      }
+
+      if (!data.passExpiryDate?.value) {
+        ctx.addIssue({
+          path: ["passExpiryDate.value"],
+          code: z.NEVER,
+          message: "Field is required.",
+        });
+      }
+    }
+  });
 
 export const contactDetailsSchema = z.object({
   email: dataSourceValuePairSchema(z.string().email()),
-  mobileNo: dataSourceValuePairSchema(
-    z.string().refine(isValidPhoneNumber, { message: "Invalid phone number" }),
-  ),
+  mobileNo: dataSourceValuePairSchema(phoneNumberSchema),
 });
 
 export const employmentDetailsSchema = z.object({
   occupation: dataSourceValuePairSchema(),
   employmentStatus: labeledDataSourceValuePairSchema(),
-  monthlyIncome: dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
+  monthlyIncome1: dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
+  monthlyIncome2: dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
+  monthlyIncome3: dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
+  totalMonthlyIncome:
+    dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
   employerName: dataSourceValuePairSchema(),
   employmentSector: dataSourceValuePairSchema(),
   timeAtCurrentEmployer: labeledDataSourceValuePairSchema(),
   timeAtPreviousEmployer: labeledDataSourceValuePairSchema(),
+  officeAddress: dataSourceValuePairSchema(),
+  officeUnitNo: dataSourceValuePairSchema(),
+  officePostalCode: dataSourceValuePairSchema(),
 });
 
 const hdbOwnershipSchema = z.object({
@@ -48,6 +89,8 @@ const hdbOwnershipSchema = z.object({
     dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
   hdbType: labeledDataSourceValuePairSchema(),
   dateOfPurchase: dataSourceValuePairSchema(),
+  outstandingLoanBalance:
+    dataSourceValuePairSchema<z.ZodNumber>(requiredNumberSchema),
 });
 
 export const housingDetailsSchema = z.object({
@@ -56,8 +99,10 @@ export const housingDetailsSchema = z.object({
   postalCode: dataSourceValuePairSchema(),
   country: labeledDataSourceValuePairSchema(),
   housingType: labeledDataSourceValuePairSchema(),
+  housingStatus: labeledDataSourceValuePairSchema(),
   hdbType: labeledDataSourceValuePairSchema(),
-  hdbOwnership: z.array(hdbOwnershipSchema),
+  hdbOwnership: z.array(hdbOwnershipSchema).catch([]),
+  hasOwnPrivateProperty: dataSourceValuePairSchema<z.ZodBoolean>(booleanSchema),
 });
 
 const cpfContributionsSchema = z.object({

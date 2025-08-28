@@ -20,7 +20,7 @@ const steps = [
 ];
 
 const FormStepView = ({ className }: React.HTMLAttributes<HTMLDivElement>) => {
-  const { step, setStep } = useFormStore();
+  const { step } = useFormStore();
 
   return (
     <div>

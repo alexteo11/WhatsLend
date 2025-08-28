@@ -7,6 +7,8 @@ import { Role } from "@/constants/authEnums";
 import Login from "../../components/auth/Login";
 import { SidebarProvider } from "@/components/lib/sidebar";
 import { LenderSidebar } from "../components/lender-sidebar";
+import GlobalDialog from "@/app/components/layout/GlobalDialog";
+import { useRouter } from "next/navigation";
 
 const AuthCheckerProvider = ({
   children,
@@ -15,6 +17,7 @@ const AuthCheckerProvider = ({
     <AuthProvider role={Role.LENDER}>
       <AuthWrapper>
         <>{children}</>
+        <GlobalDialog />
       </AuthWrapper>
     </AuthProvider>
   );
@@ -23,6 +26,7 @@ const AuthCheckerProvider = ({
 const AuthWrapper = ({
   children,
 }: React.HtmlHTMLAttributes<HTMLDivElement>) => {
+  const router = useRouter();
   const { loading, isInitializing, isAuthenticatedUser } = useAuth();
 
   if (isInitializing || loading) {
@@ -36,7 +40,12 @@ const AuthWrapper = ({
   if (!isAuthenticatedUser) {
     return (
       <div className="middle-container-width flex h-screen items-center justify-center">
-        <Login className="h-auto" />
+        <Login
+          className="h-auto"
+          onBeforeLoginSuccess={() => {
+            router.replace("/lender/dashboard");
+          }}
+        />
       </div>
     );
   }

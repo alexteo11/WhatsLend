@@ -1,7 +1,7 @@
 "use client";
 
 import moment from "moment";
-import "./styles.scss";
+import "./styles/styles.scss";
 import {
   Calendar,
   momentLocalizer,
@@ -13,11 +13,11 @@ import { ComponentType, useCallback, useMemo, useState } from "react";
 import { Button } from "@/app/components/lib/button";
 import { ChevronsLeft, ChevronsRight } from "lucide-react";
 import { OfferData } from "@/schemas/offer.schema";
-import { useAuth } from "@/context/auth.context";
 import LoanOfferDetailsDialog from "@/app/components/data-display/loan-offer-details-dialog";
-import { useLenderOfferAppointmentQuery } from "@/queries/use-lender-offer-appointment-query";
+import { useLenderOfferAppointmentQuery } from "@/queries/lender/use-lender-offer-appointment-query";
 import { LoaderWrapper } from "@/app/components/common/LoaderWrapper";
 import { currencyFormatter } from "@/helper/numberFormatter";
+import { useAuth } from "@/context/auth.context";
 interface MyEventType {
   id: string;
   title: string;
@@ -30,14 +30,13 @@ interface MyEventType {
 const localizer = momentLocalizer(moment);
 
 export const AppointmentCalender = () => {
-  const { user } = useAuth();
-
+  const { lenderId } = useAuth();
   const [view, setView] = useState<View>(Views.MONTH);
   const [date, setDate] = useState(new Date());
   const [showDialog, setShowDialog] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<MyEventType | null>(null);
 
-  const { data, isLoading } = useLenderOfferAppointmentQuery(user?.uid || "", {
+  const { data, isLoading } = useLenderOfferAppointmentQuery(lenderId, {
     date: {
       from: new Date(date.getFullYear(), date.getMonth(), 1),
       to: new Date(date.getFullYear(), date.getMonth() + 1, 0),

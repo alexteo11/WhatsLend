@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 import { Role } from "@/constants/authEnums";
 interface LoginProps {
   onInnerDialogOpen?: () => void;
+  onBeforeLoginSuccess?: () => void;
   onLoginSuccess?: () => void;
 }
 
@@ -43,6 +44,7 @@ const ROLE_LOGIN_MAP = {
 
 const Login = ({
   onInnerDialogOpen,
+  onBeforeLoginSuccess,
   onLoginSuccess,
   className,
 }: LoginProps & React.HtmlHTMLAttributes<HTMLDivElement>) => {
@@ -59,6 +61,7 @@ const Login = ({
   });
 
   const onSubmit = async (data: LoginReq) => {
+    onBeforeLoginSuccess?.();
     await signIn(data.email, data.password, () => {
       toast.success("You have logged in successfully.");
       onLoginSuccess?.();

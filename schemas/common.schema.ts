@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "react-phone-number-input";
 
 export enum SOURCES_ENUM {
   SINGPASS = "SINGPASS",
@@ -34,6 +35,10 @@ export const dateSchema = z.coerce.date({
   required_error: "Field is required.",
 });
 
+export const phoneNumberSchema = z
+  .string()
+  .refine(isValidPhoneNumber, { message: "Invalid phone number" });
+
 export const dataSourceValuePairSchema = <T extends z.ZodType = z.ZodString>(
   zodType: z.ZodType = requiredStringSchema,
   optional: boolean = false,
@@ -63,7 +68,7 @@ export const labeledDataSourceValuePairSchema = <
 ) => {
   return z.object({
     value: optional ? z.optional(zodType as T) : (zodType as T),
-    label: requiredStringSchema,
+    label: optional ? z.string().optional() : requiredStringSchema,
     source: z.nativeEnum(SOURCES_ENUM),
   });
 };
@@ -75,7 +80,7 @@ export const optionalLabeledDataSourceValuePairSchema = <
 ) => {
   return z.object({
     value: z.optional(zodType as T),
-    label: requiredStringSchema,
+    label: z.string().optional(),
     source: z.nativeEnum(SOURCES_ENUM),
   });
 };
