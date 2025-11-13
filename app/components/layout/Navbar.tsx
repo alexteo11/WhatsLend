@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../lib/dropdown-menu";
+import { usePathname } from "next/navigation";
 
 const ROLE_NAV_BAR_MAP = {
   [Role.ADMIN]: {
@@ -98,6 +99,23 @@ const ROLE_NAV_BAR_MAP = {
       },
     ],
   },
+};
+
+// Helper function to check if link is active
+const isLinkActive = (href: string, pathname: string) => {
+  // Handle hash links
+  if (href.includes("#")) {
+    const path = href.split("#")[0];
+    return pathname === (path || "/");
+  }
+  // Handle exact matches
+  if (href === pathname) return true;
+  // Handle relative paths (./dashboard)
+  if (href.startsWith("./")) {
+    const relativePath = href.slice(1);
+    return pathname.endsWith(relativePath);
+  }
+  return false;
 };
 
 const Navbar = ({
@@ -303,6 +321,7 @@ const NavigationButtons = ({
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
   const { userRole, isAuthenticatedUser } = useAuth();
+  const pathname = usePathname();
 
   return (
     <div
@@ -319,18 +338,42 @@ const NavigationButtons = ({
           <Button asChild variant="link" className="text-shadow">
             <Link href="/#faqs">FAQs</Link>
           </Button>
-          <Button asChild variant="link" className="text-shadow">
+          <Button
+            asChild
+            variant="link"
+            className={cn(
+              "text-shadow",
+              isLinkActive("/about-us", pathname) &&
+                "underline decoration-2 underline-offset-4",
+            )}
+          >
             <Link href="/about-us" scroll={false}>
               About Us
             </Link>
           </Button>
-          <Button asChild variant="link" className="text-shadow">
+          <Button
+            asChild
+            variant="link"
+            className={cn(
+              "text-shadow",
+              isLinkActive("/contact-us", pathname) &&
+                "underline decoration-2 underline-offset-4",
+            )}
+          >
             <Link href="/contact-us" scroll={false}>
               Contact Us
             </Link>
           </Button>
           {isAuthenticatedUser && (
-            <Button asChild variant="link" className="text-shadow">
+            <Button
+              asChild
+              variant="link"
+              className={cn(
+                "text-shadow",
+                isLinkActive("/my-applications", pathname) &&
+                  "underline decoration-2 underline-offset-4",
+              )}
+            >
               <Link href="/my-applications" scroll={false}>
                 My Applications
               </Link>
@@ -361,6 +404,7 @@ const NavigationSideBar = ({
   setShowSideBar: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
   const { userRole, isAuthenticatedUser, user, signOut } = useAuth();
+  const pathname = usePathname();
   const userEmail = user?.email || "";
   const userName = user?.displayName || userEmail?.split("@")[0] || "User";
   const userInitials = userName
@@ -393,7 +437,11 @@ const NavigationSideBar = ({
             <Button
               asChild
               variant="link"
-              className="text-shadow"
+              className={cn(
+                "text-shadow",
+                isLinkActive(item.href, pathname) &&
+                  "font-semibold underline decoration-2 underline-offset-4",
+              )}
               onClick={() => setShowSideBar(false)}
             >
               <Link href={item.href}>{item.label}</Link>
@@ -423,7 +471,11 @@ const NavigationSideBar = ({
           <Button
             asChild
             variant="link"
-            className="justify-start text-primary"
+            className={cn(
+              "justify-start text-primary",
+              isLinkActive("/profile", pathname) &&
+                "font-semibold underline decoration-2 underline-offset-4",
+            )}
             onClick={() => setShowSideBar(false)}
           >
             <Link href="/profile" className="flex w-full items-center">
