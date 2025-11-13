@@ -7,12 +7,20 @@ import { Dispatch, SetStateAction, useMemo, useState } from "react";
 import BaseDialog from "../common/BaseDialog";
 import Login from "../auth/Login";
 import { cn } from "@/lib/utils";
-import { MenuIcon } from "lucide-react";
+import { MenuIcon, User as UserIcon, LogOut } from "lucide-react";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "../lib/sheet";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { useAuth } from "@/context/auth.context";
 import { toast } from "sonner";
 import { Role } from "@/constants/authEnums";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../lib/dropdown-menu";
 
 const ROLE_NAV_BAR_MAP = {
   [Role.ADMIN]: {
@@ -131,28 +139,28 @@ const Navbar = ({
           />
         </Link>
         {!hideButtons && (
-          <NavigationButtons
-            setShowSignInDialog={setShowSignInDialog}
-            className="hidden md:flex"
-          />
-        )}
-        {!hideButtons && (
-          <Sheet open={showSideBar} onOpenChange={setShowSideBar}>
-            <SheetTrigger className="block md:hidden">
-              <Button size="icon" variant="link" asChild>
-                <MenuIcon className="text-white" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent className="z-[999] max-w-[60vw]">
-              <VisuallyHidden>
-                <SheetTitle>Navigation</SheetTitle>
-              </VisuallyHidden>
-              <NavigationSideBar
-                setShowSignInDialog={setShowSignInDialog}
-                setShowSideBar={setShowSideBar}
-              />
-            </SheetContent>
-          </Sheet>
+          <>
+            <NavigationButtons
+              setShowSignInDialog={setShowSignInDialog}
+              className="hidden md:flex"
+            />
+            <Sheet open={showSideBar} onOpenChange={setShowSideBar}>
+              <SheetTrigger className="block md:hidden">
+                <Button size="icon" variant="link" asChild>
+                  <MenuIcon className="text-white" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent className="z-[999] max-w-[60vw]">
+                <VisuallyHidden>
+                  <SheetTitle>Navigation</SheetTitle>
+                </VisuallyHidden>
+                <NavigationSideBar
+                  setShowSignInDialog={setShowSignInDialog}
+                  setShowSideBar={setShowSideBar}
+                />
+              </SheetContent>
+            </Sheet>
+          </>
         )}
       </nav>
       <BaseDialog isOpen={showSignInDialog} onOpenChange={setShowSignInDialog}>
@@ -222,6 +230,72 @@ const SignInOrSignOutButton = ({
   );
 };
 
+const UserMenu = ({
+  setShowSignInDialog,
+}: {
+  setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const { user, signOut } = useAuth();
+  const userEmail = user?.email || "";
+  const userName = user?.displayName || userEmail?.split("@")[0] || "User";
+  const userInitials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Logged out successfully.");
+  };
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          className="flex min-w-0 items-center gap-2 border-0 p-2 text-white hover:bg-white/10"
+        >
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20 text-xs font-semibold text-white">
+            {userInitials}
+          </div>
+          <span className="hidden max-w-[120px] truncate lg:block">
+            {userName}
+          </span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-56">
+        <DropdownMenuLabel>
+          <div className="flex flex-col space-y-1">
+            <p className="truncate text-sm font-medium leading-none">
+              {userName}
+            </p>
+            <p className="truncate text-xs leading-none text-muted-foreground">
+              {userEmail}
+            </p>
+          </div>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link href="/profile" className="flex cursor-pointer items-center">
+            <UserIcon className="mr-2 h-4 w-4" />
+            <span>Profile</span>
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onClick={handleSignOut}
+          className="cursor-pointer text-destructive focus:text-destructive"
+        >
+          <LogOut className="mr-2 h-4 w-4" />
+          <span>Sign Out</span>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+};
+
 const NavigationButtons = ({
   setShowSignInDialog,
   className,
@@ -264,12 +338,16 @@ const NavigationButtons = ({
           )}
         </>
       )}
-      <SignInOrSignOutButton
-        size="default"
-        variant="link"
-        className="border-2 border-white !text-white"
-        setShowSignInDialog={setShowSignInDialog}
-      />
+      {isAuthenticatedUser ? (
+        <UserMenu setShowSignInDialog={setShowSignInDialog} />
+      ) : (
+        <SignInOrSignOutButton
+          size="default"
+          variant="link"
+          className="border-2 border-white !text-white"
+          setShowSignInDialog={setShowSignInDialog}
+        />
+      )}
     </div>
   );
 };
@@ -282,7 +360,22 @@ const NavigationSideBar = ({
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
   setShowSideBar: Dispatch<SetStateAction<boolean>>;
 } & React.HtmlHTMLAttributes<HTMLDivElement>) => {
-  const { userRole } = useAuth();
+  const { userRole, isAuthenticatedUser, user, signOut } = useAuth();
+  const userEmail = user?.email || "";
+  const userName = user?.displayName || userEmail?.split("@")[0] || "User";
+  const userInitials = userName
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+
+  const handleSignOut = async () => {
+    await signOut();
+    toast.success("Logged out successfully.");
+    setShowSideBar(false);
+  };
+
   return (
     <div className="flex flex-col justify-between">
       <div
@@ -311,13 +404,51 @@ const NavigationSideBar = ({
       </div>
       <div className="h-0.5 w-full bg-app/15"></div>
 
-      <SignInOrSignOutButton
-        size="default"
-        variant="link"
-        className="my-5"
-        setShowSignInDialog={setShowSignInDialog}
-        setShowSideBar={setShowSideBar}
-      />
+      {isAuthenticatedUser ? (
+        <div className="my-5 flex flex-col gap-3">
+          <div className="flex items-center gap-3 px-4 py-2">
+            <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-app/20 text-sm font-semibold text-primary">
+              {userInitials}
+            </div>
+            <div className="flex min-w-0 flex-1 flex-col">
+              <span className="truncate text-sm font-medium text-primary">
+                {userName}
+              </span>
+              <span className="truncate text-xs text-muted-foreground">
+                {userEmail}
+              </span>
+            </div>
+          </div>
+          <div className="h-0.5 w-full bg-app/15"></div>
+          <Button
+            asChild
+            variant="link"
+            className="justify-start text-primary"
+            onClick={() => setShowSideBar(false)}
+          >
+            <Link href="/profile" className="flex w-full items-center">
+              <UserIcon className="mr-2 h-4 w-4" />
+              Profile
+            </Link>
+          </Button>
+          <Button
+            variant="link"
+            className="justify-start text-destructive"
+            onClick={handleSignOut}
+          >
+            <LogOut className="mr-2 h-4 w-4" />
+            Sign Out
+          </Button>
+        </div>
+      ) : (
+        <SignInOrSignOutButton
+          size="default"
+          variant="link"
+          className="my-5"
+          setShowSignInDialog={setShowSignInDialog}
+          setShowSideBar={setShowSideBar}
+        />
+      )}
     </div>
   );
 };
