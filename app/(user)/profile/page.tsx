@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 const ProfilePage = () => {
   const { user, signOut, isAuthenticatedUser } = useAuth();
-  const displayName = user?.displayName || "User";
+  const displayName = user?.displayName || user?.email?.split("@")[0] || "User";
   const userEmail = user?.email || "Not available";
 
   const handleSignOut = async () => {
@@ -59,14 +59,14 @@ const ProfilePage = () => {
           </div>
 
           {/* Edit Profile */}
-          {isAuthenticatedUser ? (
+          {/* {isAuthenticatedUser ? (
             <div className="mt-8 flex justify-center">
               <button className="flex items-center gap-2 rounded-lg bg-indigo-600 px-5 py-2 text-white transition-all hover:bg-indigo-700">
                 <Edit3 className="h-4 w-4" />
                 Edit Profile
               </button>
             </div>
-          ) : null}
+          ) : null} */}
         </div>
 
         {/* Bottom Sign Out Button */}
