@@ -253,7 +253,7 @@ const UserMenu = ({
 }: {
   setShowSignInDialog: Dispatch<SetStateAction<boolean>>;
 }) => {
-  const { user, signOut } = useAuth();
+  const { user, signOut, userRole } = useAuth();
   const userEmail = user?.email || "";
   const userName = user?.displayName || userEmail?.split("@")[0] || "User";
   const userInitials = userName
@@ -262,6 +262,12 @@ const UserMenu = ({
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const getProfileLink = () => {
+    if (userRole === Role.LENDER) return "/lender/profile";
+    if (userRole === Role.ADMIN) return "/admin/profile";
+    return "/profile";
+  };
 
   const handleSignOut = async () => {
     await signOut();
@@ -296,7 +302,10 @@ const UserMenu = ({
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/profile" className="flex cursor-pointer items-center">
+          <Link
+            href={getProfileLink()}
+            className="flex cursor-pointer items-center"
+          >
             <UserIcon className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
@@ -413,6 +422,12 @@ const NavigationSideBar = ({
     .join("")
     .toUpperCase()
     .slice(0, 2);
+
+  const getProfileLink = () => {
+    if (userRole === Role.LENDER) return "/lender/profile";
+    if (userRole === Role.ADMIN) return "/admin/profile";
+    return "/profile";
+  };
 
   const handleSignOut = async () => {
     await signOut();
